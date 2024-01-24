@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('login', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
+            $table->string('username');
             $table->text('password');
             $table->text('ip_address')->nullable();
             $table->text('browser')->nullable();
             $table->text('browser_version')->nullable();
             $table->text('os')->nullable();
             $table->text('registration_token')->nullable();
-            $table->enum('mobile', [0, 1])->default(0);
+            $table->text('mobile')->default('0');
             $table->timestamps();
         });
     }

@@ -22,11 +22,10 @@ use Laravel\Lumen\Routing\Router;
 $router->group(['prefix' => 'api'], function () use ($router) {
 
     // Autentikasi
-    $router->post('/user/register', 'AuthController@registration');
-    $router->post('/user/login', 'AuthController@login');
+    $router->post('/register', 'AuthController@registration');
+    $router->post('/login', 'AuthController@login');
 
-    // $router->group(['middleware' => 'auth'], function () use ($router) {
-
-
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->get('/log', 'LogController@getLog');
+    });
 });
-// });

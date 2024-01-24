@@ -4,11 +4,12 @@ namespace App\Api;
 
 class Endpoint
 {
-    public static function failed($status, $msg)
+    public static function failed($status, $msg, $error = null)
     {
         return response()->json([
             'status'    => $status,
-            'message'   => $msg
+            'message'   => $msg,
+            'error'     => $error
         ], $status);
     }
 
