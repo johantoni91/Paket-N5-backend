@@ -9,7 +9,11 @@ class SatkerController extends Controller
 {
     function index()
     {
-        $satker = Satker::all();
-        return Endpoint::response('mendapatkan data satker', $satker);
+        try {
+            $satker = Satker::all();
+            return Endpoint::success(true, 'mendapatkan data satker', $satker);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(false, "gagal mendapatkan data satker", $th->getMessage());
+        }
     }
 }

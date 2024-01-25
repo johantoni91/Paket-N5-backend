@@ -17,8 +17,6 @@ use Laravel\Lumen\Routing\Router;
 |
 */
 
-// $router->get()
-
 $router->group(['prefix' => 'api'], function () use ($router) {
 
     // Autentikasi
@@ -26,6 +24,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/login', 'AuthController@login');
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
-        $router->get('/log', 'LogController@getLog');
+
+        // Management Users
+        $router->get('/users', 'UserController@show'); // Mendapatkan semua user
+        $router->post('/user/add', 'UserController@store'); // Tambah user
+        $router->get('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
+        $router->get('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
+        $router->get('/user/{id:\d+}/delete', 'UserController@delete'); // Menghapus sebuah user
+
+        // Log Activity
+        $router->get('/log', 'LogController@getLog'); // Mendapatkan semua log aktivitas
+        $router->get('/log/{id:/d+}/delete', 'LogController@destroy'); // Hapus log aktivitas
     });
 });

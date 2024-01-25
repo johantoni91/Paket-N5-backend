@@ -5,6 +5,16 @@ namespace App\Validation;
 
 class Validate
 {
+    public static function user(): array
+    {
+        return [
+            'username'  => 'required',
+            'email'     => 'required|email',
+            'password'  => 'required',
+            'photo'     => 'images|mimes:jpg,png,jpeg,gif'
+        ];
+    }
+
     public static function account(): array
     {
         return [

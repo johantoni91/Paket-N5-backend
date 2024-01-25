@@ -19,8 +19,8 @@ return new class extends Migration
             $table->text('browser')->nullable();
             $table->text('browser_version')->nullable();
             $table->text('os')->nullable();
-            $table->text('registration_token')->nullable();
-            $table->text('mobile')->default('0');
+            $table->enum('mobile', ['0', '1'])->default('0');
+            $table->text('aksi')->nullable();
             $table->timestamps();
         });
     }
