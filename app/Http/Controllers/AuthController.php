@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Helpers\Auth;
-use App\Models\Login;
-use App\Models\Token;
 use App\Models\User;
 use App\Validation\Validate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
