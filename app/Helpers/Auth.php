@@ -35,9 +35,9 @@ class Auth
                 'token'             => Token::where('users_id', $check->id)->first()
             ];
 
-            return Endpoint::success(true, 'Berhasil login', $data);
+            return Endpoint::success(200, 'Berhasil login', $data);
         } catch (\Throwable $th) {
-            return Endpoint::success(false, 'Gagal Login', $th->getMessage());
+            return Endpoint::success(400, 'Gagal Login', $th->getMessage());
         }
     }
 }

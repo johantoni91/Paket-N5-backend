@@ -31,9 +31,9 @@ class AuthController extends Controller
 
         try {
             User::insert($data);
-            return Endpoint::success(true, 'Berhasil registrasi', User::latest()->first());
+            return Endpoint::success(200, 'Berhasil registrasi', User::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Gagal registrasi', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal registrasi', $th->getMessage());
         }
     }
 
@@ -61,10 +61,10 @@ class AuthController extends Controller
         // $check = User::where('email', $data_user['email'])->first();
 
         if (!$check) {
-            return Endpoint::failed(false, "User tidak ditemukan, silahkan registrasi terlebih dahulu!");
+            return Endpoint::failed(400, "User tidak ditemukan, silahkan registrasi terlebih dahulu!");
         }
         if (!Hash::check($data_user['password'], $check->password)) {
-            return Endpoint::failed(false, 'Gagal login');
+            return Endpoint::failed(400, 'Gagal login');
         }
         return Auth::login($remember, $data_login, $check, $data_user);
     }

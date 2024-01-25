@@ -11,9 +11,9 @@ class SatkerController extends Controller
     {
         try {
             $satker = Satker::all();
-            return Endpoint::success(true, 'mendapatkan data satker', $satker);
+            return Endpoint::success(200, 'mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, "gagal mendapatkan data satker", $th->getMessage());
+            return Endpoint::failed(400, "gagal mendapatkan data satker", $th->getMessage());
         }
     }
 }

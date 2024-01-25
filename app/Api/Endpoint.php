@@ -7,7 +7,7 @@ class Endpoint
     public static function failed($status, $msg, $error = null)
     {
         return response()->json([
-            'status'    => $status,
+            'status'    => false,
             'message'   => $msg,
             'error'     => $error
         ], $status);
@@ -16,7 +16,7 @@ class Endpoint
     public static function success($status, $msg, $data = null)
     {
         return response()->json([
-            'status'    => $status,
+            'status'    => true,
             'message'   => $msg,
             $data
         ], $status);

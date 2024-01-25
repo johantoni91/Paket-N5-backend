@@ -12,9 +12,9 @@ class LogController extends Controller
     {
         try {
             $log = Login::all();
-            return Endpoint::success(true, 'Berhasil mendapatkan data log aktivitas', $log);
+            return Endpoint::success(200, 'Berhasil mendapatkan data log aktivitas', $log);
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Gagal mendapatkan data log aktivitas', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan data log aktivitas', $th->getMessage());
         }
     }
 
@@ -22,9 +22,9 @@ class LogController extends Controller
     {
         try {
             Login::find($id)->delete();
-            return Endpoint::success(true, "Data log dengan " . $id);
+            return Endpoint::success(200, "Data log dengan " . $id);
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, "Gagal menghapus data log", $th->getMessage());
+            return Endpoint::failed(400, "Gagal menghapus data log", $th->getMessage());
         }
     }
 }

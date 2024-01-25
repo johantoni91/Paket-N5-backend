@@ -13,9 +13,9 @@ class PegawaiController extends Controller
     {
         try {
             $pegawai = Pegawai::all();
-            return Endpoint::success(true, 'Berhasil mendapatkan data pegawai', $pegawai);
+            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $pegawai);
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Gagal mendapatkan data pegawai', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai', $th->getMessage());
         }
     }
 
@@ -34,9 +34,9 @@ class PegawaiController extends Controller
             $this->validate($req, Validate::pegawai());
             Pegawai::insert($data);
 
-            return Endpoint::success(true, 'Berhasil menambahkan data pegawai', Pegawai::latest()->first());
+            return Endpoint::success(200, 'Berhasil menambahkan data pegawai', Pegawai::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Gagal menambahkan data pegawai', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal menambahkan data pegawai', $th->getMessage());
         }
     }
 
@@ -44,9 +44,9 @@ class PegawaiController extends Controller
     {
         try {
             Pegawai::find($id);
-            return Endpoint::success(true, 'Berhasil mendapatkan data pegawai', Pegawai::latest()->first());
+            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', Pegawai::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Gagal mendapatkan data pegawai', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai', $th->getMessage());
         }
     }
 
@@ -54,9 +54,9 @@ class PegawaiController extends Controller
     {
         try {
             Pegawai::find($id)->delete();
-            return Endpoint::success(true, 'Berhasil menghapus data pegawai');
+            return Endpoint::success(200, 'Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'data pegawai tidak ditemukan', $th->getMessage());
+            return Endpoint::failed(400, 'data pegawai tidak ditemukan', $th->getMessage());
         }
     }
 }

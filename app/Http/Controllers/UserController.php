@@ -15,9 +15,9 @@ class UserController extends Controller
     {
         try {
             $user = User::orderBy('name', 'desc')->get();
-            return Endpoint::success(true, 'Berhasil mendapatkan semua users!', $user);
+            return Endpoint::success(200, 'Berhasil mendapatkan semua users!', $user);
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Data users kosong!', $th->getMessage());
+            return Endpoint::failed(400, 'Data users kosong!', $th->getMessage());
         }
     }
 
@@ -40,9 +40,9 @@ class UserController extends Controller
             }
 
             User::insert($data);
-            return Endpoint::success(true, 'Berhasil membuat user!', User::latest()->first());
+            return Endpoint::success(200, 'Berhasil membuat user!', User::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Gagal membuat user!', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal membuat user!', $th->getMessage());
         }
     }
 
@@ -51,9 +51,9 @@ class UserController extends Controller
     {
         try {
             $data = User::where('id', $id)->first();
-            return Endpoint::success(true, 'Berhasil menemukan user!', $data);
+            return Endpoint::success(200, 'Berhasil menemukan user!', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, $th->getMessage());
+            return Endpoint::failed(400, $th->getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ class UserController extends Controller
             $get_user->update($data);
             return Endpoint::success('Berhasil mengubah user!', User::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, $th->getMessage());
+            return Endpoint::failed(400, $th->getMessage());
         }
     }
 
@@ -89,9 +89,9 @@ class UserController extends Controller
         try {
             $user = User::find($id);
             $user->delete();
-            return Endpoint::success(true, 'Berhasil menghapus user!');
+            return Endpoint::success(200, 'Berhasil menghapus user!');
         } catch (\Throwable $th) {
-            return Endpoint::failed(false, 'Gagal menghapus user!', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal menghapus user!', $th->getMessage());
         }
     }
 }
