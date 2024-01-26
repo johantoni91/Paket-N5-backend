@@ -6,7 +6,7 @@ use App\Api\Endpoint;
 use App\Models\User;
 use App\Validation\Validate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
@@ -65,6 +65,7 @@ class UserController extends Controller
     {
         try {
             $user = User::find($id);
+            File::delete('images/' . $user->photo);
             $user->delete();
             return Endpoint::success(200, 'Berhasil menghapus user!');
         } catch (\Throwable $th) {

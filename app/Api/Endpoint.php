@@ -15,10 +15,16 @@ class Endpoint
 
     public static function success($status, $msg, $data = null)
     {
+        if ($data) {
+            return response()->json([
+                'status'    => true,
+                'message'   => $msg,
+                $data
+            ], $status);
+        }
         return response()->json([
             'status'    => true,
-            'message'   => $msg,
-            $data
+            'message'   => $msg
         ], $status);
     }
 }
