@@ -15,12 +15,13 @@ class AuthController extends Controller
     {
         $file = null;
         if ($req->hasFile('photo')) {
-            $file = mt_rand() . $req->file('photo')->getClientOriginalExtension();
+            $file = mt_rand() . '.' . $req->file('photo')->getClientOriginalExtension();
             $req->file('photo')->move('images', $file);
         }
 
         $data = [
             'id'        => mt_rand(),
+            'name'      => $req->name,
             'username'  => $req->username,
             'email'     => $req->email,
             'password'  => Hash::make($req->password),
@@ -55,7 +56,7 @@ class AuthController extends Controller
             'os'               => $req->os,
             'mobile'           => $req->mobile ?? 1
         ];
-        $this->validate($req, Validate::account());
+        $this->validate($req, Validate::login());
 
         $check = User::where('username', $data_user['username'])->first();
         // $check = User::where('email', $data_user['email'])->first();

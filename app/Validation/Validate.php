@@ -19,6 +19,15 @@ class Validate
     {
         return [
             'username'  => 'required',
+            'name'      => 'required',
+            'password'  => 'required'
+        ];
+    }
+
+    public static function login(): array
+    {
+        return [
+            'username'  => 'required',
             'password'  => 'required'
         ];
     }
