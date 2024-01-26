@@ -15,37 +15,14 @@ class UserController extends Controller
     {
         try {
             $user = User::orderBy('name', 'desc')->get();
-            return Endpoint::success(200, 'Berhasil mendapatkan semua users!', $user);
-        } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Data users kosong!', $th->getMessage());
-        }
-    }
-
-
-    public function store(Request $req)
-    {
-        try {
-            $data = [
-                'username'  => $req->username,
-                'email'     => $req->email,
-                'phone'     => $req->phone,
-                'photo'     => $req->file('photo')->getClientOriginalName(),
-                'password'  => Hash::make($req->password)
-            ];
-            $this->validate($req, Validate::account());
-
-            //Jika ada gambar yang diupload
-            if ($req->hasFile('photo')) {
-                $req->file('photo')->move('images', $data['photo']);
+            if ($user) {
+                return Endpoint::success(200, 'Berhasil mendapatkan semua users!', $user);
             }
-
-            User::insert($data);
-            return Endpoint::success(200, 'Berhasil membuat user!', User::latest()->first());
+            return Endpoint::success(200, 'Data user kosong!');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal membuat user!', $th->getMessage());
+            return Endpoint::failed(400, 'Ada error', $th->getMessage());
         }
     }
-
 
     public function find($id)
     {

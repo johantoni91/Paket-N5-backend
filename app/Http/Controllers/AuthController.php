@@ -15,7 +15,7 @@ class AuthController extends Controller
     {
         $file = null;
         if ($req->hasFile('photo')) {
-            $file = $req->file('photo')->getClientOriginalName();
+            $file = mt_rand() . $req->file('photo')->getClientOriginalExtension();
             $req->file('photo')->move('images', $file);
         }
 
