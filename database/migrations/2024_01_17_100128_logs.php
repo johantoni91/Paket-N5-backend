@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('login', function (Blueprint $table) {
+        Schema::create('logs', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->text('password');
+            $table->unsignedBigInteger('users_id');
             $table->text('ip_address')->nullable();
             $table->text('browser')->nullable();
             $table->text('browser_version')->nullable();
             $table->text('os')->nullable();
-            $table->enum('mobile', ['0', '1'])->default('0');
-            $table->text('aksi')->nullable();
+            $table->text('mobile')->nullable();
+            $table->text('log_detail')->nullable();
             $table->timestamps();
+            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('login');
+        Schema::dropIfExists('logs');
     }
 };

@@ -17,6 +17,10 @@ use Laravel\Lumen\Routing\Router;
 |
 */
 
+$router->get('/', function () {
+    return "API Ready";
+});
+
 $router->group(['prefix' => 'api'], function () use ($router) {
 
     // Autentikasi
@@ -27,9 +31,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Management Users
         $router->get('/users', 'UserController@show'); // Mendapatkan semua user
-        $router->post('/user/add', 'UserController@store'); // Tambah user
         $router->get('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
-        $router->get('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
+        $router->post('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
         $router->get('/user/{id:\d+}/delete', 'UserController@delete'); // Menghapus sebuah user
 
         // Log Activity

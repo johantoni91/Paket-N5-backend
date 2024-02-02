@@ -6,6 +6,8 @@ use App\Models\Token;
 use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Support\Facades\Request;
+use Jenssegers\Agent\Agent;
 
 class Authenticate
 {
@@ -42,7 +44,15 @@ class Authenticate
         if ($user) {
             return $next($request);
         }
-
-        return response('Unauthorized.', 401);
+        $agent = new Agent();
+        return response()->json([
+            'status'    => 401,
+            'message'   => 'Unauthorized',
+            'trespasser'      => [
+                'ip_address' => Request::ip(),
+                'device'     => $agent->device(),
+                'os'         => $agent->platform(),
+            ]
+        ], 401);
     }
 }

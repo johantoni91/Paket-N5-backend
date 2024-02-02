@@ -19,7 +19,7 @@ class Endpoint
             return response()->json([
                 'status'    => true,
                 'message'   => $msg,
-                $data
+                'data'      => $data
             ], $status);
         }
         return response()->json([
