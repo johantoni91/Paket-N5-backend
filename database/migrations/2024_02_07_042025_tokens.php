@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('tokens', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('users_id');
+            $table->unsignedBigInteger('users_id')->nullable();
+            $table->unsignedBigInteger('logs_id')->nullable();
             $table->text('token');
             $table->timestamps();
-            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('logs_id')->references('id')->on('logs')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

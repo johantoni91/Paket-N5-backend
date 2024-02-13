@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Helpers\Auth;
+use App\Models\Kewenangan;
 use App\Models\Log;
+use App\Models\Satker;
 use App\Models\User;
 use App\Validation\Validate;
 use Carbon\Carbon;
@@ -24,28 +26,28 @@ class AuthController extends Controller
 
         $data = [
             'id'            => mt_rand(),
-            'name'          => $req->name,
             'username'      => $req->username,
+            'name'          => $req->name,
+            'nip'           => $req->nip,
+            'nrp'           => $req->nrp,
             'email'         => $req->email,
             'password'      => Hash::make($req->password),
             'phone'         => $req->phone,
             'photo'         => $file,
             'created_at'    => Carbon::now()
         ];
-        $this->validate($req, Validate::account());
+        $this->validate($req, Validate::account($data));
 
         try {
             User::insert($data);
-            // Log::insert([
-            // 'id'                => mt_rand(),
-            // 'users_id'          => null,
-            // 'ip_address'        => $req->ip_address,
-            // 'browser'           => $req->browser,
-            // 'browser_version'   => $req->browser_version,
-            // 'os'                => $req->os,
-            // 'mobile'            => $req->mobile,
-            // 'log_detail'        => 'Login'
-            // ]);
+            Satker::insert(['id' => mt_rand(), 'satker_name' => $req->satker]);
+            Kewenangan::insert([
+                'id'            => mt_rand(),
+                'users_id'      => $data['id'],
+                'satker_id'     => Satker::where('satker_name', $req->satker)->first()->id,
+                'roles'         => $req->roles,
+                'status'        => $req->status ?? 1
+            ]);
             return Endpoint::success(200, 'Berhasil registrasi', User::latest()->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal registrasi', $th->getMessage());
@@ -75,6 +77,7 @@ class AuthController extends Controller
         $data_login = [
             'id'                => mt_rand(),
             'users_id'          => $check->id,
+            'username'          => $data_user['username'],
             'ip_address'        => $req->ip_address,
             'browser'           => $req->browser,
             'browser_version'   => $req->browser_version,

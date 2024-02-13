@@ -31,8 +31,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Management Users
         $router->get('/users', 'UserController@show'); // Mendapatkan semua user
-        $router->get('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
+        $router->post('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
         $router->post('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
+        $router->get('/user/{id:\d+}/status/{stat:\d+}', 'UserController@status'); // Mengubah status user
         $router->get('/user/{id:\d+}/delete', 'UserController@delete'); // Menghapus sebuah user
 
         // Log Activity

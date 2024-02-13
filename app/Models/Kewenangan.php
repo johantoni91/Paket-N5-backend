@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Token extends Model
+class Kewenangan extends Model
 {
-    protected $table = 'tokens';
+    protected $table = 'kewenangan';
     protected $guarded = ['id'];
 
     public function users()
@@ -14,8 +14,8 @@ class Token extends Model
         return $this->belongsTo(User::class, 'users_id');
     }
 
-    public function logs()
+    public function satker()
     {
-        return $this->belongsTo(Log::class, 'users_id');
+        return $this->belongsTo(Satker::class, 'users_id');
     }
 }

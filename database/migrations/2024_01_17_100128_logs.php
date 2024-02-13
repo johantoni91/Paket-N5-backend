@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('users_id');
+            $table->text('username');
             $table->text('ip_address')->nullable();
             $table->text('browser')->nullable();
             $table->text('browser_version')->nullable();
@@ -21,7 +22,6 @@ return new class extends Migration
             $table->text('mobile')->nullable();
             $table->text('log_detail')->nullable();
             $table->timestamps();
-            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

@@ -15,7 +15,7 @@ class Validate
         ];
     }
 
-    public static function account(): array
+    public static function account($data): array
     {
         return [
             'username'  => 'required',

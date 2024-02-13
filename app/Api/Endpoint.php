@@ -27,4 +27,13 @@ class Endpoint
             'message'   => $msg
         ], $status);
     }
+
+    public static function warning($status, $msg, $data = null)
+    {
+        return response()->json([
+            'status'    => false,
+            'message'   => $msg,
+            'data'      => $data
+        ], $status);
+    }
 }
