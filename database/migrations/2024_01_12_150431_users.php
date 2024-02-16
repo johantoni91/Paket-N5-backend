@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->text('name');
-            $table->text('nip')->unique()->nullable();
-            $table->text('nrp')->unique()->nullable();
+            $table->string('nip')->unique()->nullable();
+            $table->string('nrp')->unique()->nullable();
             $table->string('email')->unique();
             $table->text('phone')->nullable();
             $table->text('photo')->nullable();

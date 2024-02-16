@@ -86,8 +86,8 @@ class UserController extends Controller
 
             //Jika ada gambar yang diupload
             if ($req->hasFile('photo')) {
+                File::delete('images/' . $data_user->photo);
                 $req->file('photo')->move('images', $user['photo']);
-                File::delete('images/' . $get_user->users->photo);
             }
             $data_user->update($user);
             if ($req->roles) {
