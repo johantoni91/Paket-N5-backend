@@ -30,6 +30,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
         // Management Users
+        $router->get('user/search', 'UserController@search');
         $router->get('/users', 'UserController@show'); // Mendapatkan semua user
         $router->post('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
         $router->post('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
@@ -38,6 +39,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Log Activity
         $router->get('/log', 'LogController@getLog'); // Mendapatkan semua log aktivitas
+        $router->get('/log/search', 'LogController@search');
         $router->get('/log/{id:/d+}/delete', 'LogController@destroy'); // Hapus log aktivitas
+
+        // Satuan Kerja
+        $router->get('/satker', 'SatkerController@index');
     });
 });

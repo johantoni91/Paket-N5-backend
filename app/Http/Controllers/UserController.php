@@ -31,7 +31,7 @@ class UserController extends Controller
     public function find(Request $req, $id)
     {
         try {
-            $data = Kewenangan::with(['users', 'satker'])->where('users_id', $id)->orWhere('satker_id', $id)->first();
+            $data = Kewenangan::with(['users', 'satker'])->where('id', $id)->orWhere('users_id', $id)->orWhere('satker_id', $id)->first();
             Log::insert([
                 'id'                => mt_rand(),
                 'users_id'          => $id,
@@ -143,6 +143,20 @@ class UserController extends Controller
             return Endpoint::success(200, 'Berhasil menghapus user!');
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal menghapus user!', $th->getMessage());
+        }
+    }
+
+    public function search(Request $req)
+    {
+        try {
+            $data = User::select('id')->where($req->category, 'LIKE', '%' . $req->search . '%');
+            $users = Kewenangan::with('users')->orderBy('created_at', 'desc')->whereIn('users_id', $data)->get();
+            if (!$users) {
+                return Endpoint::success(200, 'Users tidak ada');
+            }
+            return Endpoint::success(200, 'Berhasil mendapatkan users berdasarkan kolom ' . $req->category . '. Pencarian ' . $req->value, $users);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal mendapatkan users!', $th->getMessage());
         }
     }
 }
