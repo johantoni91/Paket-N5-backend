@@ -44,5 +44,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Satuan Kerja
         $router->get('/satker', 'SatkerController@index');
+        $router->post('/satker/store', 'SatkerController@store');
+
+        // Pegawai
+        $router->get('/pegawai', 'PegawaiController@index');
     });
 });

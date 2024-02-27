@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class PegawaiController extends Controller
 {
-    public function getAllPegawai()
+    public function index()
     {
         try {
             $pegawai = Pegawai::all();

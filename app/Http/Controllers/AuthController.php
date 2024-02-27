@@ -40,11 +40,9 @@ class AuthController extends Controller
 
         try {
             User::insert($data);
-            Satker::insert(['id' => mt_rand(), 'satker_name' => $req->satker]);
             Kewenangan::insert([
                 'id'            => mt_rand(),
                 'users_id'      => $data['id'],
-                'satker_id'     => Satker::where('satker_name', $req->satker)->first()->id,
                 'roles'         => $req->roles,
                 'status'        => $req->status ?? 1
             ]);

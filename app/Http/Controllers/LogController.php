@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Models\Log;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LogController extends Controller
@@ -21,11 +22,16 @@ class LogController extends Controller
     public function search(Request $req)
     {
         try {
+            // $data = '';
+            // if ($req->category && $req->search && $req->date) {
             $data = Log::orderBy('created_at', 'desc')->where($req->category, 'LIKE', '%' . $req->search . '%')->get();
+            // } else {
+            //     $data = Log::orderBy('created_at', 'desc')->whereDate('created_at', '<=', $req->date)->get();
+            // }
             if (!$data) {
                 return Endpoint::success(200, 'Tidak ada log aktivitas');
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan data log berdasarkan kolom ' . $req->category . '. Pencarian ' . $req->value, $data);
+            return Endpoint::success(200, 'Berhasil', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan log aktivitas!', $th->getMessage());
         }

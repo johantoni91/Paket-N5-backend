@@ -18,7 +18,7 @@ class UserController extends Controller
     public function show()
     {
         try {
-            $user = Kewenangan::with(['users', 'satker'])->orderBy('created_at', 'asc')->get();
+            $user = Kewenangan::with(['users'])->orderBy('created_at', 'asc')->get();
             if (!$user) {
                 return Endpoint::success(200, 'Data user kosong!');
             }
@@ -31,7 +31,7 @@ class UserController extends Controller
     public function find(Request $req, $id)
     {
         try {
-            $data = Kewenangan::with(['users', 'satker'])->where('id', $id)->orWhere('users_id', $id)->orWhere('satker_id', $id)->first();
+            $data = Kewenangan::with(['users'])->where('id', $id)->orWhere('users_id', $id)->first();
             Log::insert([
                 'id'                => mt_rand(),
                 'users_id'          => $id,
@@ -41,7 +41,7 @@ class UserController extends Controller
                 'browser_version'   => $req->browser_version,
                 'os'                => $req->os,
                 'mobile'            => $req->mobile,
-                'log_detail'        => $this->user . ' Lihat data users ' . $req->id,
+                'log_detail'        => $this->user . ' Lihat data users ' . $req->username,
                 'created_at'        => Carbon::now()
             ]);
             return Endpoint::success(200, 'Berhasil menemukan user!', $data);
@@ -53,7 +53,7 @@ class UserController extends Controller
     public function update(Request $req, $id)
     {
         try {
-            $get_user = Kewenangan::with(['users', 'satker'])->where('users_id', $id)->first();
+            $get_user = Kewenangan::with(['users'])->where('users_id', $id)->first();
             $data_user = User::where('id', $id)->first();
             Log::insert([
                 'id'                => mt_rand(),
@@ -64,7 +64,7 @@ class UserController extends Controller
                 'browser_version'   => $req->browser_version,
                 'os'                => $req->os,
                 'mobile'            => $req->mobile,
-                'log_detail'        => $this->user . ' Ubah data user ' . $id,
+                'log_detail'        => $this->user . ' Ubah data user ' . $req->username,
                 'created_at'        => Carbon::now()
             ]);
             $user = [
@@ -95,7 +95,7 @@ class UserController extends Controller
             }
 
             $data = [
-                'user'              => Kewenangan::with(['users', 'satker'])->where('users_id', $id)->first(),
+                'user'              => Kewenangan::with(['users'])->where('users_id', $id)->first(),
                 'token'             => Token::where('users_id', $id)->first()
             ];
             return Endpoint::success(200, 'Berhasil mengubah user!', $data);
@@ -133,7 +133,7 @@ class UserController extends Controller
                 'browser_version'   => $req->browser_version,
                 'os'                => $req->os,
                 'mobile'            => $req->mobile,
-                'log_detail'        => $this->user . ' Hapus data user ' . $req->id,
+                'log_detail'        => $this->user . ' Hapus data user ' . $req->username,
                 'created_at'        => Carbon::now()
             ]);
             File::delete('images/' . $user->photo);
@@ -154,7 +154,7 @@ class UserController extends Controller
             if (!$users) {
                 return Endpoint::success(200, 'Users tidak ada');
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan users berdasarkan kolom ' . $req->category . '. Pencarian ' . $req->value, $users);
+            return Endpoint::success(200, 'Berhasil', $users);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan users!', $th->getMessage());
         }
