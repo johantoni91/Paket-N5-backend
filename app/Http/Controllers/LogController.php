@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Models\Log;
+use App\Models\Satker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -22,12 +23,8 @@ class LogController extends Controller
     public function search(Request $req)
     {
         try {
-            // $data = '';
-            // if ($req->category && $req->search && $req->date) {
             $data = Log::orderBy('created_at', 'desc')->where($req->category, 'LIKE', '%' . $req->search . '%')->get();
-            // } else {
-            //     $data = Log::orderBy('created_at', 'desc')->whereDate('created_at', '<=', $req->date)->get();
-            // }
+
             if (!$data) {
                 return Endpoint::success(200, 'Tidak ada log aktivitas');
             }

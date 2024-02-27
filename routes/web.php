@@ -30,7 +30,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
         // Management Users
-        $router->get('user/search', 'UserController@search');
+        $router->get('/user/search', 'UserController@search'); // Mencari user berdasarkan ketikan search
         $router->get('/users', 'UserController@show'); // Mendapatkan semua user
         $router->post('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
         $router->post('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
@@ -44,7 +44,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Satuan Kerja
         $router->get('/satker', 'SatkerController@index');
-        $router->post('/satker/store', 'SatkerController@store');
+        $router->get('/satker/search', 'SatkerController@search'); // Mencari user berdasarkan ketikan search
+        $router->post('/satker/store', 'SatkerController@store'); // Menambah satker
+        $router->post('/satker/{id:\d+}', 'SatkerController@find'); // Mencari satker berdasarkan id
+        $router->post('/satker/{id:\d+}/update', 'SatkerController@update'); // Mengubah sebuah satker
+        $router->get('/satker/{id:\d+}/delete', 'SatkerController@delete'); // Menghapus sebuah satker
+        $router->get('/satker/{id:\d+}/status/{stat:\d+}', 'SatkerController@status'); // Mengubah status satker
 
         // Pegawai
         $router->get('/pegawai', 'PegawaiController@index');
