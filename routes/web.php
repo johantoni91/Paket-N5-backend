@@ -53,5 +53,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Pegawai
         $router->get('/pegawai', 'PegawaiController@index');
+        $router->post('/pegawai/search', 'PegawaiController@search');
     });
 });

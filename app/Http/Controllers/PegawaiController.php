@@ -6,16 +6,40 @@ use App\Api\Endpoint;
 use App\Models\Pegawai;
 use App\Validation\Validate;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class PegawaiController extends Controller
 {
     public function index()
     {
         try {
-            $pegawai = Pegawai::all();
-            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $pegawai);
+            $data = Pegawai::orderBy('nama')->paginate(10);
+            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan data pegawai', $th->getMessage());
+        }
+    }
+
+    public function search(Request $req)
+    {
+        try {
+            $data = Pegawai::orderBy('nama')
+                ->where('nama', 'LIKE', '%' . $req->nama . '%')
+                ->where('jabatan', 'LIKE', '%' . $req->jabatan . '%')
+                ->where('nip', 'LIKE', '%' . $req->nip . '%')
+                ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
+                ->where('jenis_kelamin', 'LIKE', '%' . $req->jenis_kelamin . '%')
+                ->where('nama_satker', 'LIKE', '%' . $req->nama_satker . '%')
+                ->where('agama', 'LIKE', '%' . $req->agama . '%')
+                ->where('status_pegawai', 'LIKE', '%' . $req->status_pegawai . '%')
+                ->paginate(50);
+
+            if (!$data) {
+                return Endpoint::warning(200, 'Pegawai tidak ada');
+            }
+            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, $th->getMessage());
         }
     }
 

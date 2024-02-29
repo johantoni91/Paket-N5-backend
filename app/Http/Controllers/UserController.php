@@ -18,7 +18,7 @@ class UserController extends Controller
     public function show()
     {
         try {
-            $user = Kewenangan::with(['users'])->orderBy('created_at', 'asc')->get();
+            $user = Kewenangan::with(['users'])->orderBy('created_at', 'asc')->paginate(10);
             if (!$user) {
                 return Endpoint::success(200, 'Data user kosong!');
             }

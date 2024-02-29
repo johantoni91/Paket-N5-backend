@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('satker', function (Blueprint $table) {
             $table->id();
-            $table->enum('satker_type', [0, 1, 2, 3])->default(3);
+            $table->enum('satker_type', [0, 1, 2, 3, 4])->default(4);
             $table->text('satker_code');
             $table->text('satker_name');
             $table->text('satker_phone')->nullable();
