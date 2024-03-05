@@ -14,17 +14,32 @@ class SatkerController extends Controller
     function index()
     {
         try {
-            $satker = Satker::all();
+            $satker = Satker::orderBy('satker_type', 'desc')->paginate(5);
             return Endpoint::success(200, 'mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, "gagal mendapatkan data satker", $th->getMessage());
         }
     }
 
+    function getSatker()
+    {
+        try {
+            return Endpoint::success(200, 'Berhasil mendapatkan satker', Satker::orderBy('satker_name', 'desc')->select('satker_name')->distinct()->get());
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal mendapatkan satker', $th->getMessage());
+        }
+    }
+
     public function search(Request $req)
     {
         try {
-            $data = Satker::where($req->category, 'LIKE', '%' . $req->search . '%')->get();
+            $data = Satker::orderBy('satker_type', 'desc')
+                ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                ->where('satker_type', 'LIKE', '%' . $req->satker_type . '%')
+                ->where('satker_phone', 'LIKE', '%' . $req->satker_phone . '%')
+                ->where('satker_email', 'LIKE', '%' . $req->satker_email . '%')
+                ->where('satker_address', 'LIKE', '%' . $req->satker_address . '%')
+                ->paginate(5);
             if (!$data) {
                 return Endpoint::success(200, 'Satker tidak ada');
             }

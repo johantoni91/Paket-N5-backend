@@ -39,11 +39,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Log Activity
         $router->get('/log', 'LogController@getLog'); // Mendapatkan semua log aktivitas
+        $router->get('/log/column', 'LogController@getColumn'); // Mendapatkan kolom pada table Log
         $router->get('/log/search', 'LogController@search');
-        $router->get('/log/{id:/d+}/delete', 'LogController@destroy'); // Hapus log aktivitas
+        $router->get('/log/{id:\d+}/delete', 'LogController@destroy'); // Hapus log aktivitas
 
         // Satuan Kerja
         $router->get('/satker', 'SatkerController@index');
+        $router->get('/satker_name', 'SatkerController@getSatker'); // Mendapatkan nama satker untuk dropdown
         $router->get('/satker/search', 'SatkerController@search'); // Mencari user berdasarkan ketikan search
         $router->post('/satker/store', 'SatkerController@store'); // Menambah satker
         $router->post('/satker/{id:\d+}', 'SatkerController@find'); // Mencari satker berdasarkan id
@@ -53,6 +55,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Pegawai
         $router->get('/pegawai', 'PegawaiController@index');
-        $router->post('/pegawai/search', 'PegawaiController@search');
+        $router->get('/pegawai/search', 'PegawaiController@search');
+        $router->post('/pegawai/store', 'PegawaiController@store');
+        $router->get('/pegawai/{nip:\d+}/destroy', 'PegawaiController@destroy');
+
+        // FAQ
+        $router->get('/faq', 'FaqController@index');
+        $router->post('/faq/store', 'FaqController@store');
     });
 });
