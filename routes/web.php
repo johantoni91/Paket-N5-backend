@@ -57,7 +57,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pegawai', 'PegawaiController@index');
         $router->get('/pegawai/search', 'PegawaiController@search');
         $router->post('/pegawai/store', 'PegawaiController@store');
-        $router->get('/pegawai/{nip:\d+}/destroy', 'PegawaiController@destroy');
+        $router->get('/pegawai/{nip:\d+}/destroy`', 'PegawaiController@destroy');
 
         // FAQ
         $router->get('/faq', 'FaqController@index');
