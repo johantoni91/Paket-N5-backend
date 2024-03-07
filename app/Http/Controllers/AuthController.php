@@ -56,15 +56,12 @@ class AuthController extends Controller
     {
         $data_user  = [
             'username'   => $req->username,
-            // 'email'   => $req->email,
-            'password'   => $req->password,
-            // 'created_at' => Carbon::now()
+            'password'   => $req->password
         ];
         $remember = $req->remember_me;
         $this->validate($req, Validate::login());
 
         $check = User::where('username', $data_user['username'])->first();
-        // $check = User::where('email', $data_user['email'])->first();
 
         if (!$check) {
             return Endpoint::failed(400, "User tidak ditemukan, silahkan registrasi terlebih dahulu!");

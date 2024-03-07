@@ -30,8 +30,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
         // Management Users
-        $router->get('/user/search', 'UserController@search'); // Mencari user berdasarkan ketikan search
         $router->get('/users', 'UserController@show'); // Mendapatkan semua user
+        $router->get('/user/search', 'UserController@search'); // Mencari user berdasarkan ketikan search
         $router->post('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
         $router->post('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
         $router->get('/user/{id:\d+}/status/{stat:\d+}', 'UserController@status'); // Mengubah status user
@@ -57,10 +57,19 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pegawai', 'PegawaiController@index');
         $router->get('/pegawai/search', 'PegawaiController@search');
         $router->post('/pegawai/store', 'PegawaiController@store');
-        $router->get('/pegawai/{nip:\d+}/destroy`', 'PegawaiController@destroy');
+        $router->get('/pegawai/{nip:\d+}/destroy', 'PegawaiController@destroy');
+
+        // Roles
+        $router->get('/roles', 'RoleController@index');
+        $router->get('/roles/{id:\d+}', 'RoleController@find');
+        $router->post('/roles/store', 'RoleController@store');
+        $router->post('/roles/{id:\d+}/update', 'RoleController@update');
+        $router->get('/roles/{id:\d+}/destroy', 'RoleController@destroy');
 
         // FAQ
         $router->get('/faq', 'FaqController@index');
         $router->post('/faq/store', 'FaqController@store');
+        $router->post('/faq/{id:\d+}/update', 'FaqController@update');
+        $router->get('/faq/{id:\d+}/destroy', 'FaqController@destroy');
     });
 });

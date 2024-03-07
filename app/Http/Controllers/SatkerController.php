@@ -14,7 +14,7 @@ class SatkerController extends Controller
     function index()
     {
         try {
-            $satker = Satker::orderBy('satker_type', 'desc')->paginate(5);
+            $satker = Satker::orderBy('satker_type', 'desc')->paginate(10);
             return Endpoint::success(200, 'mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, "gagal mendapatkan data satker", $th->getMessage());
@@ -30,7 +30,7 @@ class SatkerController extends Controller
         }
     }
 
-    public function search(Request $req)
+    function search(Request $req)
     {
         try {
             $data = Satker::orderBy('satker_type', 'desc')
@@ -39,7 +39,13 @@ class SatkerController extends Controller
                 ->where('satker_phone', 'LIKE', '%' . $req->satker_phone . '%')
                 ->where('satker_email', 'LIKE', '%' . $req->satker_email . '%')
                 ->where('satker_address', 'LIKE', '%' . $req->satker_address . '%')
-                ->paginate(5);
+                ->paginate(10)->appends([
+                    'satker_name'    => $req->satker_name,
+                    'satker_type'    => $req->satker_type,
+                    'satker_phone'   => $req->satker_phone,
+                    'satker_email'   => $req->satker_email,
+                    'satker_address' => $req->satker_address
+                ]);
             if (!$data) {
                 return Endpoint::success(200, 'Satker tidak ada');
             }
@@ -49,7 +55,7 @@ class SatkerController extends Controller
         }
     }
 
-    public function find(Request $req, $id)
+    function find(Request $req, $id)
     {
         try {
             $data = Satker::where('id', $id)->first();
@@ -71,7 +77,7 @@ class SatkerController extends Controller
         }
     }
 
-    public function status($id, $stat)
+    function status($id, $stat)
     {
         try {
             $status = Satker::where('id', $id)->first();
@@ -166,7 +172,7 @@ class SatkerController extends Controller
         }
     }
 
-    public function delete(Request $req, $id)
+    function delete(Request $req, $id)
     {
         try {
             $satker = Satker::where('id', $id)->first();

@@ -34,4 +34,28 @@ class FaqController extends Controller
             return Endpoint::failed(400, 'Gagal menambahkan FAQ', $th->getMessage());
         }
     }
+
+    function update(Request $req, $id)
+    {
+        try {
+            $input = [
+                'question' => $req->question,
+                'answer'   => $req->answer
+            ];
+            Faq::where('id', $id)->update($input);
+            return Endpoint::success(200, 'Berhasil mengubah FAQ');
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal mengubah FAQ', $th->getMessage());
+        }
+    }
+
+    function destroy($id)
+    {
+        try {
+            Faq::where('id', $id)->delete();
+            return Endpoint::success(200, 'Berhasil menghapus FAQ');
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal menghapus FAQ', $th->getMessage());
+        }
+    }
 }

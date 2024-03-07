@@ -146,17 +146,35 @@ class UserController extends Controller
         }
     }
 
-    public function search(Request $req)
+    function search(Request $req)
     {
         try {
-            $data = User::select('id')->where($req->category, 'LIKE', '%' . $req->search . '%');
-            $users = Kewenangan::with('users')->orderBy('created_at', 'desc')->whereIn('users_id', $data)->get();
-            if (!$users) {
-                return Endpoint::success(200, 'Users tidak ada');
+            $data = Kewenangan::with('users')->where('roles', 'LIKE', '%' . $req->role . '%')
+                ->where('status', 'LIKE', '%' . $req->status . '%')
+                ->whereHas('users', function ($query) use ($req) {
+                    $query->where('nip', 'LIKE', '%' . $req->nip . '%')
+                        ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
+                        ->where('username', 'LIKE', '%' . $req->username . '%')
+                        ->where('name', 'LIKE', '%' . $req->name . '%')
+                        ->where('email', 'LIKE', '%' . $req->email . '%')
+                        ->where('phone', 'LIKE', '%' . $req->phone . '%');
+                })
+                ->paginate(10)->appends([
+                    'nip'      => $req->nip,
+                    'nrp'      => $req->nrp,
+                    'username' => $req->username,
+                    'name'     => $req->name,
+                    'email'    => $req->email,
+                    'phone'    => $req->phone,
+                    'roles'    => $req->roles,
+                    'status'   => $req->status
+                ]);
+            if (!$data) {
+                return Endpoint::success(200, 'Pengguna tidak ada');
             }
-            return Endpoint::success(200, 'Berhasil', $users);
+            return Endpoint::success(200, 'Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan users!', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan Pengguna!', $th->getMessage());
         }
     }
 }

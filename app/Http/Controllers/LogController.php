@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use App\Helpers\Log as HelpersLog;
 use App\Models\Log;
 use App\Models\Satker;
 use Carbon\Carbon;
@@ -33,26 +34,19 @@ class LogController extends Controller
     public function search(Request $req)
     {
         try {
-            $data = Log::orderBy('created_at', 'desc')
-                ->where('username', 'LIKE', '%' . $req->username . '%')
-                ->where('ip_address', 'LIKE', '%' . $req->ip_address . '%')
-                ->where('browser', 'LIKE', '%' . $req->browser . '%')
-                ->where('browser_version', 'LIKE', '%' . $req->browser_version . '%')
-                ->where('os', 'LIKE', '%' . $req->os . '%')
-                ->where('mobile', 'LIKE', '%' . $req->mobile . '%')
-                ->where('log_detail', 'LIKE', '%' . $req->log_detail . '%')
-                ->whereBetween('created_at', [$req->start, $req->end])
-                ->paginate(10)->appends([
-                    'users_id' => $req->users_id,
-                    'username'  => $req->username,
-                    'ip_address' => $req->ip_address,
-                    'browser'  => $req->browser,
-                    'browser_version'  => $req->browser_version,
-                    'os'  => $req->os,
-                    'mobile'  => $req->mobile,
-                    'log_detail'  => $req->log_detail
-                ]);
-            // dd($data);
+            $input = [
+                'username'          => $req->username,
+                'ip_address'        => $req->ip_address,
+                'browser'           => $req->browser,
+                'browser_version'   => $req->browser_version,
+                'os'                => $req->os,
+                'mobile'            => $req->mobile,
+                'log_detail'        => $req->log_detail,
+                'start'             => $req->start,
+                'end'               => $req->end,
+                'users_id'          => $req->users_id
+            ];
+            $data = HelpersLog::query($input);
             if (!$data) {
                 return Endpoint::success(200, 'Tidak ada log aktivitas');
             }

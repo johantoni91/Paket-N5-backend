@@ -14,8 +14,8 @@ class Kewenangan extends Model
         return $this->belongsTo(User::class, 'users_id');
     }
 
-    public function satker()
-    {
-        return $this->belongsTo(Satker::class, 'users_id');
-    }
+    // public function satker()
+    // {
+    //     return $this->belongsTo(Satker::class, 'users_id');
+    // }
 }

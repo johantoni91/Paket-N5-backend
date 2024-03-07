@@ -111,7 +111,7 @@ class PegawaiController extends Controller
     public function destroy($nip)
     {
         try {
-            $pegawai = Pegawai::where('nip', $nip)->orWhere('nrp', $nip)->first();
+            $pegawai = Pegawai::find($nip);
             $pegawai->delete();
             return Endpoint::success(200, 'Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
