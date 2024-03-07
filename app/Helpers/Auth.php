@@ -34,7 +34,7 @@ class Auth
                 ]);
             }
 
-            $user = Kewenangan::with(['users', 'satker'])->where('users_id', $check['id'])->first();
+            $user = Kewenangan::with(['users'])->where('users_id', $check['id'])->first();
             if ($user->status == '1') {
                 $data = [
                     'user'              => $user,
