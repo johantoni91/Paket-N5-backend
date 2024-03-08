@@ -61,7 +61,7 @@ class PegawaiController extends Controller
             $fileName = $req->file('photo')->getClientOriginalName();
             $req->file('photo')->move('pegawai', $fileName);
             $data = [
-                'foto_pegawai'   =>  env('APP_URL', '') . '/pegawai/' . $fileName,
+                'foto_pegawai'   =>  env('APP_ENV', '') == 'production' ? env('APP_IMG', '') . '/pegawai/' . $fileName : env('APP_URL', '') . '/pegawai/' . $fileName,
                 'nama'           =>  $req->nama,
                 'jabatan'        =>  $req->jabatan,
                 'nip'            =>  $req->nip,
@@ -99,6 +99,72 @@ class PegawaiController extends Controller
         }
     }
 
+    public function update(Request $req, $nip)
+    {
+        try {
+            $data = [];
+            $pegawai = Pegawai::find($nip);
+            if ($req->hasFile('photo')) {
+                File::exists($pegawai->foto_pegawai) ? File::delete($pegawai->foto_pegawai) : '';
+                $fileName = $req->file('photo')->getClientOriginalName();
+                $req->file('photo')->move('pegawai', $fileName);
+                $data = [
+                    'foto_pegawai'   =>  env('APP_ENV', '') == 'production' ? env('APP_IMG', '') . '/pegawai/' . $fileName : env('APP_URL', '') . '/pegawai/' . $fileName,
+                    'nama'           =>  $req->nama,
+                    'jabatan'        =>  $req->jabatan,
+                    'nip'            =>  $req->nip,
+                    'nrp'            =>  $req->nrp,
+                    'tgl_lahir'      =>  $req->tgl_lahir,
+                    'eselon'         =>  $req->eselon,
+                    'GOL_KD'         =>  $req->GOL_KD,
+                    'golpang'        =>  $req->golpang,
+                    'jaksa_tu'       =>  $req->jaksa_tu,
+                    'struktural_non' =>  $req->struktural_non,
+                    'jenis_kelamin'  =>  $req->jenis_kelamin,
+                    'nama_satker'    =>  $req->nama_satker,
+                    'agama'          =>  $req->agama,
+                    'status_pegawai' =>  $req->status_pegawai,
+                ];
+            } else {
+                $data = [
+                    'nama'           =>  $req->nama,
+                    'jabatan'        =>  $req->jabatan,
+                    'nip'            =>  $req->nip,
+                    'nrp'            =>  $req->nrp,
+                    'tgl_lahir'      =>  $req->tgl_lahir,
+                    'eselon'         =>  $req->eselon,
+                    'GOL_KD'         =>  $req->GOL_KD,
+                    'golpang'        =>  $req->golpang,
+                    'jaksa_tu'       =>  $req->jaksa_tu,
+                    'struktural_non' =>  $req->struktural_non,
+                    'jenis_kelamin'  =>  $req->jenis_kelamin,
+                    'nama_satker'    =>  $req->nama_satker,
+                    'agama'          =>  $req->agama,
+                    'status_pegawai' =>  $req->status_pegawai,
+                ];
+            }
+            $log = [
+                'id'                => mt_rand(),
+                'users_id'          => $req->users_id,
+                'username'          => $req->username,
+                'ip_address'        => $req->ip_address,
+                'browser'           => $req->browser,
+                'browser_version'   => $req->browser_version,
+                'os'                => $req->os,
+                'mobile'            => $req->mobile,
+                'log_detail'        => $this->pegawai . ' Ubah Pegawai.',
+            ];
+            Log::insert($log);
+            $pegawai->update($data);
+            if (!$pegawai) {
+                return Endpoint::warning(400, 'Gagal ubah data pegawai');
+            }
+            return Endpoint::success(200, 'Berhasil ubah data pegawai');
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal ubah data pegawai', $th->getMessage());
+        }
+    }
+
     public function findPegawai($id)
     {
         try {
@@ -112,6 +178,7 @@ class PegawaiController extends Controller
     {
         try {
             $pegawai = Pegawai::find($nip);
+            File::exists($pegawai->foto_pegawai) ? File::delete($pegawai->foto_pegawai) : '';
             $pegawai->delete();
             return Endpoint::success(200, 'Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {

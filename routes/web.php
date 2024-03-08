@@ -57,6 +57,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pegawai', 'PegawaiController@index');
         $router->get('/pegawai/search', 'PegawaiController@search');
         $router->post('/pegawai/store', 'PegawaiController@store');
+        $router->post('/pegawai/{nip:\d+}/update', 'PegawaiController@update');
         $router->get('/pegawai/{nip:\d+}/destroy', 'PegawaiController@destroy');
 
         // Roles
