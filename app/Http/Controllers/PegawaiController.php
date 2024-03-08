@@ -8,6 +8,7 @@ use App\Models\Pegawai;
 use App\Validation\Validate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class PegawaiController extends Controller
@@ -77,6 +78,15 @@ class PegawaiController extends Controller
                 'agama'          =>  $req->agama,
                 'status_pegawai' =>  $req->status_pegawai,
             ];
+
+            $this->validate($req, [
+                'nip'   => 'unique:App\Models\Pegawai,nip',
+                'nrp'   => 'unique:App\Models\Pegawai,nrp'
+            ], [
+                'nip.unique' => 'NIP sudah ada',
+                'nrp.unique' => 'NRP sudah ada',
+            ]);
+
             $log = [
                 'id'                => mt_rand(),
                 'users_id'          => $req->users_id,
@@ -154,6 +164,7 @@ class PegawaiController extends Controller
                 'mobile'            => $req->mobile,
                 'log_detail'        => $this->pegawai . ' Ubah Pegawai.',
             ];
+
             Log::insert($log);
             $pegawai->update($data);
             if (!$pegawai) {
@@ -183,6 +194,13 @@ class PegawaiController extends Controller
             return Endpoint::success(200, 'Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'data pegawai tidak ditemukan', $th->getMessage());
+        }
+    }
+
+    public function import(Request $req)
+    {
+        try {
+        } catch (\Throwable $th) {
         }
     }
 }
