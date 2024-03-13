@@ -11,7 +11,7 @@ class RoleController extends Controller
     function index()
     {
         try {
-            $roles = Menu::all();
+            $roles = Menu::get();
             if (!$roles) {
                 return Endpoint::warning(200, 'Data roles masih kosong');
             }
@@ -21,13 +21,23 @@ class RoleController extends Controller
         }
     }
 
+    function find(Request $req)
+    {
+        return response(Menu::where('role', $req->role)->first(), 200);
+        // try {
+
+        //     return Endpoint::success(200, 'Berhasil mendapatkan role ' . $role, );
+        // } catch (\Throwable $th) {
+        //     return Endpoint::failed(200, 'Gagal mendapatkan role', $th->getMessage());
+        // }
+    }
+
     function store(Request $req)
     {
         try {
             $input = [
                 'id'        => mt_rand(1, 4),
-                'role'      => $req->role,
-                'access'    => $req->access
+                'role'      => $req->role
             ];
             Menu::insert($input);
             return Endpoint::success(200, 'Berhasil menambahkan role');
@@ -39,11 +49,7 @@ class RoleController extends Controller
     function update(Request $req, $id)
     {
         try {
-            $input = [
-                'role'      => $req->role,
-                'access'    => $req->access
-            ];
-            Menu::where('id', $id)->update($input);
+            Menu::where('id', $id)->update(['route'    => $req->route, 'icon'    => $req->icon, 'title'    => $req->title]);
             return Endpoint::success(200, 'Berhasil mengubah data Role');
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mengubah data role', $th->getMessage());
