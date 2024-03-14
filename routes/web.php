@@ -60,6 +60,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pegawai/{nip:\d+}/update', 'PegawaiController@update');
         $router->get('/pegawai/{nip:\d+}/destroy', 'PegawaiController@destroy');
 
+        // Pengajuan
+        $router->get('/pengajuan', 'PengajuanController@index');
+        $router->post('/pengajuan/store', 'PengajuanController@store');
+        $router->get('/pengajuan/search', 'PengajuanController@search');
+        $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');
+        $router->get('/pengajuan/approve/{id:\d+}', 'PengajuanController@approve');
+        $router->get('/pengajuan/{id:\d+}/destroy', 'PengajuanController@destroy');
+
         // Roles
         $router->get('/roles', 'RoleController@index');
         $router->get('/roles/find', 'RoleController@find');
