@@ -6,26 +6,12 @@ use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        User::insert([
-            'username'         => 'yan',
-            'name'             => 'yan',
-            'email'            => 'yan@gmail.com',
-            'phone'            => '089671022623',
-            'password'         => '123',
-            'ip_address'       => '192.168.4.116',
-            'browser'          => 'Google Chrome',
-            'browser_version'  => '113.0.5672.92',
-            'os'               => 'MacOS',
-            'mobile'           => '0',
-            'nip'              => '1810631170189123',
-            'roles'            => 'superadmin',
-        ]);
-
         Menu::insert([
             'id'    => mt_rand(),
             'role'  => 'superadmin',
