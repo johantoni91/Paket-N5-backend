@@ -20,17 +20,19 @@ class DatabaseSeeder extends Seeder
                 'satker',
                 'pegawai',
                 'pengajuan',
-                'kartu',
+                'monitor.kartu',
+                'layout.kartu',
+                'perangkat',
                 'akses',
                 'log',
                 'faq',
                 'rating'
             ]),
             'icon'  => json_encode([
-                'user', 'book-open', 'laugh', 'pen', 'credit-card', 'key-square', 'history', 'help-circle', 'star'
+                'user', 'book-open', 'laugh', 'pen', 'monitor', 'credit-card', 'radio-receiver', 'key-square', 'history', 'help-circle', 'star'
             ]),
             'title' => json_encode([
-                'Manajemen Pengguna', 'Satuan Kerja', 'Pegawai', 'Pengajuan', 'Kartu', 'Hak Akses', 'Log Aktivitas', 'FAQ', 'Ulasan'
+                'Pengguna', 'Satuan Kerja', 'Pegawai', 'Pengajuan', 'Monitor Kartu', 'Layout Kartu', 'Perangkat', 'Hak Akses', 'Log Aktivitas', 'FAQ', 'Ulasan'
             ])
         ]);
 
@@ -41,7 +43,7 @@ class DatabaseSeeder extends Seeder
                 'satker',
                 'pegawai',
                 'pengajuan',
-                'kartu',
+                'layout.kartu',
                 'log',
                 'faq',
                 'rating'

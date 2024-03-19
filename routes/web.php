@@ -68,6 +68,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pengajuan/approve/{id:\d+}', 'PengajuanController@approve');
         $router->get('/pengajuan/{id:\d+}/destroy', 'PengajuanController@destroy');
 
+        // Kartu
+        $router->get('/kartu', 'KartuController@index');
+        $router->post('/kartu/store', 'KartuController@store');
+
         // Roles
         $router->get('/roles', 'RoleController@index');
         $router->get('/roles/find', 'RoleController@find');
@@ -80,5 +84,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/faq/store', 'FaqController@store');
         $router->post('/faq/{id:\d+}/update', 'FaqController@update');
         $router->get('/faq/{id:\d+}/destroy', 'FaqController@destroy');
+
+        //Rating
     });
 });

@@ -12,13 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pengajuan', function (Blueprint $table) {
+        Schema::create('kartu', function (Blueprint $table) {
             $table->id();
-            $table->text('nip');
             $table->text('nama');
-            $table->text('token')->nullable();
-            $table->text('kartu')->nullable();
-            $table->enum('status', [0, 1, 2, 3])->default(1);
+            $table->text('layout');
+            $table->enum('status', [0, 1])->default(0);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pengajuan');
+        Schema::dropIfExists('kartu');
     }
 };

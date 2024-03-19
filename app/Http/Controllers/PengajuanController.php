@@ -47,8 +47,13 @@ class PengajuanController extends Controller
         try {
             $input = [
                 'nip'       => $req->nip,
-                'nama'      => $req->nama
+                'nama'      => $req->nama,
+                'kartu'     => $req->kartu
             ];
+            $this->validate($req, [
+                'nip'   => 'required',
+                'kartu' => 'required'
+            ]);
             Pengajuan::insert($input);
             return Endpoint::success(200, 'Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
@@ -60,10 +65,10 @@ class PengajuanController extends Controller
     {
         try {
             $pengajuan = Pengajuan::find($id);
-            $pengajuan->update(['status' => $req->status]);
-            return Endpoint::success(200, 'Status pengajuan telah berubah');
+            $pengajuan->update(['kartu' => $req->kartu]);
+            return Endpoint::success(200, 'Data pengajuan telah berubah');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Status pengajuan gagal berubah', $th->getMessage());
+            return Endpoint::failed(400, 'Data pengajuan gagal berubah', $th->getMessage());
         }
     }
 
@@ -81,8 +86,11 @@ class PengajuanController extends Controller
     function approve($id)
     {
         try {
-            Pengajuan::where('id', $id)->update(['status' => '2']);
-            return Endpoint::success(200, 'Berhasil menyetujui pengajuan');
+            Pengajuan::where('id', $id)->update([
+                'status' => '2',
+                'token'  => mt_rand()
+            ]);
+            return Endpoint::success(200, 'Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal menyetujui pengajuan', $th->getMessage());
         }
