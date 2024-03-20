@@ -26,6 +26,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // Autentikasi
     $router->post('/login', 'AuthController@login');
     $router->post('/register', 'AuthController@registration');
+    $router->get('/kartu/{id:\d+}/load-kartu', 'KartuController@loadKartu');
+    $router->patch('/kartu/{id:\d+}/store-kartu', 'KartuController@storeKartu');
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
@@ -70,7 +72,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Kartu
         $router->get('/kartu', 'KartuController@index');
+        $router->get('/kartu/{id:\d+}', 'KartuController@find');
         $router->post('/kartu/store', 'KartuController@store');
+        $router->post('/kartu/{id:\d+}/update', 'KartuController@update');
+        $router->get('/kartu/{id:\d+}/destroy', 'KartuController@destroy');
 
         // Roles
         $router->get('/roles', 'RoleController@index');
