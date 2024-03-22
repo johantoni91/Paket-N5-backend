@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('kartu', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->unsignedBigInteger('jumlah')->default(0);
             $table->longText('content')->nullable();
             $table->timestamps();
             $table->softDeletes();

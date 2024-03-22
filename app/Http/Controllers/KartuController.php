@@ -31,10 +31,10 @@ class KartuController extends Controller
             $requestData = [
                 'id'        => mt_rand(),
                 'title'     => $req->title,
-                'content'   => '',
+                // 'content'   => '',
             ];
-            $jsonFile = File::get('default.json');
-            $requestData['content'] = $jsonFile;
+            // $jsonFile = File::get('default.json');
+            // $requestData['content'] = $jsonFile;
 
             Kartu::create($requestData);
             return Endpoint::success(200, 'Berhasil menambahkan kartu');
@@ -50,7 +50,6 @@ class KartuController extends Controller
                 'title' => 'required'
             ]);
             $requestData = [
-                'id'        => mt_rand(),
                 'title'     => $req->title
             ];
             Kartu::where('id', $id)->update($requestData);

@@ -66,14 +66,17 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pengajuan', 'PengajuanController@index');
         $router->post('/pengajuan/store', 'PengajuanController@store');
         $router->get('/pengajuan/search', 'PengajuanController@search');
+        $router->get('/pengajuan/{id:\d+}', 'PengajuanController@find');
+        $router->get('/pengajuan/{id:\d+}/print', 'PengajuanController@print');
+        $router->get('/pengajuan/jumlah', 'PengajuanController@getCount');
         $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');
         $router->get('/pengajuan/approve/{id:\d+}', 'PengajuanController@approve');
         $router->get('/pengajuan/{id:\d+}/destroy', 'PengajuanController@destroy');
 
         // Kartu
         $router->get('/kartu', 'KartuController@index');
-        $router->get('/kartu/{id:\d+}', 'KartuController@find');
         $router->post('/kartu/store', 'KartuController@store');
+        $router->get('/kartu/{id:\d+}', 'KartuController@find');
         $router->post('/kartu/{id:\d+}/update', 'KartuController@update');
         $router->get('/kartu/{id:\d+}/destroy', 'KartuController@destroy');
 
