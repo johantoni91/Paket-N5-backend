@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use App\Models\Kartu;
+use App\Models\Notif;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
 {
@@ -55,15 +58,26 @@ class PengajuanController extends Controller
     {
         try {
             $input = [
+                'id'        => mt_rand(),
                 'nip'       => $req->nip,
                 'nama'      => $req->nama,
                 'kartu'     => $req->kartu
             ];
+
             $this->validate($req, [
                 'nip'   => 'required',
                 'kartu' => 'required'
             ]);
+
+            $kartu = Kartu::where('title', $input['kartu'])->first();
+            if (!$kartu) {
+                return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
+            }
+
+            Notif::insert(['notifikasi' => $req->nama . ' mengajukan kartu.']);
             Pengajuan::insert($input);
+
+            $kartu->update(['jumlah' => DB::raw('jumlah + 1')]);
             return Endpoint::success(200, 'Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal menambahkan data pengajuan', $th->getMessage());

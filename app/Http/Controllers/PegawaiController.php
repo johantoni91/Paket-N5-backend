@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 use App\Api\Endpoint;
 use App\Models\Log;
 use App\Models\Pegawai;
-use App\Validation\Validate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\View\View;
 
 class PegawaiController extends Controller
 {
@@ -20,7 +17,7 @@ class PegawaiController extends Controller
             $data = Pegawai::orderBy('nama', 'asc')->paginate(10);
             return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai');
         }
     }
 
@@ -52,7 +49,7 @@ class PegawaiController extends Controller
             }
             return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, $th->getMessage());
+            return Endpoint::failed(400, 'Gagal');
         }
     }
 
@@ -69,7 +66,7 @@ class PegawaiController extends Controller
                 'nrp'            =>  $req->nrp,
                 'tgl_lahir'      =>  $req->tgl_lahir,
                 'eselon'         =>  $req->eselon,
-                'GOL_KD'         =>  $req->gol_kd,
+                'GOL_KD'         =>  $req->GOL_KD,
                 'golpang'        =>  $req->golpang,
                 'jaksa_tu'       =>  $req->jaksa_tu,
                 'struktural_non' =>  $req->struktural_non,
@@ -105,7 +102,7 @@ class PegawaiController extends Controller
             }
             return Endpoint::success(200, 'Berhasil menambahkan data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan data pegawai', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal menambahkan data pegawai', 'Mohon isi field yang masih kosong');
         }
     }
 
@@ -172,7 +169,7 @@ class PegawaiController extends Controller
             }
             return Endpoint::success(200, 'Berhasil ubah data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal ubah data pegawai', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal ubah data pegawai');
         }
     }
 
@@ -181,7 +178,7 @@ class PegawaiController extends Controller
         try {
             return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', Pegawai::find($id));
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai');
         }
     }
 
@@ -193,7 +190,7 @@ class PegawaiController extends Controller
             $pegawai->delete();
             return Endpoint::success(200, 'Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'data pegawai tidak ditemukan', $th->getMessage());
+            return Endpoint::failed(400, 'data pegawai tidak ditemukan');
         }
     }
 

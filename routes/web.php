@@ -94,5 +94,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/faq/{id:\d+}/destroy', 'FaqController@destroy');
 
         //Rating
+
+        // Notifikasi
+        $router->get('/notif', 'NotificationController@index');
+        $router->post('notif/store', 'NotificationController@store');
+        $router->get('notif/{id:\d+}/destroy', 'NotificationController@destroy');
     });
 });

@@ -14,21 +14,21 @@ return new class extends Migration
     {
         Schema::create('pegawai', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('nip');
-            $table->unsignedBigInteger('nrp');
+            $table->unsignedBigInteger('nip')->nullable();
+            $table->unsignedBigInteger('nrp')->nullable();
             $table->text('nama');
             $table->text('jabatan');
             $table->date('tgl_lahir');
-            $table->text('eselon');
+            $table->text('eselon')->nullable();
             $table->enum('jenis_kelamin', ['L', 'P'])->default('L');
-            $table->text('GOL_KD');
-            $table->text('golpang');
+            $table->text('GOL_KD')->nullable();
+            $table->text('golpang')->nullable();
             $table->text('foto_pegawai');
-            $table->text('nama_satker');
+            $table->text('nama_satker')->nullable();
             $table->text('agama');
-            $table->text('status_pegawai');
-            $table->text('jaksa_tu');
-            $table->text('struktural_non');
+            $table->text('status_pegawai')->nullable();
+            $table->text('jaksa_tu')->nullable();
+            $table->text('struktural_non')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
