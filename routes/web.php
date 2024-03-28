@@ -77,6 +77,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/kartu', 'KartuController@index');
         $router->post('/kartu/store', 'KartuController@store');
         $router->get('/kartu/{id:\d+}', 'KartuController@find');
+        $router->get('/kartu/{kartu:\d+}/title', 'KartuController@namaKartu');
         $router->post('/kartu/{id:\d+}/update', 'KartuController@update');
         $router->get('/kartu/{id:\d+}/destroy', 'KartuController@destroy');
 

@@ -96,4 +96,14 @@ class KartuController extends Controller
             'message' => 'Project stored successfully'
         ]);
     }
+
+    public function namaKartu($kartu)
+    {
+        try {
+            $kartu = Kartu::where('title', $kartu)->first();
+            return Endpoint::success(200, 'Berhasil', $kartu);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Kartu tidak ditemukan');
+        }
+    }
 }

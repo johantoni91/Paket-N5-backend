@@ -77,7 +77,7 @@ class PengajuanController extends Controller
             Notif::insert(['notifikasi' => $req->nama . ' mengajukan kartu.']);
             Pengajuan::insert($input);
 
-            $kartu->update(['jumlah' => DB::raw('jumlah + 1')]);
+            $kartu->update(['total' => DB::raw('total + 1')]);
             return Endpoint::success(200, 'Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal menambahkan data pengajuan', $th->getMessage());

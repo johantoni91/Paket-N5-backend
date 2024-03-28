@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Menu;
+use App\Models\Satker;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -70,6 +71,17 @@ class DatabaseSeeder extends Seeder
             'title' => json_encode([
                 'Kartu', 'FAQ', 'Ulasan'
             ])
+        ]);
+
+        Satker::insert([
+            'id'             => mt_rand(),
+            'satker_name'    => 'KEJAKSAAN TINGGI KARAWANG',
+            'satker_type'    => 1,
+            'satker_phone'   => '089671022623',
+            'satker_email'   => 'kejati_krw@gmail.com',
+            'satker_address' => 'Pinayungan, Karawang, 40321',
+            'satker_akronim' => 'KT' . mt_rand(),
+            'satker_code'    => mt_rand()
         ]);
     }
 }

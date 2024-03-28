@@ -6,6 +6,22 @@ use App\Models\Log as ModelsLog;
 
 class Log
 {
+    public static function insert($user_id, $username, $ip_address, $browser, $browser_version, $os, $mobile, $log_detail)
+    {
+        $log = [
+            'id'                => mt_rand(),
+            'users_id'          => $user_id,
+            'username'          => $username,
+            'ip_address'        => $ip_address,
+            'browser'           => $browser,
+            'browser_version'   => $browser_version,
+            'os'                => $os,
+            'mobile'            => $mobile,
+            'log_detail'        => $log_detail
+        ];
+        return ModelsLog::insert($log);
+    }
+
     public static function query($input)
     {
         if ($input['start'] == null) {

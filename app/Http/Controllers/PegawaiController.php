@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
-use App\Models\Log;
+use App\Helpers\Log;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 class PegawaiController extends Controller
 {
@@ -56,10 +55,17 @@ class PegawaiController extends Controller
     public function store(Request $req)
     {
         try {
+            // $this->validate($req, [
+            //     'nip'   => 'unique:App\Models\Pegawai,nip',
+            //     'nrp'   => 'unique:App\Models\Pegawai,nrp'
+            // ], [
+            //     'nip.unique' => 'NIP sudah ada',
+            //     'nrp.unique' => 'NRP sudah ada',
+            // ]);
+
             $fileName = $req->file('photo')->getClientOriginalName();
-            $req->file('photo')->move('pegawai', $fileName);
             $data = [
-                'foto_pegawai'   =>  env('APP_ENV', '') == 'production' ? env('APP_IMG', '') . '/pegawai/' . $fileName : env('APP_URL', '') . '/pegawai/' . $fileName,
+                'foto_pegawai'   =>  env('APP_IMG', '') . '/pegawai/' . $fileName,
                 'nama'           =>  $req->nama,
                 'jabatan'        =>  $req->jabatan,
                 'nip'            =>  $req->nip,
@@ -75,34 +81,12 @@ class PegawaiController extends Controller
                 'agama'          =>  $req->agama,
                 'status_pegawai' =>  $req->status_pegawai,
             ];
-
-            $this->validate($req, [
-                'nip'   => 'unique:App\Models\Pegawai,nip',
-                'nrp'   => 'unique:App\Models\Pegawai,nrp'
-            ], [
-                'nip.unique' => 'NIP sudah ada',
-                'nrp.unique' => 'NRP sudah ada',
-            ]);
-
-            $log = [
-                'id'                => mt_rand(),
-                'users_id'          => $req->users_id,
-                'username'          => $req->username,
-                'ip_address'        => $req->ip_address,
-                'browser'           => $req->browser,
-                'browser_version'   => $req->browser_version,
-                'os'                => $req->os,
-                'mobile'            => $req->mobile,
-                'log_detail'        => $this->pegawai . ' Tambah Pegawai.',
-            ];
-            Log::insert($log);
-            $pegawai = Pegawai::insert($data);
-            if (!$pegawai) {
-                return Endpoint::warning(400, 'Gagal menambahkan data pegawai');
-            }
+            Pegawai::insert($data);
+            $req->file('photo')->move('pegawai', $fileName);
+            Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Tambah Pegawai.');
             return Endpoint::success(200, 'Berhasil menambahkan data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan data pegawai', 'Mohon isi field yang masih kosong');
+            return Endpoint::failed(400, 'Gagal menambahkan data pegawai', $th->getMessage());
         }
     }
 
@@ -112,11 +96,11 @@ class PegawaiController extends Controller
             $data = [];
             $pegawai = Pegawai::find($nip);
             if ($req->hasFile('photo')) {
-                File::exists($pegawai->foto_pegawai) ? File::delete($pegawai->foto_pegawai) : '';
+                unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
                 $fileName = $req->file('photo')->getClientOriginalName();
                 $req->file('photo')->move('pegawai', $fileName);
                 $data = [
-                    'foto_pegawai'   =>  env('APP_ENV', '') == 'production' ? env('APP_IMG', '') . '/pegawai/' . $fileName : env('APP_URL', '') . '/pegawai/' . $fileName,
+                    'foto_pegawai'   =>  env('APP_IMG', '') . '/pegawai/' . $fileName,
                     'nama'           =>  $req->nama,
                     'jabatan'        =>  $req->jabatan,
                     'nip'            =>  $req->nip,
@@ -150,26 +134,11 @@ class PegawaiController extends Controller
                     'status_pegawai' =>  $req->status_pegawai,
                 ];
             }
-            $log = [
-                'id'                => mt_rand(),
-                'users_id'          => $req->users_id,
-                'username'          => $req->username,
-                'ip_address'        => $req->ip_address,
-                'browser'           => $req->browser,
-                'browser_version'   => $req->browser_version,
-                'os'                => $req->os,
-                'mobile'            => $req->mobile,
-                'log_detail'        => $this->pegawai . ' Ubah Pegawai.',
-            ];
-
-            Log::insert($log);
             $pegawai->update($data);
-            if (!$pegawai) {
-                return Endpoint::warning(400, 'Gagal ubah data pegawai');
-            }
+            Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Ubah Pegawai.');
             return Endpoint::success(200, 'Berhasil ubah data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal ubah data pegawai');
+            return Endpoint::failed(400, 'Gagal ubah data pegawai', $th->getMessage());
         }
     }
 
@@ -186,7 +155,7 @@ class PegawaiController extends Controller
     {
         try {
             $pegawai = Pegawai::find($nip);
-            File::exists($pegawai->foto_pegawai) ? File::delete($pegawai->foto_pegawai) : '';
+            unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
             $pegawai->delete();
             return Endpoint::success(200, 'Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
