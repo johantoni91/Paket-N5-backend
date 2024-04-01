@@ -16,12 +16,13 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->unsignedBigInteger('total')->default(0);
-            // $table->longtext('background')->nullable();
-            // $table->longtext('profile')->nullable();
-            // $table->longtext('assets')->nullable();
-            // $table->enum('orientation', ['potrait', 'landscape'])->default('potrait');
-            // $table->longText('style')->nullable();
+            $table->longtext('background')->nullable();
+            $table->longtext('profile')->nullable();
+            $table->longtext('assets')->nullable();
+            $table->enum('orientation', ['potrait', 'landscape'])->default('potrait');
+            $table->longText('style')->nullable();
             $table->longText('content')->nullable();
+            $table->longText('components')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

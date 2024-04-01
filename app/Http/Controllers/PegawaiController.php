@@ -6,6 +6,7 @@ use App\Api\Endpoint;
 use App\Helpers\Log;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PegawaiController extends Controller
 {
@@ -155,9 +156,14 @@ class PegawaiController extends Controller
     {
         try {
             $pegawai = Pegawai::find($nip);
-            unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
-            $pegawai->delete();
-            return Endpoint::success(200, 'Berhasil menghapus data pegawai');
+            if (File::exists($pegawai->foto_pegawai)) {
+                unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
+                $pegawai->delete();
+                return Endpoint::success(200, 'Berhasil menghapus data pegawai');
+            } else {
+                $pegawai->delete();
+                return Endpoint::success(200, 'Berhasil menghapus data pegawai');
+            }
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'data pegawai tidak ditemukan');
         }
