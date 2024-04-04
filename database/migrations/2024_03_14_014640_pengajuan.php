@@ -14,8 +14,9 @@ return new class extends Migration
     {
         Schema::create('pengajuan', function (Blueprint $table) {
             $table->id();
-            $table->text('nip');
-            $table->text('nama');
+            $table->longtext('nip');
+            $table->longtext('nama');
+            $table->text('photo')->nullable();
             $table->text('token')->nullable();
             $table->text('kartu');
             $table->enum('status', [0, 1, 2, 3])->default(1);

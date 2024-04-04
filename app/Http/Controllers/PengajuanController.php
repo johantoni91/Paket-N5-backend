@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Api\Endpoint;
 use App\Models\Kartu;
 use App\Models\Notif;
+use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +62,7 @@ class PengajuanController extends Controller
                 'id'        => mt_rand(),
                 'nip'       => $req->nip,
                 'nama'      => $req->nama,
+                'photo'     => $req->hasFile('photo') ? env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName() : '',
                 'kartu'     => $req->kartu
             ];
 
@@ -69,6 +71,10 @@ class PengajuanController extends Controller
                 'kartu' => 'required'
             ]);
 
+            if (!Pegawai::where('nip', $req->nip)->orWhere('nama', $req->nama)->first()) {
+                return Endpoint::warning(200, 'Pengajuan gagal, pegawai tidak ditemukan.');
+            }
+
             $kartu = Kartu::where('title', $input['kartu'])->first();
             if (!$kartu) {
                 return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
@@ -76,8 +82,11 @@ class PengajuanController extends Controller
 
             Notif::insert(['notifikasi' => $req->nama . ' mengajukan kartu.']);
             Pengajuan::insert($input);
-
             $kartu->update(['total' => DB::raw('total + 1')]);
+
+            if ($req->hasFile('photo')) {
+                $req->file('photo')->move('pengajuan', $req->file('photo')->getClientOriginalName());
+            }
             return Endpoint::success(200, 'Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal menambahkan data pengajuan', $th->getMessage());

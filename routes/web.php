@@ -59,6 +59,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pegawai', 'PegawaiController@index');
         $router->post('/pegawai/store', 'PegawaiController@store');
         $router->get('/pegawai/search', 'PegawaiController@search');
+        $router->get('/pegawai/{nip:\d+}', 'PegawaiController@find');
         $router->post('/pegawai/{nip:\d+}/update', 'PegawaiController@update');
         $router->get('/pegawai/{nip:\d+}/destroy', 'PegawaiController@destroy');
 
@@ -77,8 +78,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/kartu', 'KartuController@index');
         $router->post('/kartu/store', 'KartuController@store');
         $router->get('/kartu/{id:\d+}', 'KartuController@find');
-        $router->get('/kartu/{kartu:\d+}/title', 'KartuController@namaKartu');
+        $router->post('/kartu/title', 'KartuController@title');
         $router->post('/kartu/{id:\d+}/update', 'KartuController@update');
+        $router->post('/kartu/{id:\d+}/front', 'KartuController@front');
+        $router->post('/kartu/{id:\d+}/back', 'KartuController@back');
         $router->get('/kartu/{id:\d+}/destroy', 'KartuController@destroy');
 
         // Roles
