@@ -137,18 +137,14 @@ class KartuController extends Controller
     {
         try {
             $kartu = Kartu::findOrFail($id);
-            if ($kartu->icon) {
+            if ($kartu->icon && File::exists($kartu->icon)) {
                 unlink('../public' . parse_url($kartu->icon)['path']);
             }
-            if ($kartu->front) {
-                if (File::exists($kartu->front)) {
-                    unlink('../public' . parse_url($kartu->icon)['path']);
-                }
+            if ($kartu->front && File::exists($kartu->front)) {
+                unlink('../public' . parse_url($kartu->front)['path']);
             }
-            if ($kartu->back) {
-                if (File::exists($kartu->front)) {
-                    unlink('../public' . parse_url($kartu->icon)['path']);
-                }
+            if ($kartu->back && File::exists($kartu->back)) {
+                unlink('../public' . parse_url($kartu->back)['path']);
             }
             $kartu->delete();
             return Endpoint::Success(200, 'Berhasil');

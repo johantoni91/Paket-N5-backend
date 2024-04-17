@@ -98,6 +98,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/faq/{id:\d+}/destroy', 'FaqController@destroy');
 
         //Rating
+        $router->get('/rate', 'RatingController@index');
+        $router->get('/rate/stars', 'RatingController@stars');
+        $router->get('/rate/avg/stars', 'RatingController@avgStars');
+        $router->post('/rate/insert', 'RatingController@insert');
+        $router->get('/rate/{id:\d+}/find', 'RatingController@find');
+        $router->get('/rate/{id:\d+}/destroy', 'RatingController@destroy');
 
         // Notifikasi
         $router->get('/notif', 'NotificationController@index');
