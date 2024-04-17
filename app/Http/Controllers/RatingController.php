@@ -6,29 +6,31 @@ use App\Api\Endpoint;
 use App\Models\Rate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 class RatingController extends Controller
 {
     function index()
     {
-        $rate = Rate::orderBy('created_at')->paginate(5);
-        if (!$rate) {
-            return Endpoint::warning(200, 'Belum ada penilaian', $rate);
-        } else {
-            return Endpoint::success(200, 'Berhasil mendapatkan penilaian', $rate);
+        try {
+            return Endpoint::success(200, 'Berhasil mendapatkan data komentar', Rate::orderBy('created_at')->paginate(5));
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal mendapatkan data komentar');
         }
     }
 
-    function stars()
+    function additional()
     {
-        return Endpoint::success(200, 'Berhasil mendapatkan rating', Rate::select('stars', DB::raw('COUNT(*) as count'))->groupBy('stars')->get());
-    }
-
-    function avgStars()
-    {
-        return Endpoint::success(200, 'Berhasil mendapatkan rating', Rate::select(DB::raw('COUNT(*) as count'))->groupBy('stars')->avg('stars'));
+        return Endpoint::success(200, 'Berhasil mendapatkan data tambahan komentar', [
+            'stars'         => [
+                '1' => Rate::where('stars', 1)->count(),
+                '2' => Rate::where('stars', 2)->count(),
+                '3' => Rate::where('stars', 3)->count(),
+                '4' => Rate::where('stars', 4)->count(),
+                '5' => Rate::where('stars', 5)->count(),
+            ],
+            'total_records' => Rate::count()
+        ]);
     }
 
     function insert(Request $req)

@@ -99,8 +99,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         //Rating
         $router->get('/rate', 'RatingController@index');
-        $router->get('/rate/stars', 'RatingController@stars');
-        $router->get('/rate/avg/stars', 'RatingController@avgStars');
+        $router->get('/rate/additional', 'RatingController@additional');
         $router->post('/rate/insert', 'RatingController@insert');
         $router->get('/rate/{id:\d+}/find', 'RatingController@find');
         $router->get('/rate/{id:\d+}/destroy', 'RatingController@destroy');

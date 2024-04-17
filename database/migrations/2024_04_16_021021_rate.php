@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->text('photo')->nullable();
-            $table->enum('stars', [0, 1, 2, 3, 4, 5])->default(5);
+            $table->enum('stars', [1, 2, 3, 4, 5])->default(5);
             $table->text('comment');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
