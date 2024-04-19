@@ -21,7 +21,7 @@ return new class extends Migration
             $table->longtext('icon')->nullable();
             $table->longtext('front')->nullable();
             $table->longtext('back')->nullable();
-            $table->enum('orientation', ['potrait', 'landscape'])->default('potrait');
+            $table->enum('orientation', [0, 1])->default(0);
             $table->enum('nip', [0, 1])->default(1);
             $table->enum('nrp', [0, 1])->default(1);
             $table->enum('nama', [0, 1])->default(1);
