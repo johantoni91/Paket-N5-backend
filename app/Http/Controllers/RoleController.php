@@ -24,12 +24,6 @@ class RoleController extends Controller
     function find(Request $req)
     {
         return response(Menu::where('role', $req->role)->first(), 200);
-        // try {
-
-        //     return Endpoint::success(200, 'Berhasil mendapatkan role ' . $role, );
-        // } catch (\Throwable $th) {
-        //     return Endpoint::failed(200, 'Gagal mendapatkan role', $th->getMessage());
-        // }
     }
 
     function store(Request $req)

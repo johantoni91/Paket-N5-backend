@@ -67,6 +67,10 @@ class KartuController extends Controller
             ]);
 
             $kartu = Kartu::where('id', $id)->first();
+            if ($req->hasFile('icon')) {
+                unlink('../public' . parse_url($kartu->icon)['path']);
+                $req->file('icon')->move('kartu', $req->file('icon')->getClientOriginalName());
+            }
             $requestData = [
                 'id'            => mt_rand(),
                 'title'         => $req->title,
@@ -80,10 +84,6 @@ class KartuController extends Controller
                 'jabatan'       => $req->jabatan,
             ];
             $kartu->update($requestData);
-            if ($req->hasFile('icon')) {
-                unlink('../public' . parse_url($kartu->icon)['path']);
-                $req->file('icon')->move('kartu', $req->file('icon')->getClientOriginalName());
-            }
             return Endpoint::success(200, 'Berhasil mengubah kartu');
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mengubah kartu', $th->getMessage());
@@ -136,14 +136,14 @@ class KartuController extends Controller
     public function destroy($id)
     {
         try {
-            $kartu = Kartu::findOrFail($id);
-            if ($kartu->icon && File::exists($kartu->icon)) {
+            $kartu = Kartu::find($id);
+            if ($kartu->icon) {
                 unlink('../public' . parse_url($kartu->icon)['path']);
             }
-            if ($kartu->front && File::exists($kartu->front)) {
+            if ($kartu->front) {
                 unlink('../public' . parse_url($kartu->front)['path']);
             }
-            if ($kartu->back && File::exists($kartu->back)) {
+            if ($kartu->back) {
                 unlink('../public' . parse_url($kartu->back)['path']);
             }
             $kartu->delete();
