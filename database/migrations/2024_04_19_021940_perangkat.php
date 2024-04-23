@@ -14,9 +14,10 @@ return new class extends Migration
     {
         Schema::create('perangkat', function (Blueprint $table) {
             $table->id();
-            $table->text('device');
-            $table->text('status')->nullable();
-            $table->text('details')->nullable();
+            $table->text('user');
+            $table->text('password');
+            $table->text('satker');
+            $table->enum('status', [0, 1])->default(1);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

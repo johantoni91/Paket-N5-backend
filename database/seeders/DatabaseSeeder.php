@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kewenangan;
 use App\Models\Menu;
 use App\Models\Satker;
 use App\Models\User;
@@ -72,17 +73,6 @@ class DatabaseSeeder extends Seeder
             'title' => json_encode([
                 'Layout Kartu', 'FAQ', 'Ulasan'
             ])
-        ]);
-
-        Satker::insert([
-            'id'             => mt_rand(),
-            'satker_name'    => 'KEJAKSAAN TINGGI KARAWANG',
-            'satker_type'    => 1,
-            'satker_phone'   => '089671022623',
-            'satker_email'   => 'kejati_krw@gmail.com',
-            'satker_address' => 'Pinayungan, Karawang, 40321',
-            'satker_akronim' => 'KT' . mt_rand(),
-            'satker_code'    => mt_rand()
         ]);
     }
 }

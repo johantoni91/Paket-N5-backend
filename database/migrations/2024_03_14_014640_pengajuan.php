@@ -16,10 +16,12 @@ return new class extends Migration
             $table->id();
             $table->longtext('nip');
             $table->longtext('nama');
+            $table->text('kode_satker');
             $table->text('photo')->nullable();
             $table->text('token')->nullable();
             $table->text('kartu');
-            $table->enum('status', [0, 1, 2, 3])->default(1);
+            $table->enum('status', [0, 1, 2, 3])->default(1); // 0 = ditolak, 1 = proses, 2 = diterima di bawah kejagung, 3 diterima kejagung + token
+            $table->enum('approve_satker', [0, 1, 2])->default(2); // 0 = kejagung, 1 = kejari, 2 = kejati
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

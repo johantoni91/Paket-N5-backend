@@ -14,11 +14,16 @@ class SatkerController extends Controller
     function index()
     {
         try {
-            $satker = Satker::orderBy('satker_type', 'desc')->paginate(10);
+            $satker = Satker::orderBy('satker_type')->paginate(10);
             return Endpoint::success(200, 'mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, "gagal mendapatkan data satker", $th->getMessage());
         }
+    }
+
+    function all()
+    {
+        return Endpoint::success(200, 'Berhasil', Satker::select('satker_code', 'satker_name')->orderBy('satker_name', 'desc')->where('satker_code', 'NOT LIKE', null)->get());
     }
 
     function getSatker()
@@ -74,6 +79,16 @@ class SatkerController extends Controller
             return Endpoint::success(200, 'Berhasil menemukan data satker!', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, $th->getMessage());
+        }
+    }
+
+    function findByCode($code)
+    {
+        try {
+            $data = Satker::where('satker_code', $code)->first();
+            return Endpoint::success(200, 'Berhasil', $data);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal');
         }
     }
 
@@ -175,7 +190,7 @@ class SatkerController extends Controller
     function delete(Request $req, $id)
     {
         try {
-            $satker = Satker::where('id', $id)->first();
+            $satker = Satker::where('satker_id', $id)->first();
             Log::insert([
                 'id'                => mt_rand(),
                 'users_id'          => $id,

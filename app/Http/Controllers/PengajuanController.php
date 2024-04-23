@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use App\Helpers\SatkerCode;
 use App\Models\Kartu;
-use App\Models\Notif;
 use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
@@ -12,12 +12,15 @@ use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
 {
-    function index()
+    function index($id)
     {
         try {
-            $data = Pengajuan::orderBy('nama', 'asc')->paginate(10);
-            if (!$data) {
-                return Endpoint::warning(200, 'Data pengajuan masih kosong', $data);
+            if ($id == "00") {
+                $data = Pengajuan::orderBy('nama', 'asc')->where('approve_satker', '0')->where('status', '2')->paginate(5);
+            } elseif (preg_match('/^\d{2}$/', $id) && $id != "00") {
+                $data = Pengajuan::orderBy('nama', 'asc')->where('kode_satker', 'LIKE', $id . '%')->where('approve_satker', '1')->where('status', '1')->paginate(5);
+            } elseif (preg_match('/^\d{4}$/', $id)) {
+                $data = Pengajuan::orderBy('nama', 'asc')->where('kode_satker', 'LIKE', $id . '%')->where('approve_satker', '2')->where('status', '1')->paginate(5);
             }
             return Endpoint::success(200, 'Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
@@ -58,12 +61,15 @@ class PengajuanController extends Controller
     function store(Request $req)
     {
         try {
+            $approve_satker = SatkerCode::parent($req->satker_code);
             $input = [
-                'id'        => mt_rand(),
-                'nip'       => $req->nip,
-                'nama'      => $req->nama,
-                'photo'     => $req->hasFile('photo') ? env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName() : '',
-                'kartu'     => $req->kartu
+                'id'             => mt_rand(),
+                'nip'            => $req->nip,
+                'nama'           => $req->nama,
+                'kode_satker'    => $req->satker_code,
+                'photo'          => $req->hasFile('photo') ? env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName() : '',
+                'kartu'          => $req->kartu,
+                'approve_satker' => $approve_satker
             ];
 
             $this->validate($req, [
@@ -79,8 +85,7 @@ class PengajuanController extends Controller
             if (!$kartu) {
                 return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
             }
-
-            Notif::insert(['notifikasi' => $req->nama . ' mengajukan kartu.']);
+            SatkerCode::notification($input['nama'], $approve_satker, $req->satker_code);
             Pengajuan::insert($input);
             $kartu->update(['total' => DB::raw('total + 1')]);
 
@@ -115,13 +120,23 @@ class PengajuanController extends Controller
         }
     }
 
-    function approve($id)
+    function approve($id, $satker)
     {
         try {
-            Pengajuan::where('id', $id)->update([
-                'status' => '2',
-                'token'  => mt_rand()
-            ]);
+            $pengajuan = Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->first();
+            $kode = SatkerCode::parent($satker);
+            if ($kode == '0' && ($pengajuan->approve_satker == '0' || $pengajuan->approve_satker == '1')) {
+                Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->update([
+                    'token'          => mt_rand(),
+                    'status'         => '3',
+                    'approve_satker' => '0'
+                ]);
+            } elseif ($kode == '1' && $pengajuan->approve_satker == '2') {
+                Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->update([
+                    'status'         => '2',
+                    'approve_satker' => '1'
+                ]);
+            }
             return Endpoint::success(200, 'Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal menyetujui pengajuan', $th->getMessage());

@@ -39,14 +39,18 @@ class AuthController extends Controller
         $this->validate($req, Validate::account($data));
 
         try {
+            if (!Satker::where('satker_code', $req->satker)->first()) {
+                return Endpoint::failed(400, 'Gagal registrasi', 'Kode satker tidak terdaftar');
+            }
             User::insert($data);
             Kewenangan::insert([
                 'id'            => mt_rand(),
                 'users_id'      => $data['id'],
+                'satker'        => $req->satker,
                 'roles'         => $req->roles,
                 'status'        => $req->status ?? 1
             ]);
-            return Endpoint::success(200, 'Berhasil registrasi', User::latest()->first());
+            return Endpoint::success(200, 'Berhasil registrasi', Kewenangan::latest()->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal registrasi', $th->getMessage());
         }

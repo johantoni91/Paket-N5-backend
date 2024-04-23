@@ -47,10 +47,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Satuan Kerja
         $router->get('/satker', 'SatkerController@index');
+        $router->get('/satker/all', 'SatkerController@all');
         $router->post('/satker/store', 'SatkerController@store'); // Menambah satker
         $router->get('/satker/search', 'SatkerController@search'); // Mencari user berdasarkan ketikan search
         $router->get('/satker_name', 'SatkerController@getSatker'); // Mendapatkan nama satker untuk dropdown
         $router->post('/satker/{id:\d+}', 'SatkerController@find'); // Mencari satker berdasarkan id
+        $router->get('/satker/{code:\d+}/code', 'SatkerController@findByCode'); // Mencari satker berdasarkan satker_code
         $router->get('/satker/{id:\d+}/delete', 'SatkerController@delete'); // Menghapus sebuah satker
         $router->post('/satker/{id:\d+}/update', 'SatkerController@update'); // Mengubah sebuah satker
         $router->get('/satker/{id:\d+}/status/{stat:\d+}', 'SatkerController@status'); // Mengubah status satker
@@ -64,14 +66,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pegawai/{nip:\d+}/destroy', 'PegawaiController@destroy');
 
         // Pengajuan
-        $router->get('/pengajuan', 'PengajuanController@index');
+        $router->get('/pengajuan/{id:\d+}/index', 'PengajuanController@index');
         $router->post('/pengajuan/store', 'PengajuanController@store');
         $router->get('/pengajuan/search', 'PengajuanController@search');
         $router->get('/pengajuan/{id:\d+}', 'PengajuanController@find');
         $router->get('/pengajuan/{id:\d+}/print', 'PengajuanController@print');
         $router->get('/pengajuan/jumlah', 'PengajuanController@getCount');
-        $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');
-        $router->get('/pengajuan/approve/{id:\d+}', 'PengajuanController@approve');
+        $router->get('/pengajuan/{id:\d+}/reject/{satker:\d+}', 'PengajuanController@reject');
+        $router->get('/pengajuan/{id:\d+}/approve/{satker:\d+}', 'PengajuanController@approve');
         $router->get('/pengajuan/{id:\d+}/destroy', 'PengajuanController@destroy');
 
         // Kartu
@@ -83,6 +85,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/kartu/{id:\d+}/front', 'KartuController@front');
         $router->post('/kartu/{id:\d+}/back', 'KartuController@back');
         $router->get('/kartu/{id:\d+}/destroy', 'KartuController@destroy');
+
+        // Perangkat
+        $router->get('/perangkat', 'PerangkatController@index');
+        $router->get('/perangkat/import', 'PerangkatController@import');
 
         // Roles
         $router->get('/roles', 'RoleController@index');
@@ -105,7 +111,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/rate/{id:\d+}/destroy', 'RatingController@destroy');
 
         // Notifikasi
-        $router->get('/notif', 'NotificationController@index');
+        $router->get('/notif/{id:\d+}', 'NotificationController@index');
         $router->post('notif/store', 'NotificationController@store');
         $router->get('notif/{id:\d+}/destroy', 'NotificationController@destroy');
     });
