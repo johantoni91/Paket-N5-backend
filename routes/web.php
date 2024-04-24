@@ -72,7 +72,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pengajuan/{id:\d+}', 'PengajuanController@find');
         $router->get('/pengajuan/{id:\d+}/print', 'PengajuanController@print');
         $router->get('/pengajuan/jumlah', 'PengajuanController@getCount');
-        $router->get('/pengajuan/{id:\d+}/reject/{satker:\d+}', 'PengajuanController@reject');
+        $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');
         $router->get('/pengajuan/{id:\d+}/approve/{satker:\d+}', 'PengajuanController@approve');
         $router->get('/pengajuan/{id:\d+}/destroy', 'PengajuanController@destroy');
 

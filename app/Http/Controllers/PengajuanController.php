@@ -3,25 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use App\Helpers\HelpersPengajuan;
 use App\Helpers\SatkerCode;
-use App\Models\Kartu;
-use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
 {
     function index($id)
     {
         try {
-            if ($id == "00") {
-                $data = Pengajuan::orderBy('nama', 'asc')->where('approve_satker', '0')->where('status', '2')->paginate(5);
-            } elseif (preg_match('/^\d{2}$/', $id) && $id != "00") {
-                $data = Pengajuan::orderBy('nama', 'asc')->where('kode_satker', 'LIKE', $id . '%')->where('approve_satker', '1')->where('status', '1')->paginate(5);
-            } elseif (preg_match('/^\d{4}$/', $id)) {
-                $data = Pengajuan::orderBy('nama', 'asc')->where('kode_satker', 'LIKE', $id . '%')->where('approve_satker', '2')->where('status', '1')->paginate(5);
-            }
+            $kode = SatkerCode::parent($id);
+            $data = HelpersPengajuan::index($kode, $id);
             return Endpoint::success(200, 'Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan data pengajuan', $th->getMessage());
@@ -69,7 +62,7 @@ class PengajuanController extends Controller
                 'kode_satker'    => $req->satker_code,
                 'photo'          => $req->hasFile('photo') ? env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName() : '',
                 'kartu'          => $req->kartu,
-                'approve_satker' => $approve_satker
+                'approve_satker' => $approve_satker == '0' ? '1' : $approve_satker
             ];
 
             $this->validate($req, [
@@ -77,18 +70,7 @@ class PengajuanController extends Controller
                 'kartu' => 'required'
             ]);
 
-            if (!Pegawai::where('nip', $req->nip)->orWhere('nama', $req->nama)->first()) {
-                return Endpoint::warning(200, 'Pengajuan gagal, pegawai tidak ditemukan.');
-            }
-
-            $kartu = Kartu::where('title', $input['kartu'])->first();
-            if (!$kartu) {
-                return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
-            }
-            SatkerCode::notification($input['nama'], $approve_satker, $req->satker_code);
-            Pengajuan::insert($input);
-            $kartu->update(['total' => DB::raw('total + 1')]);
-
+            HelpersPengajuan::store($req->nip, $req->nama, $req->kartu, $input, $req->satker_code, $approve_satker);
             if ($req->hasFile('photo')) {
                 $req->file('photo')->move('pengajuan', $req->file('photo')->getClientOriginalName());
             }
@@ -123,20 +105,7 @@ class PengajuanController extends Controller
     function approve($id, $satker)
     {
         try {
-            $pengajuan = Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->first();
-            $kode = SatkerCode::parent($satker);
-            if ($kode == '0' && ($pengajuan->approve_satker == '0' || $pengajuan->approve_satker == '1')) {
-                Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->update([
-                    'token'          => mt_rand(),
-                    'status'         => '3',
-                    'approve_satker' => '0'
-                ]);
-            } elseif ($kode == '1' && $pengajuan->approve_satker == '2') {
-                Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->update([
-                    'status'         => '2',
-                    'approve_satker' => '1'
-                ]);
-            }
+            HelpersPengajuan::approve($id, $satker);
             return Endpoint::success(200, 'Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal menyetujui pengajuan', $th->getMessage());
