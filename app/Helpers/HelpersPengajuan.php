@@ -43,7 +43,7 @@ class HelpersPengajuan
 
     public static function store($nip, $nama, $kartu, $input, $satker_code, $approve_satker)
     {
-        if (!Pegawai::where('nip', $nip)->orWhere('nama', $nama)->first()) {
+        if (!Pegawai::where('nip', $nip)->where('nama', $nama)->first()) {
             return Endpoint::warning(200, 'Pengajuan gagal, pegawai tidak ditemukan.');
         }
 
