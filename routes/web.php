@@ -53,6 +53,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/satker_name', 'SatkerController@getSatker'); // Mendapatkan nama satker untuk dropdown
         $router->post('/satker/{id:\d+}', 'SatkerController@find'); // Mencari satker berdasarkan id
         $router->get('/satker/{code:\d+}/code', 'SatkerController@findByCode'); // Mencari satker berdasarkan satker_code
+        $router->post('/satker/name', 'SatkerController@name');
         $router->get('/satker/{id:\d+}/delete', 'SatkerController@delete'); // Menghapus sebuah satker
         $router->post('/satker/{id:\d+}/update', 'SatkerController@update'); // Mengubah sebuah satker
         $router->get('/satker/{id:\d+}/status/{stat:\d+}', 'SatkerController@status'); // Mengubah status satker
