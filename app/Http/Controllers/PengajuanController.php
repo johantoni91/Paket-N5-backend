@@ -17,7 +17,22 @@ class PengajuanController extends Controller
             $data = HelpersPengajuan::index($kode, $id);
             return Endpoint::success(200, 'Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pengajuan', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan data pengajuan');
+        }
+    }
+
+    function monitor($id)
+    {
+        try {
+            $kode = SatkerCode::parent($id);
+            if ($kode == '0') {
+                $data = Pengajuan::orderBy('created_at', 'asc')->paginate(5);
+            } else {
+                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', 'LIKE', $id . '%')->paginate(5);
+            }
+            return Endpoint::success(200, 'Berhasil monitoring data pengajuan', $data);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal monitoring data pengajuan');
         }
     }
 
@@ -38,7 +53,7 @@ class PengajuanController extends Controller
             }
             return Endpoint::success(200, 'Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pengajuan!', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal mendapatkan data pengajuan!');
         }
     }
 
@@ -47,7 +62,7 @@ class PengajuanController extends Controller
         try {
             return Endpoint::success(200, 'Berhasil', Pengajuan::findOrFail($id));
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, "Gagal", $th->getMessage());
+            return Endpoint::failed(400, "Gagal");
         }
     }
 
@@ -76,7 +91,7 @@ class PengajuanController extends Controller
             }
             return Endpoint::success(200, 'Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan data pengajuan', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal menambahkan data pengajuan');
         }
     }
 
@@ -87,7 +102,7 @@ class PengajuanController extends Controller
             $pengajuan->update(['kartu' => $req->kartu]);
             return Endpoint::success(200, 'Data pengajuan telah berubah');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Data pengajuan gagal berubah', $th->getMessage());
+            return Endpoint::failed(400, 'Data pengajuan gagal berubah');
         }
     }
 
@@ -98,7 +113,7 @@ class PengajuanController extends Controller
             $pengajuan->delete();
             return Endpoint::success(200, 'Berhasil menghapus data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menghapus data pengajuan', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal menghapus data pengajuan');
         }
     }
 
@@ -108,7 +123,7 @@ class PengajuanController extends Controller
             HelpersPengajuan::approve($id, $satker);
             return Endpoint::success(200, 'Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menyetujui pengajuan', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal menyetujui pengajuan');
         }
     }
 
@@ -118,7 +133,7 @@ class PengajuanController extends Controller
             Pengajuan::where('id', $id)->update(['status' => '0']);
             return Endpoint::success(200, 'Berhasil menolak pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menolak pengajuan', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal menolak pengajuan');
         }
     }
 
@@ -128,7 +143,7 @@ class PengajuanController extends Controller
             Pengajuan::where('id', $id)->update(['status' => '3']);
             return Endpoint::success(200, "Berhasil");
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal');
         }
     }
 
@@ -137,7 +152,7 @@ class PengajuanController extends Controller
         try {
             return Endpoint::success(200, 'Berhasil', Pengajuan::count('kartu')->distinct());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal', $th->getMessage());
+            return Endpoint::failed(400, 'Gagal');
         }
     }
 }

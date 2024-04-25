@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Api\Endpoint;
 use App\Models\Kewenangan;
 use App\Models\Log;
+use App\Models\Satker;
 use App\Models\Token;
 use App\Models\User;
 use Carbon\Carbon;
@@ -92,6 +93,9 @@ class UserController extends Controller
             $data_user->update($user);
             if ($req->roles) {
                 $get_user->update(['roles' => $req->roles]);
+            }
+            if ($req->satker) {
+                $get_user->update(['satker' => $req->satker]);
             }
 
             $data = [

@@ -6,15 +6,19 @@ use App\Api\Endpoint;
 use App\Helpers\Log;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 class PegawaiController extends Controller
 {
     private $pegawai = '(Pegawai)';
-    public function index()
+    public function index($id)
     {
         try {
-            $data = Pegawai::orderBy('nama', 'asc')->paginate(10);
+            $satker = str_replace('-', ' ', $id);
+            if ($satker == "KEJAKSAAN AGUNG") {
+                $data = Pegawai::orderBy('nama')->paginate(10);
+            } else {
+                $data = Pegawai::orderBy('nama', 'asc')->where('nama_satker', ucwords($satker))->paginate(10);
+            }
             return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan data pegawai');
@@ -43,7 +47,6 @@ class PegawaiController extends Controller
                     'agama'          =>  $req->agama,
                     'status_pegawai' =>  $req->status_pegawai,
                 ]);
-
             if (!$data) {
                 return Endpoint::warning(200, 'Pegawai tidak ada');
             }
@@ -83,7 +86,7 @@ class PegawaiController extends Controller
         }
     }
 
-    public function update(Request $req, $nip)
+    public function update(Request $req, $id)
     {
         try {
             $data = [];
@@ -104,7 +107,7 @@ class PegawaiController extends Controller
                 'status_pegawai' =>  $req->status_pegawai,
             ];
 
-            $pegawai = Pegawai::find($nip);
+            $pegawai = Pegawai::find($id);
             if ($req->hasFile('photo')) {
                 unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
                 $fileName = $req->file('photo')->getClientOriginalName();
@@ -122,19 +125,19 @@ class PegawaiController extends Controller
         }
     }
 
-    public function find($nip)
+    public function find($id)
     {
         try {
-            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', Pegawai::where('nip', $nip)->orWhere('nip', $nip)->first());
+            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', Pegawai::where('nip', $id)->orWhere('nip', $id)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan data pegawai');
         }
     }
 
-    public function destroy($nip)
+    public function destroy($id)
     {
         try {
-            $pegawai = Pegawai::find($nip);
+            $pegawai = Pegawai::find($id);
             unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
             $pegawai->delete();
             return Endpoint::success(200, 'Berhasil menghapus data pegawai');

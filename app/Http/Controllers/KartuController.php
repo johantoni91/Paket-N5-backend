@@ -22,6 +22,26 @@ class KartuController extends Controller
         }
     }
 
+    function category(Request $req)
+    {
+        try {
+            $kartu = Kartu::select('title')->orderBy('title')->where('categories', $req->category)->get();
+            if ($kartu) {
+                return Endpoint::success(200, 'Berhasil', $kartu);
+            } else {
+                return Endpoint::success(200, 'Berhasil', $kartu);
+            }
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal');
+        }
+    }
+
+    function typing(Request $req)
+    {
+        $kartu = Kartu::orderBy('title')->where('categories', $req->category)->get();
+        return Endpoint::success(200, 'Berhasil', $kartu);
+    }
+
     function store(Request $req)
     {
         try {
@@ -38,10 +58,10 @@ class KartuController extends Controller
                 'front'         => $req->hasFile('front') ? env('APP_IMG', '') . '/kartu/' . $req->file('front')->getClientOriginalName() : '',
                 'back'          => $req->hasFile('back') ? env('APP_IMG', '') . '/kartu/' . $req->file('back')->getClientOriginalName() : '',
                 'orientation'   => $req->orientation,
-                'nip'           => $req->nip,
-                'nrp'           => $req->nrp,
                 'golongan'      => $req->golongan,
                 'jabatan'       => $req->jabatan,
+                'nip'           => $req->nip,
+                'nrp'           => $req->nrp,
             ];
             Kartu::insert($requestData);
             if ($req->hasFile('icon')) {

@@ -24,16 +24,11 @@ class SatkerController extends Controller
     function name(Request $req)
     {
         try {
-            $satker = Satker::where('satker_name', 'LIKE', '%' . $req->satker . '%')->where('satker_code', 'NOT LIKE', null)->limit(5)->get();
+            $satker = Satker::where('satker_code', 'NOT LIKE', null)->where('satker_name', 'LIKE', '%' . $req->satker . '%')->limit(5)->get();
             return Endpoint::success(200, 'Berhasil', $satker);
         } catch (\Throwable $th) {
             return Endpoint::warning(200, 'Satker tidak ditemukan');
         }
-    }
-
-    function all()
-    {
-        return Endpoint::success(200, 'Berhasil', Satker::select('satker_code', 'satker_name')->orderBy('satker_name', 'desc')->where('satker_code', 'NOT LIKE', null)->get());
     }
 
     function getSatker()
@@ -43,6 +38,11 @@ class SatkerController extends Controller
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan satker', $th->getMessage());
         }
+    }
+
+    function all()
+    {
+        return Endpoint::success(200, 'Berhasil', Satker::select('satker_code', 'satker_name')->orderBy('satker_name', 'desc')->where('satker_code', 'NOT LIKE', null)->get());
     }
 
     function search(Request $req)
@@ -97,6 +97,15 @@ class SatkerController extends Controller
         try {
             $data = Satker::where('satker_code', $code)->first();
             return Endpoint::success(200, 'Berhasil', $data);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal');
+        }
+    }
+
+    function findByName(Request $req)
+    {
+        try {
+            return Endpoint::success(200, 'Berhasil', Satker::where('satker_name', 'LIKE', $req->satker)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal');
         }
