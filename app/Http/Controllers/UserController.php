@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
-use App\Models\Kewenangan;
+use App\Helpers\SatkerCode;
 use App\Models\Log;
-use App\Models\Satker;
-use App\Models\Token;
+use App\Models\Pegawai;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,12 +15,14 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     private $user = '(User)';
-    public function show()
+    public function show($satker)
     {
         try {
-            $user = Kewenangan::with(['users'])->orderBy('created_at', 'asc')->paginate(10);
-            if (!$user) {
-                return Endpoint::success(200, 'Data user kosong!');
+            $satker_code = SatkerCode::parent($satker);
+            if ($satker_code == '0') {
+                $user = User::orderBy('name')->paginate(10);
+            } else {
+                $user = User::orderBy('name')->where('satker', 'LIKE', $satker . '%')->paginate(10);
             }
             return Endpoint::success(200, 'Berhasil mendapatkan semua users!', $user);
         } catch (\Throwable $th) {
@@ -29,10 +30,52 @@ class UserController extends Controller
         }
     }
 
+    function store(Request $req)
+    {
+        try {
+            $file = '';
+            $pegawai = Pegawai::where('nip', $req->nip)->where('nrp', $req->nrp)->first();
+            if (!$pegawai) {
+                return Endpoint::warning(400, 'Tidak terdaftar dalam pegawai');
+            }
+
+            if ($req->hasFile('photo')) {
+                $file = $req->nip . '_profile' . '.' . $req->file('photo')->getClientOriginalExtension();
+                $req->file('photo')->move('images', $file);
+            }
+            $input = [
+                'nip'       => $req->nip,
+                'nrp'       => $req->nrp,
+                'username'  => $req->username,
+                'name'      => $req->name,
+                'roles'     => $req->role,
+                'satker'    => $req->satker,
+                'email'     => $req->email,
+                'phone'     => $req->phone,
+                'photo'     => $file,
+                'password'  => Hash::make($req->password)
+            ];
+            if ($req->role == 'pegawai') {
+                $input['username'] = $req->nip;
+                $input['name'] = $req->nip;
+                $input['satker'] = $pegawai->nama_satker;
+                $input['photo'] = $pegawai->foto_pegawai;
+            }
+            if (User::where('username', $req->username)->where('nip', $req->nip)->where('nrp', $req->nrp)->first()) {
+                return Endpoint::warning(400, 'User sudah terdaftar');
+            }
+
+            User::insert($input);
+            return Endpoint::success(200, ' Berhasil');
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, $th->getMessage());
+        }
+    }
+
     public function find(Request $req, $id)
     {
         try {
-            $data = Kewenangan::with(['users'])->where('id', $id)->orWhere('users_id', $id)->first();
+            $data = User::where('id', $id)->orWhere('nip', $id)->orWhere('nrp', $id)->first();
             Log::insert([
                 'id'                => mt_rand(),
                 'users_id'          => $id,
@@ -45,17 +88,16 @@ class UserController extends Controller
                 'log_detail'        => $this->user . ' Lihat data users ' . $req->username,
                 'created_at'        => Carbon::now()
             ]);
-            return Endpoint::success(200, 'Berhasil menemukan user!', $data);
+            return Endpoint::success(200, 'Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, $th->getMessage());
+            return Endpoint::failed(400, 'User tidak ditemukan');
         }
     }
 
     public function update(Request $req, $id)
     {
         try {
-            $get_user = Kewenangan::with(['users'])->where('users_id', $id)->first();
-            $data_user = User::where('id', $id)->first();
+            $data_user = User::find($id);
             Log::insert([
                 'id'                => mt_rand(),
                 'users_id'          => $id,
@@ -73,10 +115,12 @@ class UserController extends Controller
                 'nrp'       => $req->nrp,
                 'username'  => $req->username,
                 'name'      => $req->name,
+                'roles'     => $req->roles,
+                'satker'    => $req->satker,
                 'email'     => $req->email,
                 'phone'     => $req->phone,
                 'password'  => $req->password == null ? $data_user->password : Hash::make($req->password),
-                'photo'     => $req->hasFile('photo') == true ? mt_rand() . '.' . $req->file('photo')->getClientOriginalExtension() : $get_user->users->photo
+                'photo'     => $req->hasFile('photo') == true ? mt_rand() . '.' . $req->file('photo')->getClientOriginalExtension() : $data_user->users->photo
             ];
 
             $this->validate($req, [
@@ -91,18 +135,7 @@ class UserController extends Controller
                 $req->file('photo')->move('images', $user['photo']);
             }
             $data_user->update($user);
-            if ($req->roles) {
-                $get_user->update(['roles' => $req->roles]);
-            }
-            if ($req->satker) {
-                $get_user->update(['satker' => $req->satker]);
-            }
-
-            $data = [
-                'user'              => Kewenangan::with(['users'])->where('users_id', $id)->first(),
-                'token'             => Token::where('users_id', $id)->first()
-            ];
-            return Endpoint::success(200, 'Berhasil mengubah user!', $data);
+            return Endpoint::success(200, 'Berhasil mengubah user!', $data_user);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mengubah user', $th->getMessage());
         }
@@ -111,7 +144,7 @@ class UserController extends Controller
     public function status($id, $stat)
     {
         try {
-            $status = Kewenangan::where('users_id', $id)->first();
+            $status = User::find($id);
             if (!$status) {
                 return Endpoint::failed(400, 'User tidak ditemukan');
             }
@@ -126,7 +159,7 @@ class UserController extends Controller
     public function delete(Request $req, $id)
     {
         try {
-            $kewenangan = Kewenangan::where('users_id', $id)->first();
+            $kewenangan = User::find($id);
             $user = User::where('id', $id)->first();
             Log::insert([
                 'id'                => mt_rand(),
@@ -141,7 +174,6 @@ class UserController extends Controller
                 'created_at'        => Carbon::now()
             ]);
             File::delete('images/' . $user->photo);
-            Token::where('users_id', $id)->delete();
             $kewenangan->delete();
             $user->delete();
             return Endpoint::success(200, 'Berhasil menghapus user!');
@@ -153,16 +185,14 @@ class UserController extends Controller
     function search(Request $req)
     {
         try {
-            $data = Kewenangan::with('users')->where('roles', 'LIKE', '%' . $req->role . '%')
+            $data = User::where('roles', 'LIKE', '%' . $req->role . '%')
                 ->where('status', 'LIKE', '%' . $req->status . '%')
-                ->whereHas('users', function ($query) use ($req) {
-                    $query->where('nip', 'LIKE', '%' . $req->nip . '%')
-                        ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
-                        ->where('username', 'LIKE', '%' . $req->username . '%')
-                        ->where('name', 'LIKE', '%' . $req->name . '%')
-                        ->where('email', 'LIKE', '%' . $req->email . '%')
-                        ->where('phone', 'LIKE', '%' . $req->phone . '%');
-                })
+                ->where('nip', 'LIKE', '%' . $req->nip . '%')
+                ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
+                ->where('username', 'LIKE', '%' . $req->username . '%')
+                ->where('name', 'LIKE', '%' . $req->name . '%')
+                ->where('email', 'LIKE', '%' . $req->email . '%')
+                ->where('phone', 'LIKE', '%' . $req->phone . '%')
                 ->paginate(10)->appends([
                     'nip'      => $req->nip,
                     'nrp'      => $req->nrp,

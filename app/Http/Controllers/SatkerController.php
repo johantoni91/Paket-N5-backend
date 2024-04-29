@@ -7,6 +7,7 @@ use App\Models\Log;
 use App\Models\Satker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SatkerController extends Controller
 {
@@ -48,19 +49,23 @@ class SatkerController extends Controller
     function search(Request $req)
     {
         try {
-            $data = Satker::orderBy('satker_type', 'desc')
-                ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
-                ->where('satker_type', 'LIKE', '%' . $req->satker_type . '%')
-                ->where('satker_phone', 'LIKE', '%' . $req->satker_phone . '%')
-                ->where('satker_email', 'LIKE', '%' . $req->satker_email . '%')
-                ->where('satker_address', 'LIKE', '%' . $req->satker_address . '%')
-                ->paginate(10)->appends([
-                    'satker_name'    => $req->satker_name,
-                    'satker_type'    => $req->satker_type,
-                    'satker_phone'   => $req->satker_phone,
-                    'satker_email'   => $req->satker_email,
-                    'satker_address' => $req->satker_address
-                ]);
+            if ($req->satker_type && $req->satker_name) {
+                $data = Satker::orderBy('satker_type')
+                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                    ->where('satker_type', $req->satker_type)
+                    ->paginate(10)->appends([
+                        'satker_name'    => $req->satker_name,
+                        'satker_type'    => $req->satker_type,
+                    ]);
+            } else {
+                $data = Satker::orderBy('satker_type')
+                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                    ->orWhere('satker_type', $req->satker_type)
+                    ->paginate(10)->appends([
+                        'satker_name'    => $req->satker_name,
+                        'satker_type'    => $req->satker_type,
+                    ]);
+            }
             if (!$data) {
                 return Endpoint::success(200, 'Satker tidak ada');
             }

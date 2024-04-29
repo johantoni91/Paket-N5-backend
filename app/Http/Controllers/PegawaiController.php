@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use app\Helpers\HelpersPegawai;
 use App\Helpers\Log;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
@@ -14,10 +15,10 @@ class PegawaiController extends Controller
     {
         try {
             $satker = str_replace('-', ' ', $id);
-            if ($satker == "KEJAKSAAN AGUNG") {
+            if ($satker == "kejaksaan agung" || $satker == "kejaksaan agung republik indonesia") {
                 $data = Pegawai::orderBy('nama')->paginate(10);
             } else {
-                $data = Pegawai::orderBy('nama', 'asc')->where('nama_satker', ucwords($satker))->paginate(10);
+                $data = Pegawai::orderBy('nama', 'asc')->where('nama_satker', $satker)->paginate(10);
             }
             return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {
@@ -25,28 +26,11 @@ class PegawaiController extends Controller
         }
     }
 
-    public function search(Request $req)
+    public function search(Request $req, $id)
     {
         try {
-            $data = Pegawai::orderBy('nama')
-                ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                ->where('jabatan', 'LIKE', '%' . $req->jabatan . '%')
-                ->where('nip', 'LIKE', '%' . $req->nip . '%')
-                ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
-                ->where('jenis_kelamin', 'LIKE', '%' . $req->jenis_kelamin . '%')
-                ->where('nama_satker', 'LIKE', '%' . $req->nama_satker . '%')
-                ->where('agama', 'LIKE', '%' . $req->agama . '%')
-                ->where('status_pegawai', 'LIKE', '%' . $req->status_pegawai . '%')
-                ->paginate(10)->appends([
-                    'nama'           =>  $req->nama,
-                    'jabatan'        =>  $req->jabatan,
-                    'nip'            =>  $req->nip,
-                    'nrp'            =>  $req->nrp,
-                    'jenis_kelamin'  =>  $req->jenis_kelamin,
-                    'nama_satker'    =>  $req->nama_satker,
-                    'agama'          =>  $req->agama,
-                    'status_pegawai' =>  $req->status_pegawai,
-                ]);
+            $satker = str_replace('-', ' ', $id);
+            $data = HelpersPegawai::searchRes($req->nama, $req->nip, $req->nrp, $satker);
             if (!$data) {
                 return Endpoint::warning(200, 'Pegawai tidak ada');
             }
@@ -128,7 +112,7 @@ class PegawaiController extends Controller
     public function find($id)
     {
         try {
-            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', Pegawai::where('nip', $id)->orWhere('nip', $id)->first());
+            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', Pegawai::where('nip', $id)->orWhere('nrp', $id)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan data pegawai');
         }

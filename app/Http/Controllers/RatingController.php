@@ -4,19 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Models\Rate;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File;
 
 class RatingController extends Controller
 {
     function index()
     {
         try {
-            return Endpoint::success(200, 'Berhasil mendapatkan data komentar', Rate::orderBy('created_at')->paginate(5));
+            $rating = Rate::with(['user'])->orderBy('created_at')->paginate(5);
+            return Endpoint::success(200, 'Berhasil mendapatkan data komentar', $rating);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan data komentar');
         }
+    }
+
+    function findById($id)
+    {
+        return Endpoint::success(200, 'Berhasil', Rate::where('name', $id)->first());
     }
 
     function additional()
@@ -36,15 +41,14 @@ class RatingController extends Controller
     function insert(Request $req)
     {
         try {
+            if (!User::where('id', $req->user_id)->first()) {
+                return Endpoint::warning(400, 'User tidak ditemukan');
+            }
             $input = [
-                'name'      => $req->name,
+                'user_id'   => $req->user_id,
                 'stars'     => $req->stars,
                 'comment'   => $req->comment
             ];
-            if ($req->hasFile('photo')) {
-                $input['photo'] = Str::slug($input['name']) . '.' . $req->file('photo')->getClientOriginalExtension();
-                $req->file('photo')->move('komentar', Str::slug($input['name']) . '.' . $req->file('photo')->getClientOriginalExtension());
-            }
             Rate::insert($input);
             return Endpoint::success(200, 'Berhasil menambahkan komentar');
         } catch (\Throwable $th) {
@@ -61,19 +65,10 @@ class RatingController extends Controller
         return Endpoint::failed(400, 'Gagal mendapatkan komentar');
     }
 
-    function destroy($id)
-    {
-        $komentar = Rate::find($id);
-        if ($komentar) {
-            if ($komentar->photo) {
-                if (File::exists(env('APP_IMG', '') . '/komentar/' . $komentar->photo)) {
-                    unlink('../public/komentar/' . $komentar->photo);
-                }
-            }
-            $komentar->delete();
-            return Endpoint::success(200, 'Berhasil menghapus komentar');
-        } else {
-            return Endpoint::failed(400, 'Gagal menghapus komentar');
-        }
-    }
+    // function destroy($id)
+    // {
+    //     $komentar = Rate::find($id);
+    //     $komentar->delete();
+    //     return Endpoint::success(200, 'Berhasil menghapus komentar');
+    // }
 }

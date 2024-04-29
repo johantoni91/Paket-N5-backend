@@ -20,6 +20,8 @@ class Validate
         return [
             'username'  => 'required',
             'name'      => 'required',
+            'satker'    => 'required',
+            'role'      => 'required',
             'password'  => 'required'
         ];
     }

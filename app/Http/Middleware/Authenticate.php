@@ -40,7 +40,7 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         $token = $request->bearerToken();
-        $user = Token::where('token', $token)->first();
+        $user = User::where('token', $token)->first();
         if ($user) {
             return $next($request);
         }

@@ -16,13 +16,17 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->text('name');
+            $table->text('satker');
+            $table->enum('roles', ['superadmin', 'admin', 'pegawai']);
+            $table->enum('status', [1, 0])->default(1);
             $table->string('nip')->unique()->nullable();
             $table->string('nrp')->unique()->nullable();
-            $table->string('email')->unique();
+            $table->string('email');
             $table->text('phone')->nullable();
             $table->text('photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->text('token')->nullable();
             $table->rememberToken();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));

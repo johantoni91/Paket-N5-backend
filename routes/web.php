@@ -32,10 +32,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
         // Dashboard
-        $router->get('/dashboard/{id}/{nama}', 'DashboardController@index');
+        $router->get('/dashboard/{id}', 'DashboardController@index');
 
         // Management Users
-        $router->get('/users', 'UserController@show'); // Mendapatkan semua user
+        $router->get('/users/{satker}', 'UserController@show'); // Mendapatkan semua user
+        $router->post('/user/store', 'UserController@store'); // Melakukan penambahan user setelah login
         $router->get('/user/search', 'UserController@search'); // Mencari user berdasarkan ketikan search
         $router->post('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
         $router->get('/user/{id:\d+}/delete', 'UserController@delete'); // Menghapus sebuah user
@@ -75,6 +76,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pengajuan/store', 'PengajuanController@store');
         $router->get('/pengajuan/search', 'PengajuanController@search');
         $router->get('/pengajuan/{id:\d+}', 'PengajuanController@find');
+        $router->get('/pengajuan/{user}/user', 'PengajuanController@findByUser');
         $router->get('/pengajuan/{id:\d+}/print', 'PengajuanController@print');
         $router->get('/pengajuan/jumlah', 'PengajuanController@getCount');
         $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');
@@ -118,6 +120,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/rate/additional', 'RatingController@additional');
         $router->post('/rate/insert', 'RatingController@insert');
         $router->get('/rate/{id:\d+}/find', 'RatingController@find');
+        $router->get('/rate/{id:\d+}/id', 'RatingController@findById');
         $router->get('/rate/{id:\d+}/destroy', 'RatingController@destroy');
 
         // Notifikasi

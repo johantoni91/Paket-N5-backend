@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('rate', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
-            $table->text('photo')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->enum('stars', [1, 2, 3, 4, 5])->default(5);
             $table->text('comment');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

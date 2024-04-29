@@ -21,6 +21,11 @@ class PengajuanController extends Controller
         }
     }
 
+    function findByUser($user)
+    {
+        return Endpoint::success(200, 'Berhasil', Pengajuan::where('nip', $user)->get());
+    }
+
     function monitor($id)
     {
         try {

@@ -11,32 +11,38 @@ use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use App\Models\Rate;
 use App\Models\Satker;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
-    function index($id, $nama)
+    function index($id)
     {
-        $satker_code = SatkerCode::parent($id);
-        if ($satker_code == '0') {
-            return Endpoint::success(200, 'Berhasil', [
-                'user' => Kewenangan::count(),
-                'pegawai' => Pegawai::count(),
-                'satker' => Satker::count(),
-                'pengajuan' => Pengajuan::count(),
-                'kartu' => Kartu::count(),
-                'faq' => Faq::count(),
-                'rating' => Rate::count()
-            ]);
-        } else {
-            return Endpoint::success(200, 'Berhasil', [
-                'user' => Kewenangan::where('satker', $id)->count(),
-                'pegawai' => Pegawai::where('nama_satker', str_replace('-', ' ', $nama))->count(),
-                'satker' => Satker::where('satker_code', 'LIKE', $id . '%')->count(),
-                'pengajuan' => Pengajuan::where('kode_satker', $id)->count(),
-                'kartu' => Kartu::count(),
-                'faq' => Faq::count(),
-                'rating' => Rate::count()
-            ]);
+        try {
+            $satker_code = SatkerCode::parent($id);
+            $satker_name = Satker::where('satker_code', $id)->first();
+            if ($satker_code == '0') {
+                return Endpoint::success(200, 'Berhasil', [
+                    'user' => User::count(),
+                    'pegawai' => Pegawai::count(),
+                    'satker' => Satker::count(),
+                    'pengajuan' => Pengajuan::count(),
+                    'kartu' => Kartu::count(),
+                    'faq' => Faq::count(),
+                    'rating' => Rate::count()
+                ]);
+            } else {
+                return Endpoint::success(200, 'Berhasil', [
+                    'user' => User::where('satker', $id)->count(),
+                    'pegawai' => Pegawai::where('nama_satker', str_replace('-', ' ', $satker_name))->count(),
+                    'satker' => Satker::where('satker_code', 'LIKE', $id . '%')->count(),
+                    'pengajuan' => Pengajuan::where('kode_satker', $id)->count(),
+                    'kartu' => Kartu::count(),
+                    'faq' => Faq::count(),
+                    'rating' => Rate::count()
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Error', $th->getMessage());
         }
     }
 }
