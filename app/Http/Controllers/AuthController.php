@@ -18,6 +18,10 @@ class AuthController extends Controller
     public function registration(Request $req)
     {
         $file = null;
+        $user = User::where('nip', $req->nip)->orWhere('nrp', $req->nrp)->orWhere('username', $req->username)->first();
+        if ($user) {
+            return Endpoint::warning(400, 'Pengguna sudah terdaftar');
+        }
         if ($req->hasFile('photo')) {
             $file = $req->nip . '_profile' . '.' . $req->file('photo')->getClientOriginalExtension();
             $req->file('photo')->move('images', $file);
@@ -63,7 +67,7 @@ class AuthController extends Controller
                 return Endpoint::failed(400, "User tidak ditemukan, silahkan registrasi terlebih dahulu!");
             }
             if ($user->status == '0') {
-                return Endpoint::warning(300, "Akun anda sudah tidak aktif!");
+                return Endpoint::warning(400, "Akun anda sudah tidak aktif!");
             }
 
             $check_pegawai = Pegawai::where('nip', $req->username)->orWhere('nrp', $req->username)->first();
