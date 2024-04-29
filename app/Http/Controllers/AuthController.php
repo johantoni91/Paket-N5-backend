@@ -97,7 +97,7 @@ class AuthController extends Controller
             }
             $result = [
                 'user'     => $user,
-                'pegawai'  => $check_pegawai
+                'pegawai'  => Pegawai::where('nip', $user->nip)->first()
             ];
             Log::insert($data_login);
             return Endpoint::success(200, 'Berhasil login', $result);
