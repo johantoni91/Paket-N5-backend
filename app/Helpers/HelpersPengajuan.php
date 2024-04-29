@@ -2,12 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Api\Endpoint;
-use App\Models\Kartu;
-use App\Models\Notif;
-use App\Models\Pegawai;
 use App\Models\Pengajuan;
-use Illuminate\Support\Facades\DB;
 
 // NB : SATKER_KODE || KODE 
 // 0 = KEJAGUNG
@@ -19,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 // 0 = KEJAGUNG
 // 1 = KEJATI
 // 2 = KEJARI
+// 3 = KEJARI
 
 // NB : STATUS APPROVAL
 // 0 = DITOLAK
@@ -39,10 +35,6 @@ class HelpersPengajuan
         } else {
             return Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', 'LIKE', $id . '%')->paginate(5);
         }
-    }
-
-    public static function store($nip, $nama, $kartu, $input, $satker_code, $approve_satker)
-    {
     }
 
     public static function approve($id, $satker)

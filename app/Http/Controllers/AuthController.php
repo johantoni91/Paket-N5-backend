@@ -95,8 +95,12 @@ class AuthController extends Controller
             if (!$user->token) {
                 $user->update(['token' => encrypt(mt_rand())]);
             }
+            $result = [
+                'user'     => $user,
+                'pegawai'  => $check_pegawai
+            ];
             Log::insert($data_login);
-            return Endpoint::success(200, 'Berhasil login', $user);
+            return Endpoint::success(200, 'Berhasil login', $result);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Username / Password Salah!');
         }

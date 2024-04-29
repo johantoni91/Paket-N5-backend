@@ -66,7 +66,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         // Pegawai
         $router->get('/pegawai/index/{id}', 'PegawaiController@index');
         $router->post('/pegawai/store', 'PegawaiController@store');
-        $router->get('/pegawai/search', 'PegawaiController@search');
+        $router->get('/pegawai/{id}/search', 'PegawaiController@search');
         $router->get('/pegawai/{id:\d+}/find', 'PegawaiController@find');
         $router->post('/pegawai/{id:\d+}/update', 'PegawaiController@update');
         $router->get('/pegawai/{id:\d+}/destroy', 'PegawaiController@destroy');
