@@ -43,21 +43,6 @@ class HelpersPengajuan
 
     public static function store($nip, $nama, $kartu, $input, $satker_code, $approve_satker)
     {
-        if (!Pegawai::where('nip', $nip)->where('nama', $nama)->first()) {
-            return Endpoint::warning(200, 'Pengajuan gagal, pegawai tidak ditemukan.');
-        }
-
-        $kartu = Kartu::where('title', $input['kartu'])->first();
-        if (!$kartu) {
-            return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
-        }
-        Pengajuan::insert($input);
-        $kartu->update(['total' => DB::raw('total + 1')]);
-        Notif::insert([
-            'notifikasi'  => $nama . ' mengajukan kartu.',
-            'kode_satker' => $satker_code,
-            'satker'      => $approve_satker,
-        ]);
     }
 
     public static function approve($id, $satker)

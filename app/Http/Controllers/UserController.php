@@ -33,15 +33,9 @@ class UserController extends Controller
     function store(Request $req)
     {
         try {
-            $file = '';
             $pegawai = Pegawai::where('nip', $req->nip)->where('nrp', $req->nrp)->first();
             if (!$pegawai) {
                 return Endpoint::warning(400, 'Tidak terdaftar dalam pegawai');
-            }
-
-            if ($req->hasFile('photo')) {
-                $file = $req->nip . '_profile' . '.' . $req->file('photo')->getClientOriginalExtension();
-                $req->file('photo')->move('images', $file);
             }
             $input = [
                 'nip'       => $req->nip,
@@ -52,7 +46,6 @@ class UserController extends Controller
                 'satker'    => $req->satker,
                 'email'     => $req->email,
                 'phone'     => $req->phone,
-                'photo'     => $file,
                 'password'  => Hash::make($req->password)
             ];
             if ($req->role == 'pegawai') {
@@ -65,6 +58,11 @@ class UserController extends Controller
                 return Endpoint::warning(400, 'User sudah terdaftar');
             }
 
+            if ($req->hasFile('photo')) {
+                $file = $req->nip . '_profile' . '.' . $req->file('photo')->getClientOriginalExtension();
+                $req->file('photo')->move('images', $file);
+                $input['photo'] = $file;
+            }
             User::insert($input);
             return Endpoint::success(200, ' Berhasil');
         } catch (\Throwable $th) {

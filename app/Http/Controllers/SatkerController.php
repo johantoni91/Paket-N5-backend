@@ -110,7 +110,7 @@ class SatkerController extends Controller
     function findByName(Request $req)
     {
         try {
-            return Endpoint::success(200, 'Berhasil', Satker::where('satker_name', 'LIKE', $req->satker)->first());
+            return Endpoint::success(200, 'Berhasil', Satker::where('satker_name', 'LIKE', '%' . $req->satker . '%')->where('satker_code', 'NOT LIKE', null)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal');
         }

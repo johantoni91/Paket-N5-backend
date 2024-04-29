@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Api\Endpoint;
 use App\Helpers\HelpersPengajuan;
 use App\Helpers\SatkerCode;
+use App\Models\Kartu;
+use App\Models\Notif;
+use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
 {
@@ -90,7 +94,22 @@ class PengajuanController extends Controller
                 'kartu' => 'required'
             ]);
 
-            HelpersPengajuan::store($req->nip, $req->nama, $req->kartu, $input, $req->satker_code, $approve_satker);
+            if (!Pegawai::where('nip', $req->nip)->where('nama', $req->nama)->first()) {
+                return Endpoint::warning(200, 'Pengajuan gagal, pegawai tidak ditemukan.');
+            }
+
+            $kartu = Kartu::where('title', $req->kartu)->first();
+            if (!$kartu) {
+                return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
+            }
+            Pengajuan::insert($input);
+            $kartu->update(['total' => DB::raw('total + 1')]);
+            Notif::insert([
+                'notifikasi'  => $req->nama . ' mengajukan kartu.',
+                'kode_satker' => $req->satker_code,
+                'satker'      => $approve_satker,
+            ]);
+
             if ($req->hasFile('photo')) {
                 $req->file('photo')->move('pengajuan', $req->file('photo')->getClientOriginalName());
             }
