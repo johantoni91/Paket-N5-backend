@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('nip')->unique()->nullable();
             $table->string('nrp')->unique()->nullable();
             $table->string('email');
-            $table->text('phone')->nullable();
-            $table->text('photo')->nullable();
+            $table->text('phone')->default('');
+            $table->text('photo')->default('');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->text('token')->nullable();

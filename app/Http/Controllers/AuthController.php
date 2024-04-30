@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use App\Helpers\Result;
 use App\Models\Log;
 use App\Models\Pegawai;
 use App\Models\Satker;
@@ -95,9 +96,10 @@ class AuthController extends Controller
             if (!$user->token) {
                 $user->update(['token' => encrypt(mt_rand())]);
             }
+
             $result = [
-                'user'     => $user,
-                'pegawai'  => Pegawai::where('nip', $user->nip)->first()
+                'user'     => Result::user($user),
+                'pegawai'  => Result::pegawai(Pegawai::where('nip', $user->nip)->first())
             ];
             Log::insert($data_login);
             return Endpoint::success(200, 'Berhasil login', $result);
