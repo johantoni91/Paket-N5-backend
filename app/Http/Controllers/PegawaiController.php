@@ -29,6 +29,7 @@ class PegawaiController extends Controller
     {
         try {
             $satker = str_replace('-', ' ', $id);
+            $data = '';
             if ($req->nama && !$req->nip && !$req->nrp) {
                 if ($satker == "KEJAKSAAN AGUNG") {
                     $data = Pegawai::orderBy('nama')
@@ -139,7 +140,7 @@ class PegawaiController extends Controller
                     ]);
             }
             if (!$data) {
-                return Endpoint::warning(200, 'Pegawai tidak ada');
+                return Endpoint::warning(200, 'Pegawai tidak ada', '');
             }
             return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {

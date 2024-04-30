@@ -57,14 +57,20 @@ class SatkerController extends Controller
                         'satker_name'    => $req->satker_name,
                         'satker_type'    => $req->satker_type,
                     ]);
-            } else {
+            } elseif (!$req->satker_type && $req->satker_name) {
                 $data = Satker::orderBy('satker_type')
                     ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
-                    ->orWhere('satker_type', $req->satker_type)
                     ->paginate(10)->appends([
                         'satker_name'    => $req->satker_name,
+                    ]);
+            } elseif ($req->satker_type && !$req->satker_name) {
+                $data = Satker::orderBy('satker_type')
+                    ->where('satker_type', $req->satker_type)
+                    ->paginate(10)->appends([
                         'satker_type'    => $req->satker_type,
                     ]);
+            } else {
+                return Endpoint::warning(200, 'Mohon masukkan kata pencarian pada nama satker atau tipe satker');
             }
             if (!$data) {
                 return Endpoint::success(200, 'Satker tidak ada');
