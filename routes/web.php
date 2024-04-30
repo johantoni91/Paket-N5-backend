@@ -44,13 +44,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/user/{id:\d+}/status/{stat:\d+}', 'UserController@status'); // Mengubah status user
 
         // Log Activity
-        $router->get('/log', 'LogController@getLog'); // Mendapatkan semua log aktivitas
+        $router->get('/log/{id}/index', 'LogController@getLog'); // Mendapatkan semua log aktivitas
         $router->get('/log/search', 'LogController@search');
         $router->get('/log/column', 'LogController@getColumn'); // Mendapatkan kolom pada table Log
         $router->get('/log/{id:\d+}/delete', 'LogController@destroy'); // Hapus log aktivitas
 
         // Satuan Kerja
-        $router->get('/satker', 'SatkerController@index');
+        $router->get('/satker/{satker}/index', 'SatkerController@index');
         $router->get('/satker/all', 'SatkerController@all');
         $router->post('/satker/store', 'SatkerController@store'); // Menambah satker
         $router->get('/satker/search', 'SatkerController@search'); // Mencari user berdasarkan ketikan search

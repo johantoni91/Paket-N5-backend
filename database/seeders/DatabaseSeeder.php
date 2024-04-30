@@ -43,19 +43,22 @@ class DatabaseSeeder extends Seeder
             'id'    => mt_rand(),
             'role'  => 'admin',
             'route' => json_encode([
+                'user',
                 'satker',
                 'pegawai',
                 'pengajuan',
+                'monitor.kartu',
                 'layout.kartu',
+                'perangkat',
                 'log',
                 'faq',
                 'rating'
             ]),
             'icon'  => json_encode([
-                'book-open', 'laugh', 'pen', 'credit-card', 'key-square', 'history', 'help-circle', 'star'
+                'user', 'book-open', 'laugh', 'pen', 'monitor', 'credit-card', 'radio-receiver', 'history', 'help-circle', 'star'
             ]),
             'title' => json_encode([
-                'Satuan Kerja', 'Pegawai', 'Pengajuan', 'Layout Kartu', 'Hak Akses', 'Log Aktivitas', 'FAQ', 'Ulasan'
+                'Pengguna', 'Satuan Kerja', 'Pegawai', 'Pengajuan', 'Monitor Kartu', 'Layout Kartu', 'Perangkat', 'Log Aktivitas', 'FAQ', 'Ulasan'
             ])
         ]);
 
@@ -63,15 +66,14 @@ class DatabaseSeeder extends Seeder
             'id'    => mt_rand(),
             'role'  => 'pegawai',
             'route' => json_encode([
-                'layout.kartu',
-                'faq',
-                'rating'
+                'monitor.kartu',
+                'faq'
             ]),
             'icon'  => json_encode([
-                'credit-card', 'help-circle', 'star'
+                'monitor', 'help-circle'
             ]),
             'title' => json_encode([
-                'Layout Kartu', 'FAQ', 'Ulasan'
+                'Monitor Kartu', 'FAQ'
             ])
         ]);
     }

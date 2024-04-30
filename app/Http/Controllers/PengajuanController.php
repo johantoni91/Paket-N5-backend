@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Helpers\HelpersPengajuan;
+use App\Helpers\Log;
 use App\Helpers\SatkerCode;
 use App\Models\Kartu;
 use App\Models\Notif;
@@ -98,7 +99,7 @@ class PengajuanController extends Controller
                 return Endpoint::warning(200, 'Pengajuan gagal, pegawai tidak ditemukan.');
             }
 
-            $kartu = Kartu::where('title', $req->kartu)->first();
+            $kartu = Kartu::where('id', $req->kartu)->first();
             if (!$kartu) {
                 return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
             }

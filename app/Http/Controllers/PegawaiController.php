@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Helpers\Log;
+use App\Helpers\SatkerCode;
 use App\Models\Pegawai;
+use App\Models\Satker;
 use Illuminate\Http\Request;
 
 class PegawaiController extends Controller
@@ -28,121 +30,34 @@ class PegawaiController extends Controller
     public function search(Request $req, $id)
     {
         try {
-            $satker = str_replace('-', ' ', $id);
-            $data = '';
-            if ($req->nama && !$req->nip && !$req->nrp) {
-                if ($satker == "KEJAKSAAN AGUNG") {
-                    $data = Pegawai::orderBy('nama')
-                        ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                        ->paginate(10)->appends([
-                            'nama'           =>  $req->nama
-                        ]);
-                }
-                $data = Pegawai::orderBy('nama')
-                    ->where('nama_satker', ucwords($satker))
+            $satker_code = SatkerCode::parent($id);
+            $nama_satker = Satker::where('satker_code', 'LIKE', '%' . $id . '%')->first();
+            if ($satker_code == '0') {
+                $pegawai = Pegawai::orderBy('nama')
                     ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                    ->paginate(10)->appends([
-                        'nama'           =>  $req->nama
-                    ]);
-            } elseif (!$req->nama && $req->nip && !$req->nrp) {
-                if ($satker == "KEJAKSAAN AGUNG") {
-                    $data = Pegawai::orderBy('nama')
-                        ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                        ->paginate(10)->appends([
-                            'nama'           =>  $req->nama
-                        ]);
-                }
-                $data = Pegawai::orderBy('nama')
-                    ->where('nama_satker', ucwords($satker))
                     ->where('nip', 'LIKE', '%' . $req->nip . '%')
-                    ->paginate(10)->appends([
-                        'nip'           =>  $req->nip
-                    ]);
-            } elseif (!$req->nama && !$req->nip && $req->nrp) {
-                if ($satker == "KEJAKSAAN AGUNG") {
-                    $data = Pegawai::orderBy('nama')
-                        ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                        ->paginate(10)->appends([
-                            'nama'           =>  $req->nama
-                        ]);
-                }
-                $data = Pegawai::orderBy('nama')
-                    ->where('nama_satker', ucwords($satker))
                     ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
                     ->paginate(10)->appends([
+                        'nama'           =>  $req->nama,
+                        'nip'           =>  $req->nip,
                         'nrp'           =>  $req->nrp
                     ]);
-            } elseif ($req->nama && $req->nip && !$req->nrp) {
-                if ($satker == "KEJAKSAAN AGUNG") {
-                    $data = Pegawai::orderBy('nama')
-                        ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                        ->paginate(10)->appends([
-                            'nama'           =>  $req->nama
-                        ]);
-                }
-                $data = Pegawai::orderBy('nama')
-                    ->where('nama_satker', ucwords($satker))
-                    ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                    ->where('nip', 'LIKE', '%' . $req->nip . '%')
-                    ->paginate(10)->appends([
-                        'nama'           =>  $req->nama,
-                        'nip'            =>  $req->nip,
-                    ]);
-            } elseif ($req->nama && !$req->nip && $req->nrp) {
-                if ($satker == "KEJAKSAAN AGUNG") {
-                    $data = Pegawai::orderBy('nama')
-                        ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                        ->paginate(10)->appends([
-                            'nama'           =>  $req->nama
-                        ]);
-                }
-                $data = Pegawai::orderBy('nama')
-                    ->where('nama_satker', ucwords($satker))
-                    ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                    ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
-                    ->paginate(10)->appends([
-                        'nama'           =>  $req->nama,
-                        'nrp'            =>  $req->nrp,
-                    ]);
-            } elseif (!$req->nama && $req->nip && $req->nrp) {
-                if ($satker == "KEJAKSAAN AGUNG") {
-                    $data = Pegawai::orderBy('nama')
-                        ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                        ->paginate(10)->appends([
-                            'nama'           =>  $req->nama
-                        ]);
-                }
-                $data = Pegawai::orderBy('nama')
-                    ->where('nama_satker', ucwords($satker))
-                    ->where('nip', 'LIKE', '%' . $req->nip . '%')
-                    ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
-                    ->paginate(10)->appends([
-                        'nip'           =>  $req->nip,
-                        'nrp'            =>  $req->nrp,
-                    ]);
             } else {
-                if ($satker == "KEJAKSAAN AGUNG") {
-                    $data = Pegawai::orderBy('nama')
-                        ->where('nama', 'LIKE', '%' . $req->nama . '%')
-                        ->paginate(10)->appends([
-                            'nama'           =>  $req->nama
-                        ]);
-                }
-                $data = Pegawai::orderBy('nama')
-                    ->where('nama_satker', ucwords($satker))
+                $pegawai = Pegawai::orderBy('nama')
+                    ->where('nama_satker', 'LIKE',  '%' . $nama_satker->satker_name . '%')
                     ->where('nama', 'LIKE', '%' . $req->nama . '%')
                     ->where('nip', 'LIKE', '%' . $req->nip . '%')
                     ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
                     ->paginate(10)->appends([
                         'nama'           =>  $req->nama,
-                        'nip'            =>  $req->nip,
-                        'nrp'            =>  $req->nrp,
+                        'nip'           =>  $req->nip,
+                        'nrp'           =>  $req->nrp
                     ]);
             }
-            if (!$data) {
-                return Endpoint::warning(200, 'Pegawai tidak ada', '');
+            if (!$pegawai) {
+                return Endpoint::warning(200, 'Tidak menemukan data pegawai');
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
+            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $pegawai);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal', $th->getMessage());
         }

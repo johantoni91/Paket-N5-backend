@@ -12,6 +12,7 @@ use App\Validation\Validate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -104,7 +105,7 @@ class AuthController extends Controller
             Log::insert($data_login);
             return Endpoint::success(200, 'Berhasil login', $result);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Username / Password Salah!');
+            return Endpoint::failed(400, 'Username / Password Salah!', $th->getMessage());
         }
     }
 }

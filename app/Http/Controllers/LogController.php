@@ -6,15 +6,21 @@ use App\Api\Endpoint;
 use App\Helpers\Log as HelpersLog;
 use App\Models\Log;
 use App\Models\Satker;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
-    function getLog()
+    function getLog($id)
     {
         try {
-            $logs = Log::orderBy('created_at', 'desc')->paginate(10);
+            $user = User::where('id', $id)->first();
+            if ($user->roles == 'superadmin') {
+                $logs = Log::orderBy('created_at', 'desc')->paginate(10);
+            } else {
+                $logs = Log::orderBy('created_at', 'desc')->where('users_id', $user->id)->paginate(10);
+            }
             return Endpoint::success(200, 'Berhasil mendapatkan data log aktivitas', $logs);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, 'Gagal mendapatkan data log aktivitas', $th->getMessage());

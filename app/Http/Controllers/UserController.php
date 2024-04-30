@@ -157,22 +157,20 @@ class UserController extends Controller
     public function delete(Request $req, $id)
     {
         try {
-            $kewenangan = User::find($id);
-            $user = User::where('id', $id)->first();
-            Log::insert([
-                'id'                => mt_rand(),
-                'users_id'          => $id,
-                'username'          => $user->username,
-                'ip_address'        => $req->ip_address,
-                'browser'           => $req->browser,
-                'browser_version'   => $req->browser_version,
-                'os'                => $req->os,
-                'mobile'            => $req->mobile,
-                'log_detail'        => $this->user . ' Hapus data user ' . $req->username,
-                'created_at'        => Carbon::now()
-            ]);
+            $user = User::find($id);
+            // Log::insert([
+            //     'id'                => mt_rand(),
+            //     'users_id'          => $id,
+            //     'username'          => $user->username,
+            //     'ip_address'        => $req->ip_address,
+            //     'browser'           => $req->browser,
+            //     'browser_version'   => $req->browser_version,
+            //     'os'                => $req->os,
+            //     'mobile'            => $req->mobile,
+            //     'log_detail'        => $this->user . ' Hapus data user ' . $req->username,
+            //     'created_at'        => Carbon::now()
+            // ]);
             File::delete('images/' . $user->photo);
-            $kewenangan->delete();
             $user->delete();
             return Endpoint::success(200, 'Berhasil menghapus user!');
         } catch (\Throwable $th) {

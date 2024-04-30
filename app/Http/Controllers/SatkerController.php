@@ -3,19 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use App\Helpers\SatkerCode;
 use App\Models\Log;
 use App\Models\Satker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class SatkerController extends Controller
 {
     private $satker = '(Satker)';
-    function index()
+    function index($satker)
     {
         try {
-            $satker = Satker::orderBy('satker_type')->paginate(10);
+            $satker_code = SatkerCode::parent($satker);
+            if ($satker_code == '0') {
+                $satker = Satker::orderBy('satker_type')->paginate(10);
+            } else {
+                $satker = Satker::orderBy('satker_type')->where('satker_code', 'like', $satker . '%')->paginate(10);
+            }
             return Endpoint::success(200, 'mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, "gagal mendapatkan data satker", $th->getMessage());
