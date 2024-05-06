@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('nip')->unique()->nullable();
             $table->string('nrp')->unique()->nullable();
             $table->string('email');
-            $table->text('phone')->nullable()->default('');
-            $table->text('photo')->nullable()->default('');
+            $table->text('phone')->nullable();
+            $table->text('photo')->nullable();
             $table->string('password');
             $table->text('token')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
