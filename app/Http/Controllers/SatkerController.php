@@ -19,9 +19,9 @@ class SatkerController extends Controller
         try {
             $satker_code = SatkerCode::parent($satker);
             if ($satker_code == '0') {
-                $satker = Satker::orderBy('satker_type')->paginate(10);
+                $satker = Satker::orderBy('satker_type')->where('satker_code', 'NOT LIKE', null)->paginate(10);
             } else {
-                $satker = Satker::orderBy('satker_type')->where('satker_code', 'like', $satker . '%')->paginate(10);
+                $satker = Satker::orderBy('satker_type')->where('satker_code', 'NOT LIKE', null)->where('satker_code', 'like', $satker . '%')->paginate(10);
             }
             return Endpoint::success(200, 'mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
@@ -56,29 +56,14 @@ class SatkerController extends Controller
     function search(Request $req)
     {
         try {
-            if ($req->satker_type && $req->satker_name) {
-                $data = Satker::orderBy('satker_type')
-                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
-                    ->where('satker_type', $req->satker_type)
-                    ->paginate(10)->appends([
-                        'satker_name'    => $req->satker_name,
-                        'satker_type'    => $req->satker_type,
-                    ]);
-            } elseif (!$req->satker_type && $req->satker_name) {
-                $data = Satker::orderBy('satker_type')
-                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
-                    ->paginate(10)->appends([
-                        'satker_name'    => $req->satker_name,
-                    ]);
-            } elseif ($req->satker_type && !$req->satker_name) {
-                $data = Satker::orderBy('satker_type')
-                    ->where('satker_type', $req->satker_type)
-                    ->paginate(10)->appends([
-                        'satker_type'    => $req->satker_type,
-                    ]);
-            } else {
-                return Endpoint::warning(200, 'Mohon masukkan kata pencarian pada nama satker atau tipe satker');
-            }
+            $data = Satker::orderBy('satker_type')
+                ->where('satker_code', 'NOT LIKE', null)
+                ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                ->where('satker_type', $req->satker_type)
+                ->paginate(10)->appends([
+                    'satker_name'    => $req->satker_name,
+                    'satker_type'    => $req->satker_type,
+                ]);
             if (!$data) {
                 return Endpoint::success(200, 'Satker tidak ada');
             }

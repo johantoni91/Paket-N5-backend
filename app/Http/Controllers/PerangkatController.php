@@ -26,7 +26,22 @@ class PerangkatController extends Controller
     function search(Request $req)
     {
         try {
-            $satker = Satker::where('satker_name', 'like', '%' . $req->satker . '%')->get();
+            $arr = [];
+            $profile = SatkerCode::parent($req->profile);
+            if ($profile == '0') {
+                $satker = Satker::orderBy('satker_type')
+                    ->where('satker_code', 'NOT LIKE', null)
+                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                    ->where('satker_type', $req->satker_type)
+                    ->get();
+            } else {
+                $satker = Satker::orderBy('satker_type')
+                    ->where('satker_code', 'NOT LIKE', null)
+                    ->where('satker_code', 'LIKE', $req->profile . '%')
+                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                    ->where('satker_type', $req->satker_type)
+                    ->get();
+            }
             foreach ($satker as $i) {
                 $arr['code'] = $i->satker_code;
             }
