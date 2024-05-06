@@ -196,7 +196,7 @@ class PerangkatController extends Controller
                 'id_perangkat'  => $req->id_perangkat,
                 'id_satker'     => $req->id_satker,
                 'serial_number' => $req->serial_number,
-                'photo'         => env('APP_URL', '') . '/perangkat/' . $req->file('photo')->getClientOriginalName()
+                'photo'         => env('API_URL', '') . '/perangkat/' . $req->file('photo')->getClientOriginalName()
             ]);
 
             if (!$insert) {
@@ -223,7 +223,7 @@ class PerangkatController extends Controller
                 'id_perangkat'  => $req->id_perangkat ?? $hardware->id_perangkat,
                 'id_satker'     => $req->id_satker ?? $hardware->id_satker,
                 'serial_number' => $req->serial_number ?? $hardware->serial_number,
-                'photo'         => $req->hasFile('photo') ? env('APP_URL', '') . '/perangkat/' . $req->file('photo')->getClientOriginalName() : $hardware->photo
+                'photo'         => $req->hasFile('photo') ? env('API_URL', '') . '/perangkat/' . $req->file('photo')->getClientOriginalName() : $hardware->photo
             ]);
             if (!$update) {
                 return Endpoint::failed(400, 'Gagal');
