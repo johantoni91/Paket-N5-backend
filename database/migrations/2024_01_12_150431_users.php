@@ -22,12 +22,10 @@ return new class extends Migration
             $table->string('nip')->unique()->nullable();
             $table->string('nrp')->unique()->nullable();
             $table->string('email');
-            $table->text('phone')->default('');
-            $table->text('photo')->default('');
-            $table->timestamp('email_verified_at')->nullable();
+            $table->text('phone')->nullable()->default('');
+            $table->text('photo')->nullable()->default('');
             $table->string('password');
             $table->text('token')->nullable();
-            $table->rememberToken();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

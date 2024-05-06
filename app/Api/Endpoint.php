@@ -4,7 +4,7 @@ namespace App\Api;
 
 class Endpoint
 {
-    public static function failed($status, $msg, $error = null)
+    public static function failed($status, $msg, $error = '')
     {
         return response()->json([
             'status'    => false,
@@ -13,7 +13,7 @@ class Endpoint
         ], $status);
     }
 
-    public static function success($status, $msg, $data = null)
+    public static function success($status, $msg, $data = '')
     {
         return response()->json([
             'status'    => true,
@@ -22,7 +22,7 @@ class Endpoint
         ], $status);
     }
 
-    public static function warning($status, $msg, $data = null)
+    public static function warning($status, $msg, $data = '')
     {
         return response()->json([
             'status'    => false,

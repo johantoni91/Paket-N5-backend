@@ -64,50 +64,62 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/satker/{id:\d+}/status/{stat:\d+}', 'SatkerController@status'); // Mengubah status satker
 
         // Pegawai
-        $router->get('/pegawai/index/{id}', 'PegawaiController@index');
         $router->post('/pegawai/store', 'PegawaiController@store');
+        $router->get('/pegawai/index/{id}', 'PegawaiController@index');
         $router->get('/pegawai/{id}/search', 'PegawaiController@search');
         $router->get('/pegawai/{id:\d+}/find', 'PegawaiController@find');
         $router->post('/pegawai/{id:\d+}/update', 'PegawaiController@update');
         $router->get('/pegawai/{id:\d+}/destroy', 'PegawaiController@destroy');
 
         // Pengajuan
-        $router->get('/pengajuan/{id:\d+}/index', 'PengajuanController@index');
         $router->post('/pengajuan/store', 'PengajuanController@store');
-        $router->get('/pengajuan/search', 'PengajuanController@search');
         $router->get('/pengajuan/{id:\d+}', 'PengajuanController@find');
-        $router->get('/pengajuan/{user}/user', 'PengajuanController@findByUser');
-        $router->get('/pengajuan/{id:\d+}/print', 'PengajuanController@print');
+        $router->get('/pengajuan/search', 'PengajuanController@search');
         $router->get('/pengajuan/jumlah', 'PengajuanController@getCount');
+        $router->get('/pengajuan/{id:\d+}/index', 'PengajuanController@index');
+        $router->get('/pengajuan/{id:\d+}/print', 'PengajuanController@print');
+        $router->get('/pengajuan/{user}/user', 'PengajuanController@findByUser');
         $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');
-        $router->get('/pengajuan/{id:\d+}/approve/{satker:\d+}', 'PengajuanController@approve');
         $router->get('/pengajuan/{id:\d+}/destroy', 'PengajuanController@destroy');
+        $router->get('/pengajuan/{id:\d+}/approve/{satker:\d+}', 'PengajuanController@approve');
 
         // Monitoring Pengajuan
         $router->get('/monitor/{id:\d+}', 'PengajuanController@monitor');
 
         // Kartu
         $router->get('/kartu', 'KartuController@index');
-        $router->post('/kartu/category', 'KartuController@category');
-        $router->post('/kartu/typing', 'KartuController@typing');
+        $router->post('/kartu/title', 'KartuController@title');
         $router->post('/kartu/store', 'KartuController@store');
         $router->get('/kartu/{id:\d+}', 'KartuController@find');
-        $router->post('/kartu/title', 'KartuController@title');
-        $router->post('/kartu/{id:\d+}/update', 'KartuController@update');
-        $router->post('/kartu/{id:\d+}/front', 'KartuController@front');
+        $router->post('/kartu/typing', 'KartuController@typing');
+        $router->post('/kartu/category', 'KartuController@category');
         $router->post('/kartu/{id:\d+}/back', 'KartuController@back');
+        $router->post('/kartu/{id:\d+}/front', 'KartuController@front');
+        $router->post('/kartu/{id:\d+}/update', 'KartuController@update');
         $router->get('/kartu/{id:\d+}/destroy', 'KartuController@destroy');
 
         // Perangkat
-        $router->get('/perangkat/{id:\d+}', 'PerangkatController@index');
         $router->get('/perangkat/import', 'PerangkatController@import');
+        $router->get('/perangkat/search', 'PerangkatController@search');
+        $router->get('/perangkat/{id:\d+}', 'PerangkatController@index');
+        $router->get('/perangkat/{id}/find', 'PerangkatController@find');
+        $router->get('/perangkat/{id}/update', 'PerangkatController@update');
+        $router->get('/perangkat/tm_hardware', 'PerangkatController@indexTmHardware');
+        $router->get('/perangkat/tc_hardware', 'PerangkatController@indexTcHardware');
+        $router->post('/perangkat/tm_hardware', 'PerangkatController@storeTmHardware');
+        $router->post('/perangkat/tc_hardware', 'PerangkatController@storeTcHardware');
+        $router->get('/perangkat/{id}/find/tm_hardware', 'PerangkatController@findTmHardware');
+        $router->get('/perangkat/{id}/find/tc_hardware', 'PerangkatController@findTcHardware');
+        $router->get('/perangkat/{id}/find/tools/tc_hardware', 'PerangkatController@findToolsBySatkerId');
+        $router->post('/perangkat/{id}/update/tm_hardware', 'PerangkatController@updateTmHardware');
+        $router->post('/perangkat/{id}/update/tc_hardware', 'PerangkatController@updateTcHardware');
+        $router->get('/perangkat/{id}/destroy/tm_hardware', 'PerangkatController@destroyTmHardware');
+        $router->get('/perangkat/{id}/destroy/tc_hardware', 'PerangkatController@destroyTcHardware');
 
         // Roles
         $router->get('/roles', 'RoleController@index');
         $router->get('/roles/find', 'RoleController@find');
-        // $router->post('/roles/store', 'RoleController@store');
         $router->post('/roles/{id:\d+}/update', 'RoleController@update');
-        // $router->get('/roles/{id:\d+}/destroy', 'RoleController@destroy');
 
         // FAQ
         $router->get('/faq', 'FaqController@index');
@@ -117,15 +129,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         //Rating
         $router->get('/rate', 'RatingController@index');
-        $router->get('/rate/additional', 'RatingController@additional');
         $router->post('/rate/insert', 'RatingController@insert');
         $router->get('/rate/{id:\d+}/find', 'RatingController@find');
         $router->get('/rate/{id:\d+}/id', 'RatingController@findById');
+        $router->get('/rate/additional', 'RatingController@additional');
         $router->get('/rate/{id:\d+}/destroy', 'RatingController@destroy');
 
         // Notifikasi
-        $router->get('/notif/{id:\d+}', 'NotificationController@index');
         $router->post('notif/store', 'NotificationController@store');
+        $router->get('/notif/{id:\d+}', 'NotificationController@index');
         $router->get('notif/{id:\d+}/destroy', 'NotificationController@destroy');
     });
 });

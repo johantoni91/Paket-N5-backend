@@ -12,14 +12,13 @@ use App\Validation\Validate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
     private $table = '(Login)';
     public function registration(Request $req)
     {
-        $file = null;
+        $file = '';
         $user = User::where('nip', $req->nip)->orWhere('nrp', $req->nrp)->orWhere('username', $req->username)->first();
         if ($user) {
             return Endpoint::warning(400, 'Pengguna sudah terdaftar');
@@ -39,8 +38,9 @@ class AuthController extends Controller
             'roles'         => $req->role,
             'satker'        => $req->satker,
             'password'      => Hash::make($req->password),
-            'phone'         => $req->phone,
+            'phone'         => $req->phone ?? '',
             'photo'         => $file,
+            'token'         => '',
             'created_at'    => Carbon::now()
         ];
         $this->validate($req, Validate::account($data));
