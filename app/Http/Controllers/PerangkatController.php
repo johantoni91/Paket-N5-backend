@@ -42,8 +42,8 @@ class PerangkatController extends Controller
                     ->where('satker_type', $req->satker_type)
                     ->get();
             }
-            foreach ($satker as $i) {
-                $arr['code'] = $i->satker_code;
+            for ($i = 0; $i < count($satker); $i++) {
+                $arr[$i] = $satker[$i]['satker_code'];
             }
             $perangkat = Perangkat::orderBy('satker')->whereIn('satker', $arr)->paginate(10)->appends([
                 'satker'    => $arr
