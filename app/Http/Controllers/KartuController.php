@@ -22,6 +22,19 @@ class KartuController extends Controller
         }
     }
 
+    function getKartuTitle()
+    {
+        try {
+            $kartu = Kartu::orderBy('created_at')->select('id', 'title', 'categories')->get();
+            if (!$kartu) {
+                return Endpoint::warning(200, 'Data kartu masih kosong');
+            }
+            return Endpoint::success(200, 'Berhasil mendapatkan data kartu', $kartu);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal mendapatkan kartu', $th->getMessage());
+        }
+    }
+
     function category(Request $req)
     {
         try {
