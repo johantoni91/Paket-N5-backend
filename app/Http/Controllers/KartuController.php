@@ -58,6 +58,7 @@ class KartuController extends Controller
                 'front'         => $req->hasFile('front') ? env('APP_IMG', '') . '/kartu/' . $req->file('front')->getClientOriginalName() : '',
                 'back'          => $req->hasFile('back') ? env('APP_IMG', '') . '/kartu/' . $req->file('back')->getClientOriginalName() : '',
                 'orientation'   => $req->orientation,
+                'nama'          => $req->nama,
                 'golongan'      => $req->golongan,
                 'jabatan'       => $req->jabatan,
                 'nip'           => $req->nip,
@@ -75,7 +76,7 @@ class KartuController extends Controller
             }
             return Endpoint::success(200, 'Berhasil menambahkan kartu');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan kartu', $th->getMessage());
+            return Endpoint::failed(400, $th->getMessage());
         }
     }
 
