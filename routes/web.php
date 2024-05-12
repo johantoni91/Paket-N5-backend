@@ -29,6 +29,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/kartu/{id:\d+}/load-kartu', 'KartuController@loadKartu');
     $router->patch('/kartu/{id:\d+}/store-kartu', 'KartuController@storeKartu');
 
+    // Kios
+    $router->post('/login-kios', 'KiosController@login');
+    $router->group(['middleware' => 'kios'], function () use ($router) {
+        $router->get('/kios/token', 'KiosController@token');
+        $router->post('/kios/check-token', 'KiosController@checkToken');
+        $router->post('/kios/verifikasi', 'KiosController@verifikasi');
+        $router->get('/kios/{token}/kartu', 'KiosController@kartu');
+    });
+
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
         // Dashboard
@@ -72,7 +81,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pegawai/{id:\d+}/destroy', 'PegawaiController@destroy');
 
         // Pengajuan
+        $router->get('/pengajuan/top', 'PengajuanController@top5');
         $router->post('/pengajuan/store', 'PengajuanController@store');
+        $router->get('/pengajuan/status', 'PengajuanController@status');
         $router->get('/pengajuan/{id:\d+}', 'PengajuanController@find');
         $router->get('/pengajuan/search', 'PengajuanController@search');
         $router->get('/pengajuan/jumlah', 'PengajuanController@getCount');
@@ -102,6 +113,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         // Perangkat
         $router->get('/perangkat/import', 'PerangkatController@import');
         $router->get('/perangkat/search', 'PerangkatController@search');
+        $router->get('/perangkat/status', 'PerangkatController@status');
         $router->get('/perangkat/{id:\d+}', 'PerangkatController@index');
         $router->get('/perangkat/{id}/find', 'PerangkatController@find');
         $router->get('/perangkat/{id}/update', 'PerangkatController@update');

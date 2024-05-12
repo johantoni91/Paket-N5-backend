@@ -180,4 +180,37 @@ class PengajuanController extends Controller
             return Endpoint::failed(400, 'Gagal');
         }
     }
+
+    function getCountBySatker()
+    {
+        try {
+            return Endpoint::success(200, 'Berhasil',);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, 'Gagal');
+        }
+    }
+
+    function status()
+    {
+        $res = [
+            'ditolak'    => Pengajuan::where('status', '0')->count(),
+            'proses'     => Pengajuan::where('status', '1')->count(),
+            'verifikasi' => Pengajuan::where('status', '2')->count(),
+            'setuju'     => Pengajuan::where('status', '3')->count(),
+        ];
+        return Endpoint::success(200, 'Berhasil', $res);
+    }
+
+    function top5()
+    {
+        try {
+            $pengajuan = Pengajuan::groupBy('kode_satker')->limit(5);
+            if (!$pengajuan) {
+                return Endpoint::success(200, 'Data pengajuan masih kosong / tidak ada!');
+            }
+            return Endpoint::success(200, 'Berhasil', $pengajuan);
+        } catch (\Throwable $th) {
+            return Endpoint::failed(400, $th->getMessage());
+        }
+    }
 }

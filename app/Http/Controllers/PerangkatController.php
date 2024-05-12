@@ -263,4 +263,13 @@ class PerangkatController extends Controller
             return Endpoint::failed(400, 'Gagal');
         }
     }
+
+    function status()
+    {
+        $res = [
+            'aktif' => Perangkat::where('status', '1')->count(),
+            'nonaktif' => Perangkat::where('status', '0')->count()
+        ];
+        return Endpoint::success(200, 'Berhasil', $res);
+    }
 }
