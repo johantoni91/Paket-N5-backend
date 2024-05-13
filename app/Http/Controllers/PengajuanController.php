@@ -205,8 +205,9 @@ class PengajuanController extends Controller
     {
         try {
             $pengajuan = Pengajuan::select('kode_satker')->get()->toArray();
-            dd($pengajuan);
-            dd(collect($pengajuan->toArray())->map(fn ($i) => collect($i)->countBy('kode_satker')));
+            for ($i = 0; $i <= count($pengajuan); $i++) {
+                $data = Pengajuan::whereIn('kode_satker', $pengajuan[$i]['kode_satker']);
+            }
             if (!$pengajuan) {
                 return Endpoint::success(200, 'Data pengajuan masih kosong / tidak ada!');
             }
