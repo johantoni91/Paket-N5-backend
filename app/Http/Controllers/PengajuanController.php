@@ -204,11 +204,13 @@ class PengajuanController extends Controller
     function top5()
     {
         try {
-            $pengajuan = Pengajuan::groupBy('kode_satker')->limit(5);
+            $pengajuan = Pengajuan::select('kode_satker')->get()->toArray();
+            dd($pengajuan);
+            dd(collect($pengajuan->toArray())->map(fn ($i) => collect($i)->countBy('kode_satker')));
             if (!$pengajuan) {
                 return Endpoint::success(200, 'Data pengajuan masih kosong / tidak ada!');
             }
-            return Endpoint::success(200, 'Berhasil', $pengajuan);
+            return Endpoint::success(200, 'Berhasil', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, $th->getMessage());
         }

@@ -53,7 +53,7 @@ class KiosController extends Controller
         try {
             $req->file('photo')->move('pengajuan', $req->file('photo')->getClientOriginalName());
             $pengajuan = Pengajuan::where('token', $req->token)->update([
-                'photo' => env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName()
+                'photo' => env('APP_IMG', '') . '/pengajuan/' . $req->file('photo')->getClientOriginalName()
             ]);
             if (!$pengajuan) {
                 return Endpoint::failed(400, 'Gagal');
