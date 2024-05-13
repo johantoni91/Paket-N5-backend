@@ -23,6 +23,7 @@ $router->get('/', function () {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
+
     // Autentikasi
     $router->post('/login', 'AuthController@login');
     $router->post('/register', 'AuthController@registration');
@@ -32,6 +33,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // Kios
     $router->post('/login-kios', 'KiosController@login');
     $router->group(['middleware' => 'kios'], function () use ($router) {
+        $router->get('/satker/{code:\d+}/code-kios', 'SatkerController@findByCode'); // Mencari satker berdasarkan satker_code
         $router->get('/kios/token', 'KiosController@token');
         $router->post('/kios/check-token', 'KiosController@checkToken');
         $router->post('/kios/verifikasi', 'KiosController@verifikasi');

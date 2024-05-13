@@ -204,14 +204,9 @@ class PengajuanController extends Controller
     function top5()
     {
         try {
-            $pengajuan = Pengajuan::select('kode_satker')->get()->toArray();
-            for ($i = 0; $i <= count($pengajuan); $i++) {
-                $data = Pengajuan::whereIn('kode_satker', $pengajuan[$i]['kode_satker']);
-            }
-            if (!$pengajuan) {
-                return Endpoint::success(200, 'Data pengajuan masih kosong / tidak ada!');
-            }
-            return Endpoint::success(200, 'Berhasil', $data);
+            $pengajuan = Pengajuan::select('kode_satker', DB::raw('count(*) as count'))
+                ->groupBy('kode_satker')->orderByDesc('count')->take(5)->get();
+            return Endpoint::success(200, 'Berhasil', $pengajuan);
         } catch (\Throwable $th) {
             return Endpoint::failed(400, $th->getMessage());
         }
