@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
 use App\Helpers\HelpersPengajuan;
-use App\Helpers\Log;
 use App\Helpers\SatkerCode;
 use App\Models\Kartu;
 use App\Models\Notif;
@@ -20,15 +19,15 @@ class PengajuanController extends Controller
         try {
             $kode = SatkerCode::parent($id);
             $data = HelpersPengajuan::index($kode, $id);
-            return Endpoint::success(200, 'Berhasil mendapatkan data pengajuan', $data);
+            return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pengajuan');
+            return Endpoint::failed('Gagal mendapatkan data pengajuan');
         }
     }
 
     function findByUser($user)
     {
-        return Endpoint::success(200, 'Berhasil', Pengajuan::where('nip', $user)->get());
+        return Endpoint::success('Berhasil', Pengajuan::where('nip', $user)->get());
     }
 
     function monitor($id)
@@ -40,9 +39,9 @@ class PengajuanController extends Controller
             } else {
                 $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', 'LIKE', $id . '%')->paginate(5);
             }
-            return Endpoint::success(200, 'Berhasil monitoring data pengajuan', $data);
+            return Endpoint::success('Berhasil monitoring data pengajuan', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal monitoring data pengajuan');
+            return Endpoint::failed('Gagal monitoring data pengajuan');
         }
     }
 
@@ -59,20 +58,20 @@ class PengajuanController extends Controller
                     'status'   => $req->status,
                 ]);
             if (!$data) {
-                return Endpoint::success(200, 'Tidak ada data pengajuan');
+                return Endpoint::success('Tidak ada data pengajuan');
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan data pengajuan', $data);
+            return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pengajuan!');
+            return Endpoint::failed('Gagal mendapatkan data pengajuan!');
         }
     }
 
     function find($id)
     {
         try {
-            return Endpoint::success(200, 'Berhasil', Pengajuan::findOrFail($id));
+            return Endpoint::success('Berhasil', Pengajuan::findOrFail($id));
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, "Gagal");
+            return Endpoint::failed("Gagal");
         }
     }
 
@@ -96,12 +95,12 @@ class PengajuanController extends Controller
             ]);
 
             if (!Pegawai::where('nip', $req->nip)->where('nama', $req->nama)->first()) {
-                return Endpoint::warning(200, 'Pengajuan gagal, pegawai tidak ditemukan.');
+                return Endpoint::warning('Pengajuan gagal, pegawai tidak ditemukan.');
             }
 
             $kartu = Kartu::where('id', $req->kartu)->first();
             if (!$kartu) {
-                return Endpoint::warning(200, 'Kartu belum / tidak ada. Tanyakan pada superadmin.');
+                return Endpoint::warning('Kartu belum / tidak ada. Tanyakan pada superadmin.');
             }
             Pengajuan::insert($input);
             $kartu->update(['total' => DB::raw('total + 1')]);
@@ -114,9 +113,9 @@ class PengajuanController extends Controller
             if ($req->hasFile('photo')) {
                 $req->file('photo')->move('pengajuan', $req->file('photo')->getClientOriginalName());
             }
-            return Endpoint::success(200, 'Berhasil menambahkan data pengajuan');
+            return Endpoint::success('Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan data pengajuan');
+            return Endpoint::failed('Gagal menambahkan data pengajuan');
         }
     }
 
@@ -125,9 +124,9 @@ class PengajuanController extends Controller
         try {
             $pengajuan = Pengajuan::find($id);
             $pengajuan->update(['kartu' => $req->kartu]);
-            return Endpoint::success(200, 'Data pengajuan telah berubah');
+            return Endpoint::success('Data pengajuan telah berubah');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Data pengajuan gagal berubah');
+            return Endpoint::failed('Data pengajuan gagal berubah');
         }
     }
 
@@ -136,9 +135,9 @@ class PengajuanController extends Controller
         try {
             $pengajuan = Pengajuan::find($id);
             $pengajuan->delete();
-            return Endpoint::success(200, 'Berhasil menghapus data pengajuan');
+            return Endpoint::success('Berhasil menghapus data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menghapus data pengajuan');
+            return Endpoint::failed('Gagal menghapus data pengajuan');
         }
     }
 
@@ -146,9 +145,9 @@ class PengajuanController extends Controller
     {
         try {
             HelpersPengajuan::approve($id, $satker);
-            return Endpoint::success(200, 'Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
+            return Endpoint::success('Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menyetujui pengajuan');
+            return Endpoint::failed('Gagal menyetujui pengajuan');
         }
     }
 
@@ -156,9 +155,9 @@ class PengajuanController extends Controller
     {
         try {
             Pengajuan::where('id', $id)->update(['status' => '0']);
-            return Endpoint::success(200, 'Berhasil menolak pengajuan');
+            return Endpoint::success('Berhasil menolak pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menolak pengajuan');
+            return Endpoint::failed('Gagal menolak pengajuan');
         }
     }
 
@@ -166,27 +165,27 @@ class PengajuanController extends Controller
     {
         try {
             Pengajuan::where('id', $id)->update(['status' => '3']);
-            return Endpoint::success(200, "Berhasil");
+            return Endpoint::success("Berhasil");
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
     function getCount()
     {
         try {
-            return Endpoint::success(200, 'Berhasil', Pengajuan::count('kartu')->distinct());
+            return Endpoint::success('Berhasil', Pengajuan::count('kartu')->distinct());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
     function getCountBySatker()
     {
         try {
-            return Endpoint::success(200, 'Berhasil',);
+            return Endpoint::success('Berhasil',);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -198,7 +197,7 @@ class PengajuanController extends Controller
             'verifikasi' => Pengajuan::where('status', '2')->count(),
             'setuju'     => Pengajuan::where('status', '3')->count(),
         ];
-        return Endpoint::success(200, 'Berhasil', $res);
+        return Endpoint::success('Berhasil', $res);
     }
 
     function top5()
@@ -206,9 +205,9 @@ class PengajuanController extends Controller
         try {
             $pengajuan = Pengajuan::select('kode_satker', DB::raw('count(*) as count'))
                 ->groupBy('kode_satker')->orderByDesc('count')->take(5)->get();
-            return Endpoint::success(200, 'Berhasil', $pengajuan);
+            return Endpoint::success('Berhasil', $pengajuan);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, $th->getMessage());
+            return Endpoint::failed($th->getMessage());
         }
     }
 }

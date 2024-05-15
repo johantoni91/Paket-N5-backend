@@ -82,6 +82,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pegawai/{id:\d+}/update', 'PegawaiController@update');
         $router->get('/pegawai/{id:\d+}/destroy', 'PegawaiController@destroy');
 
+        // Integrasi Pegawai
+        $router->get('/integrasi', 'IntegrasiController@index');
+        $router->post('/integrasi/store', 'IntegrasiController@store');
+        $router->post('/integrasi/{id}/update', 'IntegrasiController@update');
+        $router->get('/integrasi/{id}/destroy', 'IntegrasiController@delete');
+        $router->post('/integration', 'IntegrasiController@integration');
+
         // Pengajuan
         $router->get('/pengajuan/top', 'PengajuanController@top5');
         $router->post('/pengajuan/store', 'PengajuanController@store');

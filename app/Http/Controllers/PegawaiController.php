@@ -21,9 +21,9 @@ class PegawaiController extends Controller
             } else {
                 $data = Pegawai::orderBy('nama', 'asc')->where('nama_satker', $satker)->paginate(10);
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $data);
+            return Endpoint::success('Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai');
+            return Endpoint::failed('Gagal mendapatkan data pegawai');
         }
     }
 
@@ -55,11 +55,11 @@ class PegawaiController extends Controller
                     ]);
             }
             if (!$pegawai) {
-                return Endpoint::warning(200, 'Tidak menemukan data pegawai');
+                return Endpoint::warning('Tidak menemukan data pegawai');
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', $pegawai);
+            return Endpoint::success('Berhasil mendapatkan data pegawai', $pegawai);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal', $th->getMessage());
         }
     }
 
@@ -87,9 +87,9 @@ class PegawaiController extends Controller
             Pegawai::insert($data);
             $req->file('photo')->move('pegawai', $fileName);
             Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Tambah Pegawai.');
-            return Endpoint::success(200, 'Berhasil menambahkan data pegawai');
+            return Endpoint::success('Berhasil menambahkan data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan data pegawai', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan data pegawai', $th->getMessage());
         }
     }
 
@@ -126,18 +126,18 @@ class PegawaiController extends Controller
 
             $pegawai->update($data);
             Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Ubah Pegawai.');
-            return Endpoint::success(200, 'Berhasil ubah data pegawai');
+            return Endpoint::success('Berhasil ubah data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal ubah data pegawai', $th->getMessage());
+            return Endpoint::failed('Gagal ubah data pegawai', $th->getMessage());
         }
     }
 
     public function find($id)
     {
         try {
-            return Endpoint::success(200, 'Berhasil mendapatkan data pegawai', Pegawai::where('nip', $id)->orWhere('nrp', $id)->first());
+            return Endpoint::success('Berhasil mendapatkan data pegawai', Pegawai::where('nip', $id)->orWhere('nrp', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data pegawai');
+            return Endpoint::failed('Gagal mendapatkan data pegawai');
         }
     }
 
@@ -147,9 +147,9 @@ class PegawaiController extends Controller
             $pegawai = Pegawai::find($id);
             unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
             $pegawai->delete();
-            return Endpoint::success(200, 'Berhasil menghapus data pegawai');
+            return Endpoint::success('Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'data pegawai tidak ditemukan');
+            return Endpoint::failed('data pegawai tidak ditemukan');
         }
     }
 }

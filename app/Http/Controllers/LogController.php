@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Api\Endpoint;
 use App\Helpers\Log as HelpersLog;
 use App\Models\Log;
-use App\Models\Satker;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LogController extends Controller
@@ -21,9 +19,9 @@ class LogController extends Controller
             } else {
                 $logs = Log::orderBy('created_at', 'desc')->where('users_id', $user->id)->paginate(10);
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan data log aktivitas', $logs);
+            return Endpoint::success('Berhasil mendapatkan data log aktivitas', $logs);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data log aktivitas', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan data log aktivitas', $th->getMessage());
         }
     }
 
@@ -31,9 +29,9 @@ class LogController extends Controller
     {
         try {
             $columns = Log::orderBy($req->column, 'desc')->select($req->column)->distinct()->get();
-            return Endpoint::success(200, 'Berhasil mendapatkan Kolom', $columns);
+            return Endpoint::success('Berhasil mendapatkan Kolom', $columns);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan kolom', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan kolom', $th->getMessage());
         }
     }
 
@@ -54,11 +52,11 @@ class LogController extends Controller
             ];
             $data = HelpersLog::query($input);
             if (!$data) {
-                return Endpoint::success(200, 'Tidak ada log aktivitas');
+                return Endpoint::success('Tidak ada log aktivitas');
             }
-            return Endpoint::success(200, 'Berhasil', $data);
+            return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan log aktivitas!', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan log aktivitas!', $th->getMessage());
         }
     }
 }

@@ -2,14 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Kewenangan;
 use App\Models\Menu;
-use App\Models\Satker;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,9 +19,11 @@ class DatabaseSeeder extends Seeder
                 'user',
                 'satker',
                 'pegawai',
+                'integrasi',
                 'pengajuan',
                 'monitor.kartu',
                 'layout.kartu',
+                'smart',
                 'perangkat',
                 'akses',
                 'log',
@@ -32,10 +31,10 @@ class DatabaseSeeder extends Seeder
                 'rating'
             ]),
             'icon'  => json_encode([
-                'user', 'book-open', 'laugh', 'pen', 'monitor', 'credit-card', 'radio-receiver', 'key-square', 'history', 'help-circle', 'star'
+                'user', 'book-open', 'laugh', 'workflow', 'pen', 'monitor', 'credit-card', 'fingerprint', 'radio-receiver', 'key-square', 'history', 'help-circle', 'star'
             ]),
             'title' => json_encode([
-                'Pengguna', 'Satuan Kerja', 'Pegawai', 'Pengajuan', 'Monitor Kartu', 'Layout Kartu', 'Perangkat', 'Hak Akses', 'Log Aktivitas', 'FAQ', 'Ulasan'
+                'Pengguna', 'Satuan Kerja', 'Data Pegawai', 'Integrasi Data Kepegawaian', 'Verifikasi', 'Monitoring', 'Pengaturan Layout Kartu', 'Smart Card Unique Personal Identity', 'Management Perangkat', 'Hak Akses Aplikasi', 'Log Aktivitas', 'FAQ', 'Ulasan'
             ])
         ]);
 
@@ -58,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 'user', 'book-open', 'laugh', 'pen', 'monitor', 'credit-card', 'radio-receiver', 'history', 'help-circle', 'star'
             ]),
             'title' => json_encode([
-                'Pengguna', 'Satuan Kerja', 'Pegawai', 'Pengajuan', 'Monitor Kartu', 'Layout Kartu', 'Perangkat', 'Log Aktivitas', 'FAQ', 'Ulasan'
+                'Pengguna', 'Satuan Kerja', 'Data Pegawai', 'Verifikasi', 'Monitoring', 'Pengaturan Layout Kartu', 'Management Perangkat', 'Log Aktivitas', 'FAQ', 'Ulasan'
             ])
         ]);
 
@@ -73,7 +72,7 @@ class DatabaseSeeder extends Seeder
                 'monitor', 'help-circle'
             ]),
             'title' => json_encode([
-                'Monitor Kartu', 'FAQ'
+                'Monitoring', 'FAQ'
             ])
         ]);
     }

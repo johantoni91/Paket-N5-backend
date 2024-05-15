@@ -20,7 +20,7 @@ class PerangkatController extends Controller
         } else {
             $data = Perangkat::orderBy('satker')->where('satker', 'LIKE', $id . '%')->paginate(10);
         }
-        return Endpoint::success(200, 'Berhasil', $data);
+        return Endpoint::success('Berhasil', $data);
     }
 
     function search(Request $req)
@@ -49,11 +49,11 @@ class PerangkatController extends Controller
                 'satker'    => $arr
             ]);
             if (!$perangkat) {
-                return Endpoint::success(200, 'Perangkat tidak ada');
+                return Endpoint::success('Perangkat tidak ada');
             }
-            return Endpoint::success(200, 'Berhasil', $perangkat);
+            return Endpoint::success('Berhasil', $perangkat);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal', $th->getMessage());
         }
     }
 
@@ -62,11 +62,11 @@ class PerangkatController extends Controller
         try {
             $perangkat = Perangkat::find($id);
             if (!$perangkat) {
-                return Endpoint::success(200, 'Perangkat tidak ada');
+                return Endpoint::success('Perangkat tidak ada');
             }
-            return Endpoint::success(200, 'Berhasil', $perangkat);
+            return Endpoint::success('Berhasil', $perangkat);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -80,9 +80,9 @@ class PerangkatController extends Controller
         ];
         $updated = $update->update($input);
         if ($updated) {
-            return Endpoint::success(200, 'Berhasil mengubah');
+            return Endpoint::success('Berhasil mengubah');
         } else {
-            return Endpoint::failed(400, 'Gagal mengubah');
+            return Endpoint::failed('Gagal mengubah');
         }
     }
 
@@ -98,23 +98,23 @@ class PerangkatController extends Controller
                     'satker'    => $sat->satker_code,
                 ]);
             }
-            return Endpoint::success(200, 'Berhasil', Perangkat::paginate(5));
+            return Endpoint::success('Berhasil', Perangkat::paginate(5));
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
     function indexTmHardware()
     {
-        return Endpoint::success(200, 'Berhasil', TmHardware::get());
+        return Endpoint::success('Berhasil', TmHardware::get());
     }
 
     function findTmHardware($id)
     {
         try {
-            return Endpoint::success(200, 'Berhasil', TmHardware::find($id));
+            return Endpoint::success('Berhasil', TmHardware::find($id));
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -128,9 +128,9 @@ class PerangkatController extends Controller
                 'perangkat' => $req->perangkat
             ]);
 
-            return Endpoint::success(200, 'Berhasil');
+            return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal', $th->getMessage());
         }
     }
 
@@ -148,10 +148,10 @@ class PerangkatController extends Controller
                     'status' => $req->status ?? $hardware->status
                 ]);
                 $hardware->save();
-                return Endpoint::success(200, 'Berhasil', TmHardware::find($id));
+                return Endpoint::success('Berhasil', TmHardware::find($id));
             }
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -160,23 +160,23 @@ class PerangkatController extends Controller
         $hardware = TmHardware::find($id);
         if ($hardware) {
             $hardware->delete();
-            return Endpoint::success(200, 'Berhasil');
+            return Endpoint::success('Berhasil');
         } else {
-            return Endpoint::failed(400, 'Gagal', 'perangkat tidak ditemukan!');
+            return Endpoint::failed('Gagal', 'perangkat tidak ditemukan!');
         }
     }
 
     function indexTcHardware()
     {
-        return Endpoint::success(200, 'Berhasil', TcHardware::get());
+        return Endpoint::success('Berhasil', TcHardware::get());
     }
 
     function findTcHardware($id)
     {
         try {
-            return Endpoint::success(200, 'Berhasil', TcHardware::find($id));
+            return Endpoint::success('Berhasil', TcHardware::find($id));
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -185,11 +185,11 @@ class PerangkatController extends Controller
         try {
             $tools = TcHardware::where('id_satker', $id)->get();
             if (!$tools) {
-                return Endpoint::success(200, 'Belum ada perangkat pada satker ini');
+                return Endpoint::success('Belum ada perangkat pada satker ini');
             }
-            return Endpoint::success(200, 'Berhasil', $tools);
+            return Endpoint::success('Berhasil', $tools);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -204,7 +204,7 @@ class PerangkatController extends Controller
             ]);
 
             if (!TmHardware::find($req->id_perangkat)) {
-                return Endpoint::failed(400, ' Gagal', 'Perangkat tidak ditemukan');
+                return Endpoint::failed(' Gagal', 'Perangkat tidak ditemukan');
             }
             $req->file('photo')->move('perangkat', $req->file('photo')->getClientOriginalName());
             $insert = TcHardware::insert([
@@ -215,11 +215,11 @@ class PerangkatController extends Controller
             ]);
 
             if (!$insert) {
-                return Endpoint::failed(400, 'Gagal');
+                return Endpoint::failed('Gagal');
             }
-            return Endpoint::success(200, 'Berhasil', TcHardware::latest()->first());
+            return Endpoint::success('Berhasil', TcHardware::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -228,7 +228,7 @@ class PerangkatController extends Controller
         try {
             $hardware = TcHardware::find($id);
             if (!$hardware) {
-                return Endpoint::failed(400, 'Gagal', 'Perangkat tidak ditemukan');
+                return Endpoint::failed('Gagal', 'Perangkat tidak ditemukan');
             }
             if ($req->hasFile('photo')) {
                 unlink('../public' . parse_url($hardware->photo)['path']);
@@ -241,11 +241,11 @@ class PerangkatController extends Controller
                 'photo'         => $req->hasFile('photo') ? env('API_URL', '') . '/perangkat/' . $req->file('photo')->getClientOriginalName() : $hardware->photo
             ]);
             if (!$update) {
-                return Endpoint::failed(400, 'Gagal');
+                return Endpoint::failed('Gagal');
             }
-            return Endpoint::success(200, 'Berhasil', $hardware);
+            return Endpoint::success('Berhasil', $hardware);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -254,13 +254,13 @@ class PerangkatController extends Controller
         try {
             $hardware = TcHardware::find($id);
             if (!$hardware) {
-                return Endpoint::failed(400, 'Gagal');
+                return Endpoint::failed('Gagal');
             }
             unlink('../public' . parse_url($hardware->photo)['path']);
             $hardware->delete();
-            return Endpoint::success(200, 'Berhasil');
+            return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -270,6 +270,6 @@ class PerangkatController extends Controller
             'aktif' => Perangkat::where('status', '1')->count(),
             'nonaktif' => Perangkat::where('status', '0')->count()
         ];
-        return Endpoint::success(200, 'Berhasil', $res);
+        return Endpoint::success('Berhasil', $res);
     }
 }

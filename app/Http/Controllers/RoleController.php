@@ -13,11 +13,11 @@ class RoleController extends Controller
         try {
             $roles = Menu::get();
             if (!$roles) {
-                return Endpoint::warning(200, 'Data roles masih kosong');
+                return Endpoint::warning('Data roles masih kosong');
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan data roles', $roles);
+            return Endpoint::success('Berhasil mendapatkan data roles', $roles);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data roles', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan data roles');
         }
     }
 
@@ -34,9 +34,9 @@ class RoleController extends Controller
                 'role'      => $req->role
             ];
             Menu::insert($input);
-            return Endpoint::success(200, 'Berhasil menambahkan role');
+            return Endpoint::success('Berhasil menambahkan role');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan data role', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan data role');
         }
     }
 
@@ -44,9 +44,9 @@ class RoleController extends Controller
     {
         try {
             Menu::where('id', $id)->update(['route'    => $req->route, 'icon'    => $req->icon, 'title'    => $req->title]);
-            return Endpoint::success(200, 'Berhasil mengubah data Role');
+            return Endpoint::success('Berhasil mengubah data Role');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mengubah data role', $th->getMessage());
+            return Endpoint::failed('Gagal mengubah data role');
         }
     }
 
@@ -54,9 +54,9 @@ class RoleController extends Controller
     {
         try {
             Menu::where('id', $id)->delete();
-            return Endpoint::success(200, 'Berhasil menghapus role');
+            return Endpoint::success('Berhasil menghapus role');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menghapus Role', $th->getMessage());
+            return Endpoint::failed('Gagal menghapus Role');
         }
     }
 }

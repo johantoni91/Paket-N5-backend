@@ -15,11 +15,11 @@ class NotificationController extends Controller
             $code = SatkerCode::parent($id);
             $notif = Notif::where('satker', $code)->where('kode_satker', 'LIKE', $id . '%')->get();
             if (!$notif) {
-                return Endpoint::warning(200, '');
+                return Endpoint::failed('Tidak ada notif');
             }
-            return Endpoint::success(200, 'Ada yang mengajukan kartu', $notif);
+            return Endpoint::success('Ada yang mengajukan kartu', $notif);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -27,9 +27,9 @@ class NotificationController extends Controller
     {
         try {
             Notif::where('id', $id)->delete();
-            return Endpoint::success(200, 'Berhasil');
+            return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 }

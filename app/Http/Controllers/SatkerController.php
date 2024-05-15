@@ -8,8 +8,6 @@ use App\Models\Log;
 use App\Models\Satker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class SatkerController extends Controller
 {
@@ -23,9 +21,9 @@ class SatkerController extends Controller
             } else {
                 $satker = Satker::orderBy('satker_type')->where('satker_code', 'NOT LIKE', null)->where('satker_code', 'like', $satker . '%')->paginate(10);
             }
-            return Endpoint::success(200, 'mendapatkan data satker', $satker);
+            return Endpoint::success('mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, "gagal mendapatkan data satker", $th->getMessage());
+            return Endpoint::failed("gagal mendapatkan data satker");
         }
     }
 
@@ -33,24 +31,24 @@ class SatkerController extends Controller
     {
         try {
             $satker = Satker::where('satker_code', 'NOT LIKE', null)->where('satker_name', 'LIKE', '%' . $req->satker . '%')->limit(5)->get();
-            return Endpoint::success(200, 'Berhasil', $satker);
+            return Endpoint::success('Berhasil', $satker);
         } catch (\Throwable $th) {
-            return Endpoint::warning(200, 'Satker tidak ditemukan');
+            return Endpoint::warning('Satker tidak ditemukan');
         }
     }
 
     function getSatker()
     {
         try {
-            return Endpoint::success(200, 'Berhasil mendapatkan satker', Satker::orderBy('satker_name', 'desc')->select('satker_name')->distinct()->get());
+            return Endpoint::success('Berhasil mendapatkan satker', Satker::orderBy('satker_name', 'desc')->select('satker_name')->distinct()->get());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan satker', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan satker');
         }
     }
 
     function all()
     {
-        return Endpoint::success(200, 'Berhasil', Satker::select('satker_code', 'satker_name')->orderBy('satker_name', 'desc')->where('satker_code', 'NOT LIKE', null)->get());
+        return Endpoint::success('Berhasil', Satker::select('satker_code', 'satker_name')->orderBy('satker_name', 'desc')->where('satker_code', 'NOT LIKE', null)->get());
     }
 
     function search(Request $req)
@@ -65,11 +63,11 @@ class SatkerController extends Controller
                     'satker_type'    => $req->satker_type,
                 ]);
             if (!$data) {
-                return Endpoint::success(200, 'Satker tidak ada');
+                return Endpoint::success('Satker tidak ada');
             }
-            return Endpoint::success(200, 'Berhasil', $data);
+            return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan Satker!', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan Satker!');
         }
     }
 
@@ -89,9 +87,9 @@ class SatkerController extends Controller
                 'log_detail'        => $this->satker . ' Lihat data satker ' . $data->satker . '. Oleh ' . $req->username,
                 'created_at'        => Carbon::now()
             ]);
-            return Endpoint::success(200, 'Berhasil menemukan data satker!', $data);
+            return Endpoint::success('Berhasil menemukan data satker!', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, $th->getMessage());
+            return Endpoint::failed($th->getMessage());
         }
     }
 
@@ -99,18 +97,18 @@ class SatkerController extends Controller
     {
         try {
             $data = Satker::where('satker_code', $code)->first();
-            return Endpoint::success(200, 'Berhasil', $data);
+            return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
     function findByName(Request $req)
     {
         try {
-            return Endpoint::success(200, 'Berhasil', Satker::where('satker_name', 'LIKE', '%' . $req->satker . '%')->where('satker_code', 'NOT LIKE', null)->first());
+            return Endpoint::success('Berhasil', Satker::where('satker_name', 'LIKE', '%' . $req->satker . '%')->where('satker_code', 'NOT LIKE', null)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -119,13 +117,13 @@ class SatkerController extends Controller
         try {
             $status = Satker::where('id', $id)->first();
             if (!$status) {
-                return Endpoint::failed(400, 'Satker tidak ditemukan');
+                return Endpoint::failed('Satker tidak ditemukan');
             }
             $status->satker_status = $stat == "1" ? '0' : '1';
             $status->save();
-            return Endpoint::success(200, 'Berhasil mengubah status');
+            return Endpoint::success('Berhasil mengubah status');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Terjadi kesalahan!', $th->getMessage());
+            return Endpoint::failed('Terjadi kesalahan!');
         }
     }
 
@@ -173,9 +171,9 @@ class SatkerController extends Controller
             ];
             Log::insert($log);
             Satker::insert($data);
-            return Endpoint::success(200, 'Berhasil menambahkan satker', Satker::latest()->first());
+            return Endpoint::success('Berhasil menambahkan satker', Satker::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan satker', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan satker');
         }
     }
 
@@ -203,9 +201,9 @@ class SatkerController extends Controller
             ];
             Log::insert($log);
             Satker::where('id', $id)->update($data);
-            return Endpoint::success(200, 'Berhasil mengubah  satker', Satker::where('id', $id)->first());
+            return Endpoint::success('Berhasil mengubah  satker', Satker::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mengubah satker', $th->getMessage());
+            return Endpoint::failed('Gagal mengubah satker');
         }
     }
 
@@ -226,9 +224,9 @@ class SatkerController extends Controller
                 'created_at'        => Carbon::now()
             ]);
             $satker->delete();
-            return Endpoint::success(200, 'Berhasil menghapus data satker!');
+            return Endpoint::success('Berhasil menghapus data satker!');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menghapus data satker!', $th->getMessage());
+            return Endpoint::failed('Gagal menghapus data satker!');
         }
     }
 }

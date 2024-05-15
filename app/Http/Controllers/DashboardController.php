@@ -21,7 +21,7 @@ class DashboardController extends Controller
             $satker_code = SatkerCode::parent($id);
             $satker_name = Satker::where('satker_code', $id)->first();
             if ($satker_code == '0') {
-                return Endpoint::success(200, 'Berhasil', [
+                return Endpoint::success('Berhasil', [
                     'user' => User::count(),
                     'pegawai' => Pegawai::count(),
                     'satker' => Satker::count(),
@@ -31,7 +31,7 @@ class DashboardController extends Controller
                     'rating' => Rate::count()
                 ]);
             } else {
-                return Endpoint::success(200, 'Berhasil', [
+                return Endpoint::success('Berhasil', [
                     'user' => User::where('satker', $id)->count(),
                     'pegawai' => Pegawai::where('nama_satker', str_replace('-', ' ', $satker_name))->count(),
                     'satker' => Satker::where('satker_code', 'LIKE', $id . '%')->count(),
@@ -42,7 +42,7 @@ class DashboardController extends Controller
                 ]);
             }
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Error', $th->getMessage());
+            return Endpoint::failed('Error', $th->getMessage());
         }
     }
 }

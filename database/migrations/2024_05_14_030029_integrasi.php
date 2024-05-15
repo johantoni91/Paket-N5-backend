@@ -12,12 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tc_hardware', function (Blueprint $table) {
+        Schema::create('integrasi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_perangkat');
-            $table->text('id_satker');
-            $table->text('serial_number');
-            $table->text('photo');
+            $table->text('url');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tc_hardware');
+        Schema::dropIfExists('integrasi');
     }
 };

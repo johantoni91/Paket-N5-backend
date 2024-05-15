@@ -21,18 +21,18 @@ class KiosController extends Controller
 
         $login = Perangkat::where('user', $req->user)->where('password', $req->password)->first();
         if (!$login) {
-            return Endpoint::failed(400, 'Perangkat tidak ditemukan');
+            return Endpoint::failed('Perangkat tidak ditemukan');
         }
 
         $data = TcHardware::where('id_perangkat', $login->id)->first();
         if (!$data) {
-            return Endpoint::failed(400, 'Akun tidak ada');
+            return Endpoint::failed('Akun tidak ada');
         }
 
         $login->update([
             'status'    => '1'
         ]);
-        return Endpoint::success(200, 'Berhasil masuk', $data);
+        return Endpoint::success('Berhasil masuk', $data);
     }
 
     function checkToken(Request $req)
@@ -40,11 +40,11 @@ class KiosController extends Controller
         try {
             $pengajuan = Pengajuan::where('token', $req->token)->first();
             if (!$pengajuan) {
-                return Endpoint::failed(400, 'Gagal');
+                return Endpoint::failed('Gagal');
             }
-            return Endpoint::success(200, 'Berhasil', $pengajuan);
+            return Endpoint::success('Berhasil', $pengajuan);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal');
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -56,11 +56,11 @@ class KiosController extends Controller
                 'photo' => env('APP_IMG', '') . '/pengajuan/' . $req->file('photo')->getClientOriginalName()
             ]);
             if (!$pengajuan) {
-                return Endpoint::failed(400, 'Gagal');
+                return Endpoint::failed('Gagal');
             }
-            return Endpoint::success(200, 'Berhasil', $pengajuan);
+            return Endpoint::success('Berhasil', $pengajuan);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, $th->getMessage());
+            return Endpoint::failed($th->getMessage());
         }
     }
 
@@ -76,9 +76,9 @@ class KiosController extends Controller
                 'kartu'     => $kartu,
                 'pegawai'   => $pegawai
             ];
-            return Endpoint::success(200, 'Berhasil', $data);
+            return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, $th->getMessage());
+            return Endpoint::failed($th->getMessage());
         }
     }
 }

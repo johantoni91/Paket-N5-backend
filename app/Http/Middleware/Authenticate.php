@@ -47,7 +47,7 @@ class Authenticate
         }
         $agent = new Agent();
         return response()->json([
-            'status'    => 401,
+            'status'    => false,
             'message'   => 'Unauthorized',
             'trespasser'      => [
                 'ip_address' => Request::ip(),

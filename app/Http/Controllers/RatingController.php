@@ -13,20 +13,20 @@ class RatingController extends Controller
     {
         try {
             $rating = Rate::with(['user'])->orderBy('created_at')->paginate(5);
-            return Endpoint::success(200, 'Berhasil mendapatkan data komentar', $rating);
+            return Endpoint::success('Berhasil mendapatkan data komentar', $rating);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan data komentar');
+            return Endpoint::failed('Gagal mendapatkan data komentar');
         }
     }
 
     function findById($id)
     {
-        return Endpoint::success(200, 'Berhasil', Rate::where('name', $id)->first());
+        return Endpoint::success('Berhasil', Rate::where('name', $id)->first());
     }
 
     function additional()
     {
-        return Endpoint::success(200, 'Berhasil mendapatkan data tambahan komentar', [
+        return Endpoint::success('Berhasil mendapatkan data tambahan komentar', [
             'stars'         => [
                 '1' => Rate::where('stars', 1)->count(),
                 '2' => Rate::where('stars', 2)->count(),
@@ -42,7 +42,7 @@ class RatingController extends Controller
     {
         try {
             if (!User::where('id', $req->user_id)->first()) {
-                return Endpoint::warning(400, 'User tidak ditemukan');
+                return Endpoint::warning('User tidak ditemukan');
             }
             $input = [
                 'user_id'   => $req->user_id,
@@ -50,9 +50,9 @@ class RatingController extends Controller
                 'comment'   => $req->comment
             ];
             Rate::insert($input);
-            return Endpoint::success(200, 'Berhasil menambahkan komentar');
+            return Endpoint::success('Berhasil menambahkan komentar');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan komentar', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan komentar', $th->getMessage());
         }
     }
 
@@ -60,15 +60,15 @@ class RatingController extends Controller
     {
         $komentar = Rate::find($id);
         if ($komentar) {
-            return Endpoint::success(200, 'Berhasil mendapatkan komentar', $komentar);
+            return Endpoint::success('Berhasil mendapatkan komentar', $komentar);
         }
-        return Endpoint::failed(400, 'Gagal mendapatkan komentar');
+        return Endpoint::failed('Gagal mendapatkan komentar');
     }
 
     // function destroy($id)
     // {
     //     $komentar = Rate::find($id);
     //     $komentar->delete();
-    //     return Endpoint::success(200, 'Berhasil menghapus komentar');
+    //     return Endpoint::success('Berhasil menghapus komentar');
     // }
 }

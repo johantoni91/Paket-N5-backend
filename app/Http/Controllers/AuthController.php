@@ -21,7 +21,7 @@ class AuthController extends Controller
         $file = '';
         $user = User::where('nip', $req->nip)->orWhere('nrp', $req->nrp)->orWhere('username', $req->username)->first();
         if ($user) {
-            return Endpoint::warning(400, 'Pengguna sudah terdaftar');
+            return Endpoint::failed('Pengguna sudah terdaftar');
         }
         if ($req->hasFile('photo')) {
             $file = $req->nip . '_profile' . '.' . $req->file('photo')->getClientOriginalExtension();
@@ -47,12 +47,12 @@ class AuthController extends Controller
 
         try {
             if (!Satker::where('satker_code', $req->satker)->first()) {
-                return Endpoint::failed(400, 'Gagal registrasi', 'Kode satker tidak terdaftar');
+                return Endpoint::failed('Gagal registrasi', 'Kode satker tidak terdaftar');
             }
             User::insert($data);
-            return Endpoint::success(200, 'Berhasil registrasi', User::latest()->first());
+            return Endpoint::success('Berhasil registrasi', User::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal registrasi', $th->getMessage());
+            return Endpoint::failed('Gagal registrasi', $th->getMessage());
         }
     }
 
@@ -66,10 +66,10 @@ class AuthController extends Controller
             $this->validate($req, Validate::login());
             $user = User::where('username', $input['username'])->first();
             if (!$user) {
-                return Endpoint::failed(400, "User tidak ditemukan, silahkan registrasi terlebih dahulu!");
+                return Endpoint::failed("User tidak ditemukan, silahkan registrasi terlebih dahulu!");
             }
             if ($user->status == '0') {
-                return Endpoint::warning(400, "Akun anda sudah tidak aktif!");
+                return Endpoint::failed("Akun anda sudah tidak aktif!");
             }
 
             $check_pegawai = Pegawai::where('nip', $req->username)->orWhere('nrp', $req->username)->first();
@@ -78,7 +78,7 @@ class AuthController extends Controller
             }
 
             if (!Hash::check($input['password'], $user->password)) {
-                return Endpoint::failed(400, 'Gagal login');
+                return Endpoint::failed('Gagal login');
             }
 
             $data_login = [
@@ -99,13 +99,13 @@ class AuthController extends Controller
             }
 
             $result = [
-                'user'     => Result::user($user),
-                'pegawai'  => Result::pegawai(Pegawai::where('nip', $user->nip)->first())
+                'user'     => $user,
+                'pegawai'  => Pegawai::where('nip', $user->nip)->first() ?? ''
             ];
             Log::insert($data_login);
-            return Endpoint::success(200, 'Berhasil login', $result);
+            return Endpoint::success('Berhasil login', $result);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Username / Password Salah!', $th->getMessage());
+            return Endpoint::failed('Username / Password Salah!', $th->getMessage());
         }
     }
 }

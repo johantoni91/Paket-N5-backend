@@ -17,8 +17,8 @@ return new class extends Migration
             $table->longtext('nip');
             $table->longtext('nama');
             $table->text('kode_satker');
-            $table->text('photo')->nullable();
-            $table->text('token')->nullable();
+            $table->text('photo')->nullable()->default('');
+            $table->text('token')->nullable()->default('');
             $table->text('kartu');
             $table->enum('status', [0, 1, 2, 3])->default(1); // 0 = ditolak, 1 = proses, 2 = diterima di bawah kejagung, 3 diterima kejagung + token
             $table->enum('approve_satker', [0, 1, 2, 3])->default(3); // 0 = kejagung, 1 = kejati, 2 = kejari, 3 = kejari

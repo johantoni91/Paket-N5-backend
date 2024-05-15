@@ -24,9 +24,9 @@ class UserController extends Controller
             } else {
                 $user = User::orderBy('name')->where('satker', 'LIKE', $satker . '%')->paginate(10);
             }
-            return Endpoint::success(200, 'Berhasil mendapatkan semua users!', $user);
+            return Endpoint::success('Berhasil mendapatkan semua users!', $user);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Ada error', $th->getMessage());
+            return Endpoint::failed('Ada error');
         }
     }
 
@@ -35,7 +35,7 @@ class UserController extends Controller
         try {
             $pegawai = Pegawai::where('nip', $req->nip)->where('nrp', $req->nrp)->first();
             if (!$pegawai) {
-                return Endpoint::warning(400, 'Tidak terdaftar dalam pegawai');
+                return Endpoint::warning('Tidak terdaftar dalam pegawai');
             }
             $input = [
                 'nip'       => $req->nip,
@@ -55,7 +55,7 @@ class UserController extends Controller
                 $input['photo'] = $pegawai->foto_pegawai;
             }
             if (User::where('username', $req->username)->where('nip', $req->nip)->where('nrp', $req->nrp)->first()) {
-                return Endpoint::warning(400, 'User sudah terdaftar');
+                return Endpoint::warning('User sudah terdaftar');
             }
 
             if ($req->hasFile('photo')) {
@@ -64,9 +64,9 @@ class UserController extends Controller
                 $input['photo'] = $file;
             }
             User::insert($input);
-            return Endpoint::success(200, ' Berhasil');
+            return Endpoint::success(' Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, $th->getMessage());
+            return Endpoint::failed($th->getMessage());
         }
     }
 
@@ -86,9 +86,9 @@ class UserController extends Controller
                 'log_detail'        => $this->user . ' Lihat data users ' . $req->username,
                 'created_at'        => Carbon::now()
             ]);
-            return Endpoint::success(200, 'Berhasil', $data);
+            return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'User tidak ditemukan');
+            return Endpoint::failed('User tidak ditemukan');
         }
     }
 
@@ -133,9 +133,9 @@ class UserController extends Controller
                 $req->file('photo')->move('images', $user['photo']);
             }
             $data_user->update($user);
-            return Endpoint::success(200, 'Berhasil mengubah user!', $data_user);
+            return Endpoint::success('Berhasil mengubah user!', $data_user);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mengubah user', $th->getMessage());
+            return Endpoint::failed('Gagal mengubah user');
         }
     }
 
@@ -144,13 +144,13 @@ class UserController extends Controller
         try {
             $status = User::find($id);
             if (!$status) {
-                return Endpoint::failed(400, 'User tidak ditemukan');
+                return Endpoint::failed('User tidak ditemukan');
             }
             $status->status = $stat == "1" ? '0' : '1';
             $status->save();
-            return Endpoint::success(200, 'Berhasil mengubah status');
+            return Endpoint::success('Berhasil mengubah status');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Terjadi kesalahan!', $th->getMessage());
+            return Endpoint::failed('Terjadi kesalahan!');
         }
     }
 
@@ -172,9 +172,9 @@ class UserController extends Controller
             // ]);
             File::delete('images/' . $user->photo);
             $user->delete();
-            return Endpoint::success(200, 'Berhasil menghapus user!');
+            return Endpoint::success('Berhasil menghapus user!');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menghapus user!', $th->getMessage());
+            return Endpoint::failed('Gagal menghapus user!');
         }
     }
 
@@ -200,11 +200,11 @@ class UserController extends Controller
                     'status'   => $req->status
                 ]);
             if (!$data) {
-                return Endpoint::success(200, 'Pengguna tidak ada');
+                return Endpoint::success('Pengguna tidak ada');
             }
-            return Endpoint::success(200, 'Berhasil', $data);
+            return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan Pengguna!', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan Pengguna!');
         }
     }
 }

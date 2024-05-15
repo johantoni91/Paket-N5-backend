@@ -11,9 +11,9 @@ class FaqController extends Controller
     function index()
     {
         try {
-            return Endpoint::success(200, 'Berhasil mendapatkan FAQ', Faq::orderBy('created_at')->paginate(5));
+            return Endpoint::success('Berhasil mendapatkan FAQ', Faq::orderBy('created_at')->paginate(5));
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mendapatkan FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan FAQ', $th->getMessage());
         }
     }
 
@@ -29,9 +29,9 @@ class FaqController extends Controller
                 'answer'   => $req->answer
             ];
             Faq::insert($input);
-            return Endpoint::success(200, 'Berhasil menambahkan FAQ');
+            return Endpoint::success('Berhasil menambahkan FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menambahkan FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan FAQ', $th->getMessage());
         }
     }
 
@@ -43,9 +43,9 @@ class FaqController extends Controller
                 'answer'   => $req->answer
             ];
             Faq::where('id', $id)->update($input);
-            return Endpoint::success(200, 'Berhasil mengubah FAQ');
+            return Endpoint::success('Berhasil mengubah FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal mengubah FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal mengubah FAQ', $th->getMessage());
         }
     }
 
@@ -53,9 +53,9 @@ class FaqController extends Controller
     {
         try {
             Faq::where('id', $id)->delete();
-            return Endpoint::success(200, 'Berhasil menghapus FAQ');
+            return Endpoint::success('Berhasil menghapus FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed(400, 'Gagal menghapus FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal menghapus FAQ', $th->getMessage());
         }
     }
 }
