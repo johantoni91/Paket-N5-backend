@@ -75,8 +75,7 @@ class PerangkatController extends Controller
         $update = Perangkat::where('id', $id)->first();
         $input = [
             'user'      => $req->user,
-            'password'  => $req->password,
-            'satker'    => $req->satker ?? $update->satker
+            'password'  => $req->password
         ];
         $updated = $update->update($input);
         if ($updated) {
@@ -93,6 +92,7 @@ class PerangkatController extends Controller
             $satker = Satker::where('satker_code', 'NOT LIKE', null)->get();
             foreach ($satker as $sat) {
                 Perangkat::insert([
+                    'id'        => mt_rand(),
                     'user'      => mt_rand(),
                     'password'  => mt_rand(),
                     'satker'    => $sat->satker_code,

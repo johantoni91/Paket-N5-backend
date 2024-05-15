@@ -125,7 +125,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/perangkat/status', 'PerangkatController@status');
         $router->get('/perangkat/{id:\d+}', 'PerangkatController@index');
         $router->get('/perangkat/{id}/find', 'PerangkatController@find');
-        $router->get('/perangkat/{id}/update', 'PerangkatController@update');
+        $router->post('/perangkat/{id}/update', 'PerangkatController@update');
         $router->get('/perangkat/tm_hardware', 'PerangkatController@indexTmHardware');
         $router->get('/perangkat/tc_hardware', 'PerangkatController@indexTcHardware');
         $router->post('/perangkat/tm_hardware', 'PerangkatController@storeTmHardware');
