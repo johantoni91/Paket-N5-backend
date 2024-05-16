@@ -50,6 +50,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/user/store', 'UserController@store'); // Melakukan penambahan user setelah login
         $router->get('/user/search', 'UserController@search'); // Mencari user berdasarkan ketikan search
         $router->post('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id
+        $router->get('/user/{id:\d+}/find', 'UserController@findById');
         $router->get('/user/{id:\d+}/delete', 'UserController@delete'); // Menghapus sebuah user
         $router->post('/user/{id:\d+}/update', 'UserController@update'); // Mengubah sebuah user
         $router->get('/user/{id:\d+}/status/{stat:\d+}', 'UserController@status'); // Mengubah status user
@@ -156,6 +157,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/rate/{id:\d+}/id', 'RatingController@findById');
         $router->get('/rate/additional', 'RatingController@additional');
         $router->get('/rate/{id:\d+}/destroy', 'RatingController@destroy');
+
+        // Inbox
+        $router->get('/inbox/{user1}/room/{user2}', 'InboxController@room');
+        $router->post('/inbox/{room}/chat', 'InboxController@chat');
 
         // Notifikasi
         $router->post('notif/store', 'NotificationController@store');

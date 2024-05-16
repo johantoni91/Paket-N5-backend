@@ -30,6 +30,12 @@ class UserController extends Controller
         }
     }
 
+    function findById($id)
+    {
+        $user = User::find($id);
+        return Endpoint::success('Berhasil', $user);
+    }
+
     function store(Request $req)
     {
         try {

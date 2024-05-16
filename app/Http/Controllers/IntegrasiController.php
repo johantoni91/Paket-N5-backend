@@ -73,7 +73,10 @@ class IntegrasiController extends Controller
     function integration(Request $req)
     {
         try {
-            $data = Http::get($req->link)->json()['data'];
+            $data = Http::timeout(-1)->get($req->link)->json()['data'];
+            if (!isset($data)) {
+                $data = Http::timeout(-1)->withToken('adeyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoia2FtZGFsIiwiSXNzdWVyIjoibXlzaW1rYXJpIiwiVXNlcm5hbWUiOiJtYWxpZmNoYSIsImV4cCI6MTY5Mjc4Mzk5NywiaWF0IjoxNjkyNzgzOTk3fQ.fS7sAGH5yVsAAVTBhPoarA5us_Stut72vTCAggA6oNYyG')->get($req->link)->json()['data'];
+            }
             Pegawai::truncate();
             for ($i = 0; $i < count($data); $i++) {
                 Pegawai::insert([
