@@ -94,6 +94,7 @@ class KartuController extends Controller
                 'nama'          => $req->nama,
                 'golongan'      => $req->golongan,
                 'jabatan'       => $req->jabatan,
+                'warna_teks'    => $req->warna_teks,
                 'nip'           => $req->nip,
                 'nrp'           => $req->nrp,
             ];
@@ -123,6 +124,7 @@ class KartuController extends Controller
                 'nrp'           => $req->nrp,
                 'golongan'      => $req->golongan,
                 'jabatan'       => $req->jabatan,
+                'warna_teks'    => $req->warna_teks
             ];
             $kartu->update($requestData);
             return Endpoint::success('Berhasil mengubah kartu');

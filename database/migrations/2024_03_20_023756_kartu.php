@@ -27,6 +27,7 @@ return new class extends Migration
             $table->enum('nama', [0, 1])->default(1);
             $table->enum('golongan', [0, 1])->default(1);
             $table->enum('jabatan', [0, 1])->default(1);
+            $table->text('warna_teks')->default('text-black');
             $table->longText('card')->default('');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
