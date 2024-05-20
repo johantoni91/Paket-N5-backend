@@ -21,6 +21,22 @@ class KartuController extends Controller
         }
     }
 
+    function cardView()
+    {
+        try {
+            $kartu = Kartu::get()->toArray();
+            $res = [];
+            for ($i = 0; $i < count($kartu); $i++) {
+                $res = [
+                    'view'      => json_decode($kartu[$i]['card'])
+                ];
+            }
+            return Endpoint::success('Berhasil', $res);
+        } catch (\Throwable $th) {
+            return Endpoint::failed('Gagal');
+        }
+    }
+
     function getKartuTitle()
     {
         try {

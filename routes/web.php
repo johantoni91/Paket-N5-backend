@@ -109,6 +109,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Kartu
         $router->get('/kartu', 'KartuController@index');
+        $router->get('/kartu/view', 'KartuController@cardView');
         $router->get('/kartu/title', 'KartuController@getKartuTitle');
         $router->post('/kartu/title', 'KartuController@title');
         $router->post('/kartu/store', 'KartuController@store');
