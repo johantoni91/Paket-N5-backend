@@ -24,11 +24,13 @@ class KartuController extends Controller
     function cardView()
     {
         try {
-            $kartu = Kartu::get()->toArray();
+            $kartu = Kartu::orderBy('created_at')->get()->toArray();
             $res = [];
             for ($i = 0; $i < count($kartu); $i++) {
-                $res = [
-                    'view'      => json_decode($kartu[$i]['card'])
+                $res[$i] = [
+                    'id'         => $kartu[$i]['id'],
+                    'title'      => $kartu[$i]['title'],
+                    'kartu'      => json_decode($kartu[$i]['card'])
                 ];
             }
             return Endpoint::success('Berhasil', $res);
