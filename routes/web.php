@@ -113,12 +113,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/kartu/title', 'KartuController@title');
         $router->post('/kartu/store', 'KartuController@store');
         $router->get('/kartu/{id:\d+}', 'KartuController@find');
+        $router->post('/kartu/{id:\d+}/card', 'KartuController@card');
         $router->post('/kartu/typing', 'KartuController@typing');
         $router->post('/kartu/category', 'KartuController@category');
         $router->post('/kartu/{id:\d+}/back', 'KartuController@back');
         $router->post('/kartu/{id:\d+}/front', 'KartuController@front');
         $router->post('/kartu/{id:\d+}/update', 'KartuController@update');
         $router->get('/kartu/{id:\d+}/destroy', 'KartuController@destroy');
+        $router->get('/kartu/test', 'KartuController@test');
 
         // Perangkat
         $router->get('/perangkat/import', 'PerangkatController@import');

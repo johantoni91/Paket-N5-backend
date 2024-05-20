@@ -58,7 +58,10 @@ class KartuController extends Controller
     {
         try {
             $this->validate($req, [
-                'title' => 'required'
+                'title' => 'required',
+                'icon'  => 'required',
+                'front' => 'required',
+                'back'  => 'required'
             ]);
 
             $requestData = [
@@ -66,9 +69,9 @@ class KartuController extends Controller
                 'title'         => $req->title,
                 'profile'       => $req->profile,
                 'categories'    => $req->categories,
-                'icon'          => $req->hasFile('icon') ? env('APP_IMG', '') . '/kartu/' . $req->file('icon')->getClientOriginalName() : '',
-                'front'         => $req->hasFile('front') ? env('APP_IMG', '') . '/kartu/' . $req->file('front')->getClientOriginalName() : '',
-                'back'          => $req->hasFile('back') ? env('APP_IMG', '') . '/kartu/' . $req->file('back')->getClientOriginalName() : '',
+                'icon'          => $req->icon,
+                'front'         => $req->front,
+                'back'          => $req->back,
                 'orientation'   => $req->orientation,
                 'nama'          => $req->nama,
                 'golongan'      => $req->golongan,
@@ -77,15 +80,6 @@ class KartuController extends Controller
                 'nrp'           => $req->nrp,
             ];
             Kartu::insert($requestData);
-            if ($req->hasFile('icon')) {
-                $req->file('icon')->move('kartu', $req->file('icon')->getClientOriginalName());
-            }
-            if ($req->hasFile('front')) {
-                $req->file('front')->move('kartu', $req->file('front')->getClientOriginalName());
-            }
-            if ($req->hasFile('back')) {
-                $req->file('back')->move('kartu', $req->file('back')->getClientOriginalName());
-            }
             return Endpoint::success('Berhasil menambahkan kartu');
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
@@ -100,16 +94,12 @@ class KartuController extends Controller
             ]);
 
             $kartu = Kartu::where('id', $id)->first();
-            if ($req->hasFile('icon')) {
-                unlink('../public' . parse_url($kartu->icon)['path']);
-                $req->file('icon')->move('kartu', $req->file('icon')->getClientOriginalName());
-            }
             $requestData = [
                 'id'            => mt_rand(),
                 'title'         => $req->title,
                 'profile'       => $req->profile,
                 'categories'    => $req->categories,
-                'icon'          => $req->hasFile('icon') ? env('APP_IMG', '') . '/kartu/' . $req->file('icon')->getClientOriginalName() : $kartu->icon,
+                'icon'          => $req->icon,
                 'orientation'   => $req->orientation,
                 'nip'           => $req->nip,
                 'nrp'           => $req->nrp,
@@ -127,12 +117,7 @@ class KartuController extends Controller
     {
         try {
             $kartu = Kartu::where('id', $id)->first();
-            unlink('../public' . parse_url($kartu->front)['path']);
-            $fileName = $req->file('front')->getClientOriginalName();
-            $kartu->update([
-                'front' => env('APP_IMG', '') . '/kartu/' . $fileName
-            ]);
-            $req->file('front')->move('kartu', $fileName);
+            $kartu->update(['front' => $req->front]);
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
@@ -143,15 +128,20 @@ class KartuController extends Controller
     {
         try {
             $kartu = Kartu::where('id', $id)->first();
-            unlink('../public' . parse_url($kartu->back)['path']);
-            $fileName = $req->file('back')->getClientOriginalName();
-            $kartu->update([
-                'back' => env('APP_IMG', '') . '/kartu/' . $fileName
-            ]);
-            $req->file('back')->move('kartu', $fileName);
+            $kartu->update(['back' => $req->back]);
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
+        }
+    }
+
+    public function card(Request $req, $id)
+    {
+        try {
+            $kartu = Kartu::where('id', $id)->update(['card' => $req->card]);
+            return Endpoint::success('Berhasil', $kartu);
+        } catch (\Throwable $th) {
+            return Endpoint::failed($th->getMessage());
         }
     }
 
@@ -170,15 +160,6 @@ class KartuController extends Controller
     {
         try {
             $kartu = Kartu::find($id);
-            if ($kartu->icon) {
-                unlink('../public' . parse_url($kartu->icon)['path']);
-            }
-            if ($kartu->front) {
-                unlink('../public' . parse_url($kartu->front)['path']);
-            }
-            if ($kartu->back) {
-                unlink('../public' . parse_url($kartu->back)['path']);
-            }
             $kartu->delete();
             return Endpoint::Success('Berhasil');
         } catch (\Throwable $th) {
@@ -194,5 +175,11 @@ class KartuController extends Controller
         } catch (\Throwable $th) {
             return Endpoint::failed('Kartu tidak ditemukan');
         }
+    }
+
+    function test()
+    {
+        $kartu = Kartu::latest()->first();
+        return Endpoint::success('berhasil', json_decode($kartu['card']));
     }
 }

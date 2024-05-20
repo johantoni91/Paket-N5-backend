@@ -13,20 +13,21 @@ class InboxController extends Controller
     {
         try {
             $room = Room::where('user1', $user1)->where('user2', $user2)->first();
-            if (!$room) {
+            $room2 = Room::where('user1', $user2)->where('user2', $user1)->first();
+            if (!($room && $room2)) {
                 Room::create([
                     'id'    => mt_rand(),
                     'user1' => $user1,
                     'user2' => $user2
                 ]);
             }
-            $chat = Message::where('room_id', $room->id)->first();
+            $chat = Message::where('room_id', $room->id ?? $room2->id)->first();
             if (!$chat) {
                 Message::create([
                     'room_id'   => $room->id
                 ]);
             }
-            return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room->id)->get());
+            return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room->id ?? $room2->id)->get());
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }
