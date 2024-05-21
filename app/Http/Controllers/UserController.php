@@ -119,12 +119,12 @@ class UserController extends Controller
                 'nrp'       => $req->nrp,
                 'username'  => $req->username,
                 'name'      => $req->name,
-                'roles'     => $req->roles,
+                'roles'     => $req->roles ?? $data_user->roles,
                 'satker'    => $req->satker,
                 'email'     => $req->email,
                 'phone'     => $req->phone,
                 'password'  => $req->password == null ? $data_user->password : Hash::make($req->password),
-                'photo'     => $req->hasFile('photo') == true ? mt_rand() . '.' . $req->file('photo')->getClientOriginalExtension() : $data_user->users->photo
+                'photo'     => $req->hasFile('photo') == true ? mt_rand() . '.' . $req->file('photo')->getClientOriginalExtension() : $data_user->photo
             ];
 
             $this->validate($req, [
@@ -141,7 +141,7 @@ class UserController extends Controller
             $data_user->update($user);
             return Endpoint::success('Berhasil mengubah user!', $data_user);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mengubah user');
+            return Endpoint::failed('Gagal mengubah user', $th->getMessage());
         }
     }
 
