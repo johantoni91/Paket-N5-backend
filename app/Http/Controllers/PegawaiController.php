@@ -116,7 +116,9 @@ class PegawaiController extends Controller
 
             $pegawai = Pegawai::find($id);
             if ($req->hasFile('photo')) {
-                unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
+                if (parse_url($pegawai->foto_pegawai)['path']) {
+                    unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
+                }
                 $fileName = $req->file('photo')->getClientOriginalName();
                 $req->file('photo')->move('pegawai', $fileName);
                 $data = [
