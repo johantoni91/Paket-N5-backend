@@ -115,7 +115,7 @@ class PengajuanController extends Controller
             }
             return Endpoint::success('Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menambahkan data pengajuan');
+            return Endpoint::failed('Gagal menambahkan data pengajuan', $th->getMessage());
         }
     }
 
@@ -141,10 +141,10 @@ class PengajuanController extends Controller
         }
     }
 
-    function approve($id, $satker)
+    function approve(Request $req, $id, $satker)
     {
         try {
-            HelpersPengajuan::approve($id, $satker);
+            HelpersPengajuan::approve($id, $satker, $req->token, $req->barcode, $req->qrCode);
             return Endpoint::success('Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal menyetujui pengajuan');

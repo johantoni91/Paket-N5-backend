@@ -102,7 +102,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pengajuan/{user}/user', 'PengajuanController@findByUser');
         $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');
         $router->get('/pengajuan/{id:\d+}/destroy', 'PengajuanController@destroy');
-        $router->get('/pengajuan/{id:\d+}/approve/{satker:\d+}', 'PengajuanController@approve');
+        $router->post('/pengajuan/{id:\d+}/approve/{satker:\d+}', 'PengajuanController@approve');
 
         // Monitoring Pengajuan
         $router->get('/monitor/{id:\d+}', 'PengajuanController@monitor');

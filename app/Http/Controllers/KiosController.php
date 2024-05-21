@@ -44,7 +44,7 @@ class KiosController extends Controller
             }
             return Endpoint::success('Berhasil', $pengajuan);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal');
+            return Endpoint::failed('Gagal', $th->getMessage());
         }
     }
 

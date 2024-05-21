@@ -37,24 +37,28 @@ class HelpersPengajuan
         }
     }
 
-    public static function approve($id, $satker)
+    public static function approve($id, $satker, $token, $barcode, $qrCode = null)
     {
         $pengajuan = Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->first();
         $kode = SatkerCode::parent($satker);
         $pengajuan_agung = Pengajuan::where('id', $id)->first();
         if ($kode == '0' && $pengajuan_agung->approve_satker == '1') {
             Pengajuan::where('id', $id)->where('approve_satker', '1')->update([
-                'token'          => mt_rand(),
+                'token'          => $token,
                 'status'         => '3',
-                'approve_satker' => '0'
+                'approve_satker' => '0',
+                'barcode'        => $barcode,
+                'qrcode'         => $qrCode
             ]);
         } elseif ($kode == '1' && $pengajuan->approve_satker == '2') {
             Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->update([
+                'token'          => $token,
                 'status'         => '2',
                 'approve_satker' => '1'
             ]);
         } elseif ($kode == '2' && $pengajuan->approve_satker == '3') {
             Pengajuan::where('id', $id)->where('kode_satker', 'LIKE', $satker . '%')->update([
+                'token'          => $token,
                 'status'         => '1',
                 'approve_satker' => '2'
             ]);
