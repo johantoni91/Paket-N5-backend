@@ -8,6 +8,7 @@ use App\Helpers\SatkerCode;
 use App\Models\Pegawai;
 use App\Models\Satker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PegawaiController extends Controller
 {
@@ -116,7 +117,8 @@ class PegawaiController extends Controller
 
             $pegawai = Pegawai::find($id);
             if ($req->hasFile('photo')) {
-                if (parse_url($pegawai->foto_pegawai)['path']) {
+
+                if (File::exists(parse_url($pegawai->foto_pegawai)['path'])) {
                     unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
                 }
                 $fileName = $req->file('photo')->getClientOriginalName();
@@ -147,7 +149,9 @@ class PegawaiController extends Controller
     {
         try {
             $pegawai = Pegawai::find($id);
-            unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
+            if (File::exists(parse_url($pegawai->foto_pegawai)['path'])) {
+                unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
+            }
             $pegawai->delete();
             return Endpoint::success('Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
