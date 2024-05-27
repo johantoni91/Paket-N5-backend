@@ -33,7 +33,12 @@ class IntegrasiController extends Controller
     function store(Request $req)
     {
         try {
-            $link = Integrasi::insert(['url' => $req->link]);
+            $link = Integrasi::insert([
+                'url'       => $req->link,
+                'user'      => $req->user,
+                'password'  => $req->password,
+                'token'     => $req->token
+            ]);
             if (!$link) {
                 return Endpoint::warning('Gagal menambahkan link');
             }

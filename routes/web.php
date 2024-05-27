@@ -169,5 +169,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('notif/store', 'NotificationController@store');
         $router->get('/notif/{id:\d+}', 'NotificationController@index');
         $router->get('notif/{id:\d+}/destroy', 'NotificationController@destroy');
+
+        // Tanda Tangan
+        $router->post('signature/store', 'SignatureController@store');
+        $router->get('signature/{satker}', 'SignatureController@find');
+        $router->post('signature/update', 'SignatureController@update');
+        $router->get('signature/{satker}/destroy', 'SignatureController@destroy');
     });
 });

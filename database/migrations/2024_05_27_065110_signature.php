@@ -12,12 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('integrasi', function (Blueprint $table) {
+        Schema::create('signatures', function (Blueprint $table) {
             $table->id();
-            $table->text('url');
-            $table->longText('user')->nullable();
-            $table->longText('password')->nullable();
-            $table->longText('token')->nullable();
+            $table->text('signature');
+            $table->text('satker');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('integrasi');
+        Schema::dropIfExists('signatures');
     }
 };
