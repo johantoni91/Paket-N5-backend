@@ -17,7 +17,10 @@ class SignatureController extends Controller
                 Signature::insert([
                     'id'        => mt_rand(),
                     'signature' => env('APP_IMG', '') . '/signature/' . $req->file('signature')->getClientOriginalName(),
-                    'satker'    => $req->satker
+                    'satker'    => $req->satker,
+                    'nip'       => $req->nip,
+                    'nama'      => $req->nama,
+                    'jabatan'   => $req->jabatan,
                 ]);
                 return Endpoint::success('Berhasil', Signature::where('satker', $req->satker));
             } else {
@@ -42,11 +45,20 @@ class SignatureController extends Controller
     {
         try {
             $signature = Signature::where('satker', $req->satker)->first();
-            unlink('../public' . parse_url($signature->signature)['path']);
-            $signature->update([
-                'signature' => env('APP_IMG', '') . '/signature/' . $req->file('signature')->getClientOriginalName()
-            ]);
-            $req->file('signature')->move('signature', $req->file('signature')->getClientOriginalName());
+            $input = [
+                'signature' => $signature->signature,
+                'nip'       => $req->nip,
+                'nama'      => $req->nama,
+                'jabatan'   => $req->jabatan,
+            ];
+            if ($req->signature != '') {
+                unlink('../public' . parse_url($signature->signature)['path']);
+                $input['signature'] = env('APP_IMG', '') . '/signature/' . $req->file('signature')->getClientOriginalName();
+                $signature->update($input);
+                $req->file('signature')->move('signature', $req->file('signature')->getClientOriginalName());
+            } else {
+                $signature->update($input);
+            }
             return Endpoint::success('Berhasil', Signature::where('satker', $req->satker)->first());
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
