@@ -2,6 +2,12 @@
 
 namespace App\Helpers;
 
+// NB : SATKER_KODE || KODE 
+// 0 = KEJAGUNG
+// 1 = KEJATI
+// 2 = KEJARI
+// 3 = CABJARI
+
 class SatkerCode
 {
     public static function parent($var): String

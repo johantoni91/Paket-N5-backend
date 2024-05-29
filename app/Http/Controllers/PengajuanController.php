@@ -3,14 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
-use App\Helpers\HelpersPengajuan;
 use App\Helpers\SatkerCode;
 use App\Models\Kartu;
 use App\Models\Notif;
 use App\Models\Pegawai;
 use App\Models\Pengajuan;
+use App\Models\Satker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+// NB : STATUS
+// 0 = DITOLAK
+// 1 = PROSES
+// 2 = APPROVED
+
+// NB : ALASAN
+// 0 = RUSAK
+// 1 = BARU
+// 2 = GANTI SATKER
+// 3 = DLL
 
 class PengajuanController extends Controller
 {
@@ -18,7 +29,13 @@ class PengajuanController extends Controller
     {
         try {
             $kode = SatkerCode::parent($id);
-            $data = HelpersPengajuan::index($kode, $id);
+            if ($kode == '2' && $id != '98') {
+                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', 'LIKE', $id . '%')->paginate(5);
+            } elseif ($kode == '0') {
+                $data = Pengajuan::orderBy('created_at', 'asc')->paginate(5);
+            } else {
+                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', $id)->paginate(5);
+            }
             return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal mendapatkan data pengajuan');
@@ -78,36 +95,42 @@ class PengajuanController extends Controller
     function store(Request $req)
     {
         try {
-            $approve_satker = SatkerCode::parent($req->satker_code);
-            $input = [
-                'id'             => mt_rand(),
-                'nip'            => $req->nip,
-                'nama'           => $req->nama,
-                'kode_satker'    => $req->satker_code,
-                'photo'          => $req->hasFile('photo') ? env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName() : '',
-                'kartu'          => $req->kartu,
-                'approve_satker' => $approve_satker == '0' ? '1' : $approve_satker
-            ];
-
             $this->validate($req, [
-                'nip'   => 'required',
-                'kartu' => 'required'
+                'nip'         => 'required',
+                'kartu'       => 'required',
+                'alasan'      => 'required',
             ]);
 
-            if (!Pegawai::where('nip', $req->nip)->where('nama', $req->nama)->first()) {
+            $pegawai = Pegawai::where('nip', $req->nip)->first();
+            if (!$pegawai) {
                 return Endpoint::warning('Pengajuan gagal, pegawai tidak ditemukan.');
             }
+
+            $satker = Satker::where('satker_name', 'LIKE', '%' . $pegawai->nama_satker . '%')->first();
+            if ($satker->satker_code != $req->satker_code && $req->satker_code != '00') {
+                return Endpoint::warning('Pengajuan harus dengan satker yang sama!');
+            }
+            $input = [
+                'id'          => mt_rand(),
+                'nip'         => $req->nip,
+                'kode_satker' => $satker->satker_code,
+                'photo'       => $req->hasFile('photo') ? env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName() : '',
+                'kartu'       => $req->kartu,
+                'alasan'      => $req->alasan
+            ];
 
             $kartu = Kartu::where('id', $req->kartu)->first();
             if (!$kartu) {
                 return Endpoint::warning('Kartu belum / tidak ada. Tanyakan pada superadmin.');
+            } elseif ($kartu->card == '' || $kartu->card == null) {
+                return Endpoint::warning('Kartu yang anda ajukan belum ditambahkan dengan tanda tangan, mohon agar menambahkan tanda tangan pada profil.');
             }
+
             Pengajuan::insert($input);
             $kartu->update(['total' => DB::raw('total + 1')]);
             Notif::insert([
                 'notifikasi'  => $req->nama . ' mengajukan kartu.',
                 'kode_satker' => $req->satker_code,
-                'satker'      => $approve_satker,
             ]);
 
             if ($req->hasFile('photo')) {
@@ -144,10 +167,20 @@ class PengajuanController extends Controller
     function approve(Request $req, $id, $satker)
     {
         try {
-            HelpersPengajuan::approve($id, $satker, $req->token, $req->barcode, $req->qrCode);
+            $kode = SatkerCode::parent($satker);
+            if ($kode == '3') {
+                return Endpoint::warning('Pengajuan CABJARI hanya dapat disetujui oleh KEJARI');
+            } else {
+                Pengajuan::where('id', $id)->where('status', '1')->update([
+                    'token'          => $req->token,
+                    'status'         => '2',
+                    'barcode'        => $req->barcode,
+                    'qrcode'         => $req->qrCode
+                ]);
+            }
             return Endpoint::success('Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menyetujui pengajuan');
+            return Endpoint::failed('Gagal menyetujui pengajuan', $th->getMessage());
         }
     }
 
@@ -164,7 +197,7 @@ class PengajuanController extends Controller
     function print($id)
     {
         try {
-            Pengajuan::where('id', $id)->update(['status' => '3']);
+            Pengajuan::where('id', $id)->update(['status' => '2']);
             return Endpoint::success("Berhasil");
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
@@ -174,7 +207,7 @@ class PengajuanController extends Controller
     function getCount()
     {
         try {
-            return Endpoint::success('Berhasil', Pengajuan::count('kartu')->distinct());
+            return Endpoint::success('Berhasil', Pengajuan::count('kartu'));
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
         }
@@ -183,7 +216,7 @@ class PengajuanController extends Controller
     function getCountBySatker()
     {
         try {
-            return Endpoint::success('Berhasil',);
+            return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
         }

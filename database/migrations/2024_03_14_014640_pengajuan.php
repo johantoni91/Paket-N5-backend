@@ -20,8 +20,8 @@ return new class extends Migration
             $table->text('photo')->nullable()->default('');
             $table->text('token')->nullable()->default('');
             $table->text('kartu');
-            $table->enum('status', [0, 1, 2, 3])->default(1); // 0 = ditolak, 1 = proses, 2 = diterima di bawah kejagung, 3 diterima kejagung + token
-            $table->enum('approve_satker', [0, 1, 2, 3])->default(3); // 0 = kejagung, 1 = kejati, 2 = kejari, 3 = kejari
+            $table->enum('status', [0, 1, 2, 3])->default(1); // 0 = ditolak, 1 = proses, 2 = diterima + token
+            $table->enum('alasan', [0, 1, 2, 3])->default(1); // 0 = rusak, 1 = baru, 2 = ganti satker, 3 = dll
             $table->longtext('barcode')->nullable()->default('');
             $table->longtext('qrcode')->nullable()->default('');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
