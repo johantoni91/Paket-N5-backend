@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
+use App\Helpers\Log;
+use App\Helpers\Notifikasi;
 use App\Helpers\SatkerCode;
 use App\Models\Kartu;
 use App\Models\Notif;
 use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use App\Models\Satker;
+use App\Models\Signature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -21,21 +24,14 @@ use Illuminate\Support\Facades\DB;
 // 0 = RUSAK
 // 1 = BARU
 // 2 = GANTI SATKER
-// 3 = DLL
+// 3 = HILANG
 
 class PengajuanController extends Controller
 {
     function index($id)
     {
         try {
-            $kode = SatkerCode::parent($id);
-            if ($kode == '2' && $id != '98') {
-                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', 'LIKE', $id . '%')->paginate(5);
-            } elseif ($kode == '0') {
-                $data = Pengajuan::orderBy('created_at', 'asc')->paginate(5);
-            } else {
-                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', $id)->paginate(5);
-            }
+            $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', $id)->paginate(5);
             return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal mendapatkan data pengajuan');
@@ -106,10 +102,11 @@ class PengajuanController extends Controller
                 return Endpoint::warning('Pengajuan gagal, pegawai tidak ditemukan.');
             }
 
-            $satker = Satker::where('satker_name', 'LIKE', '%' . $pegawai->nama_satker . '%')->first();
-            if ($satker->satker_code != $req->satker_code && $req->satker_code != '00') {
-                return Endpoint::warning('Pengajuan harus dengan satker yang sama!');
+            $satker = Satker::where('satker_name', 'LIKE', '%' . $pegawai->nama_satker . '%')->where('satker_code', 'NOT LIKE', null)->first();
+            if (substr($satker->satker_code, 0, 4) != $req->satker_code && $satker->satker_code != $req->Satker_code) {
+                return Endpoint::warning('Pengajuan harus dengan satker yang sama, (kecuali untuk CABJARI hanya dapat melakukan pengajuan ke KEJARI dengan daerahnya masing-masing).');
             }
+
             $input = [
                 'id'          => mt_rand(),
                 'nip'         => $req->nip,
@@ -126,19 +123,30 @@ class PengajuanController extends Controller
                 return Endpoint::warning('Kartu yang anda ajukan belum ditambahkan dengan tanda tangan, mohon agar menambahkan tanda tangan pada profil.');
             }
 
+            $check_pengajuan = Pengajuan::where('status', '1')->first();
+            if ($check_pengajuan) {
+                return Endpoint::warning('Kartu sedang proses, mohon tunggu hingga telah disetujui/ditolak.');
+            }
             Pengajuan::insert($input);
             $kartu->update(['total' => DB::raw('total + 1')]);
-            Notif::insert([
-                'notifikasi'  => $req->nama . ' mengajukan kartu.',
-                'kode_satker' => $req->satker_code,
-            ]);
-
             if ($req->hasFile('photo')) {
                 $req->file('photo')->move('pengajuan', $req->file('photo')->getClientOriginalName());
             }
+
+            Notifikasi::add($pegawai->nama . ' mengajukan sebuah kartu.', $input['nip'], $satker->satker_code);
+            Log::insert(
+                isset($req->log['users_id']) ? $req->log['users_id'] : '0',
+                isset($req->log['username'])  ? $req->log['username'] : 'Postman',
+                isset($req->log['ip_address'])  ? $req->log['ip_address'] : '192.168.0.1',
+                isset($req->log['browser'])  ? $req->log['browser'] : 'Postman',
+                isset($req->log['browser_version'])  ? $req->log['browser_version'] : '0',
+                isset($req->log['os'])  ? $req->log['os'] : 'Linux',
+                isset($req->log['mobile'])  ? $req->log['mobile'] : 'Linux',
+                $pegawai->nama . ' mengajukan kartu ' . $kartu->title . '.'
+            );
             return Endpoint::success('Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menambahkan data pengajuan', $th->getMessage());
+            return Endpoint::failed($th->getMessage());
         }
     }
 
@@ -167,10 +175,19 @@ class PengajuanController extends Controller
     function approve(Request $req, $id, $satker)
     {
         try {
+            if ($req->role != 'admin') {
+                return Endpoint::warning('Persetujuan hanya dapat dilakukan oleh admin.');
+            }
             $kode = SatkerCode::parent($satker);
             if ($kode == '3') {
                 return Endpoint::warning('Pengajuan CABJARI hanya dapat disetujui oleh KEJARI');
             } else {
+                $pengajuan = Pengajuan::where('id', $id)->where('status', '1')->first();
+                $cabjari = preg_match('/^\d{6}$/', $pengajuan->kode_satker) ? substr($pengajuan->kode_satker, 0, 4) : $pengajuan->kode_satker;
+                $signature = Signature::where('satker', $cabjari)->first();
+                if (!$signature) {
+                    return Endpoint::warning('Kartu belum ditambahi tanda tangan, silahkan tambahkan tanda tangan untuk kartu yang mau diajukan sesuai dengan satker pengaju.');
+                }
                 Pengajuan::where('id', $id)->where('status', '1')->update([
                     'token'          => $req->token,
                     'status'         => '2',
@@ -180,7 +197,7 @@ class PengajuanController extends Controller
             }
             return Endpoint::success('Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menyetujui pengajuan', $th->getMessage());
+            return Endpoint::failed($th->getMessage());
         }
     }
 

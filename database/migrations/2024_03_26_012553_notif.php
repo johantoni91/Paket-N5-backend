@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('notif', function (Blueprint $table) {
             $table->id();
             $table->text('notifikasi');
-            $table->text('kode_satker');
-            $table->enum('satker', [0, 1, 2])->default('2');
+            $table->text('nip');
+            $table->text('satker');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
