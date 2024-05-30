@@ -8,10 +8,23 @@ use Illuminate\Http\Request;
 
 class KartuController extends Controller
 {
-    function index()
+    function indexPagination()
     {
         try {
             $kartu = Kartu::paginate(5);
+            if (!$kartu) {
+                return Endpoint::warning('Data kartu masih kosong');
+            }
+            return Endpoint::success('Berhasil mendapatkan data kartu', $kartu);
+        } catch (\Throwable $th) {
+            return Endpoint::failed('Gagal mendapatkan kartu');
+        }
+    }
+
+    function index()
+    {
+        try {
+            $kartu = Kartu::get();
             if (!$kartu) {
                 return Endpoint::warning('Data kartu masih kosong');
             }

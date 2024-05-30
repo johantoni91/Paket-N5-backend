@@ -108,6 +108,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/monitor/{id:\d+}', 'PengajuanController@monitor');
 
         // Kartu
+        $router->get('/kartuPagination', 'KartuController@indexPagination');
         $router->get('/kartu', 'KartuController@index');
         $router->get('/kartu/view', 'KartuController@cardView');
         $router->get('/kartu/title', 'KartuController@getKartuTitle');

@@ -7,7 +7,6 @@ use App\Helpers\Log;
 use App\Helpers\Notifikasi;
 use App\Helpers\SatkerCode;
 use App\Models\Kartu;
-use App\Models\Notif;
 use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use App\Models\Satker;
@@ -125,7 +124,7 @@ class PengajuanController extends Controller
 
             $check_pengajuan = Pengajuan::where('status', '1')->first();
             if ($check_pengajuan) {
-                return Endpoint::warning('Kartu sedang proses, mohon tunggu hingga telah disetujui/ditolak.');
+                return Endpoint::warning('Kartu sedang proses, mohon tunggu hingga setuju / ditolak.');
             }
             Pengajuan::insert($input);
             $kartu->update(['total' => DB::raw('total + 1')]);
