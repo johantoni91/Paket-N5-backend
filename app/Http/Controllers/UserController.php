@@ -30,6 +30,16 @@ class UserController extends Controller
         }
     }
 
+    public function all()
+    {
+        try {
+            $user = User::orderBy('name')->get();
+            return Endpoint::success('Berhasil mendapatkan semua users!', $user);
+        } catch (\Throwable $th) {
+            return Endpoint::failed('Ada error');
+        }
+    }
+
     function findById($id)
     {
         $user = User::find($id);

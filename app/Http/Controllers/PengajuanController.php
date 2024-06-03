@@ -30,7 +30,7 @@ class PengajuanController extends Controller
     function index($id)
     {
         try {
-            $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', $id)->paginate(5);
+            $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', $id)->where('status', '1')->paginate(5);
             return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal mendapatkan data pengajuan');
@@ -145,7 +145,7 @@ class PengajuanController extends Controller
             );
             return Endpoint::success('Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Masih dalam perbaikan.');
         }
     }
 
@@ -196,7 +196,7 @@ class PengajuanController extends Controller
             }
             return Endpoint::success('Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Masih dalam perbaikan.');
         }
     }
 
@@ -256,7 +256,7 @@ class PengajuanController extends Controller
                 ->groupBy('kode_satker')->orderByDesc('count')->take(5)->get();
             return Endpoint::success('Berhasil', $pengajuan);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Masih dalam perbaikan.');
         }
     }
 }

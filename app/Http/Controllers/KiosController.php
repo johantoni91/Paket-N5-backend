@@ -24,7 +24,7 @@ class KiosController extends Controller
             return Endpoint::failed('Perangkat tidak ditemukan');
         }
 
-        $data = TcHardware::where('id_perangkat', $login->id)->first();
+        $data = TcHardware::where('id_satker', $login->satker)->first();
         if (!$data) {
             return Endpoint::failed('Akun tidak ada');
         }

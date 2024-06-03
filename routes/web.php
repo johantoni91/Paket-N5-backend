@@ -46,7 +46,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/dashboard/{id}', 'DashboardController@index');
 
         // Management Users
-        $router->get('/users/{satker}', 'UserController@show'); // Mendapatkan semua user
+        $router->get('/users', 'UserController@all'); // Mendapatkan semua user
+        $router->get('/users/{satker}', 'UserController@show'); // Mendapatkan semua user per satker
         $router->post('/user/store', 'UserController@store'); // Melakukan penambahan user setelah login
         $router->get('/user/search', 'UserController@search'); // Mencari user berdasarkan ketikan search
         $router->post('/user/{id:\d+}', 'UserController@find'); // Mencari user berdasarkan id

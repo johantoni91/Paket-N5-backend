@@ -12,22 +12,24 @@ class InboxController extends Controller
     function room($user1, $user2)
     {
         try {
-            $room = Room::where('user1', $user1)->where('user2', $user2)->first();
-            $room2 = Room::where('user1', $user2)->where('user2', $user1)->first();
-            if (!($room && $room2)) {
-                Room::create([
+            $room = Room::where('from', $user1)->where('to', $user2)->first();
+            if (!$room) {
+                Room::insert([
                     'id'    => mt_rand(),
-                    'user1' => $user1,
-                    'user2' => $user2
+                    'from'  => $user1,
+                    'to'    => $user2
                 ]);
+                $room = Room::where('from', $user1)->where('to', $user2)->first();
             }
-            $chat = Message::where('room_id', $room->id ?? $room2->id)->first();
+            $chat = Message::where('room_id', $room->id)->first();
             if (!$chat) {
-                Message::create([
-                    'room_id'   => $room->id
+                Message::insert([
+                    'id'        => mt_rand(),
+                    'room_id'   => $room->id,
+                    'from'      => $user1
                 ]);
             }
-            return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room->id ?? $room2->id)->get());
+            return Endpoint::success('Berhasil', Message::with(['room'])->orderBy('created_at')->where('room_id', $room->id)->get());
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }
@@ -36,20 +38,12 @@ class InboxController extends Controller
     function chat(Request $req, $room)
     {
         try {
-            $message     = Message::where('room_id', $room)->where('message', '')->first();
-            if ($message) {
-                $message->update([
-                    'message'       => $req->message,
-                    'message_from'  => $req->message_from,
-                ]);
-            } else {
-                Message::create([
-                    'room_id'       => Room::where('id', $room)->first()['id'],
-                    'message'       => $req->message,
-                    'message_from'  => $req->message_from,
-                ]);
-            }
-            return Endpoint::success('Berhasil mengirimkan pesan', Message::with(['room'])->where('room_id', $room)->get());
+            Message::with(['room'])->insert([
+                'room_id'   => $room,
+                'message'   => $req->message,
+                'from'      => $req->from
+            ]);
+            return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room)->orderBy('created_at')->get());
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }
