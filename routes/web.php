@@ -155,13 +155,18 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/faq/{id:\d+}/update', 'FaqController@update');
         $router->get('/faq/{id:\d+}/destroy', 'FaqController@destroy');
 
-        //Rating
+        // Rating
         $router->get('/rate', 'RatingController@index');
         $router->post('/rate/insert', 'RatingController@insert');
         $router->get('/rate/{id:\d+}/find', 'RatingController@find');
         $router->get('/rate/{id:\d+}/id', 'RatingController@findById');
         $router->get('/rate/additional', 'RatingController@additional');
         $router->get('/rate/{id:\d+}/destroy', 'RatingController@destroy');
+
+        // Assessment
+        $router->get('/assessment', 'AssessmentController@index');
+        $router->post('/assessment/store', 'AssessmentController@store');
+        $router->get('/assessment/{id}/destroy', 'AssessmentController@destroy');
 
         // Inbox
         $router->get('/inbox/{user1}/room/{user2}', 'InboxController@room');

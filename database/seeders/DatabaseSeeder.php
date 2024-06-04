@@ -28,13 +28,14 @@ class DatabaseSeeder extends Seeder
                 'akses',
                 'log',
                 'faq',
-                'rating'
+                'rating',
+                'assessment'
             ]),
             'icon'  => json_encode([
-                'user', 'book-open', 'laugh', 'workflow', 'pen', 'monitor', 'credit-card', 'fingerprint', 'radio-receiver', 'key-square', 'history', 'help-circle', 'star'
+                'user', 'book-open', 'laugh', 'workflow', 'pen', 'monitor', 'credit-card', 'fingerprint', 'radio-receiver', 'key-square', 'history', 'help-circle', 'star', 'file-pen'
             ]),
             'title' => json_encode([
-                'Pengguna', 'Satuan Kerja', 'Data Pegawai', 'Integrasi Data Kepegawaian', 'Verifikasi', 'Monitoring', 'Pengaturan Layout Kartu', 'Smart Card Unique Personal Identity', 'Management Perangkat', 'Hak Akses Aplikasi', 'Log Aktivitas', 'FAQ', 'Ulasan'
+                'Pengguna', 'Satuan Kerja', 'Data Pegawai', 'Integrasi Data Kepegawaian', 'Verifikasi', 'Monitoring', 'Pengaturan Layout Kartu', 'Smart Card Unique Personal Identity', 'Management Perangkat', 'Hak Akses Aplikasi', 'Log Aktivitas', 'FAQ', 'Ulasan', 'Assessment'
             ])
         ]);
 
