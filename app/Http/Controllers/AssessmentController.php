@@ -22,7 +22,7 @@ class AssessmentController extends Controller
             Assessment::insert([
                 'id'        => mt_rand(),
                 'title'     => $req->title,
-                'dokumen'   => env('APP_URL', '') . '/files/' . $filename,
+                'dokumen'   => env('APP_IMG', '') . '/files/' . $filename,
                 'nip'       => $req->nip,
                 'satker'    => $req->satker
             ]);
