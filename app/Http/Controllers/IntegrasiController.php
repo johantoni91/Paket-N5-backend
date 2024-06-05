@@ -107,4 +107,20 @@ class IntegrasiController extends Controller
             return Endpoint::failed('Gagal', $th->getMessage());
         }
     }
+
+    function auth(Request $req)
+    {
+        $res = Http::post($req->link, [
+            'username'  => $req->username,
+            'password'  => $req->password
+        ]);
+    }
+
+    function integrationWithAuth()
+    {
+    }
+
+    function integrationWithFile()
+    {
+    }
 }

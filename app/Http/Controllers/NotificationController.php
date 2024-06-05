@@ -12,15 +12,17 @@ class NotificationController extends Controller
     function index($id)
     {
         try {
-            $code = SatkerCode::parent($id);
-            $notif = Notif::where('satker', $code)->where('kode_satker', 'LIKE', $id . '%')->get();
-            if (!$notif) {
-                return Endpoint::failed('Tidak ada notif');
-            }
+            $notif = Notif::where('satker', $id)->get();
             return Endpoint::success('Ada yang mengajukan kartu', $notif);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal');
+            return Endpoint::failed($th->getMessage());
         }
+    }
+
+    function find($nip)
+    {
+        $notif = Notif::where('nip', $nip)->first();
+        return Endpoint::success('Berhasil', $notif);
     }
 
     function destroy($id)

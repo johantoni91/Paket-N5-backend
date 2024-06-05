@@ -174,6 +174,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Notifikasi
         $router->post('notif/store', 'NotificationController@store');
+        $router->get('notif/{nip}/find', 'NotificationController@find');
         $router->get('/notif/{id:\d+}', 'NotificationController@index');
         $router->get('notif/{id:\d+}/destroy', 'NotificationController@destroy');
 
