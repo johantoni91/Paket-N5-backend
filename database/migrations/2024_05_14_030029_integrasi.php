@@ -15,9 +15,10 @@ return new class extends Migration
         Schema::create('integrasi', function (Blueprint $table) {
             $table->id();
             $table->text('url');
-            $table->longText('user')->nullable();
+            $table->longText('username')->nullable();
             $table->longText('password')->nullable();
             $table->longText('token')->nullable();
+            $table->enum('type', ['auth', 'token', 'default'])->default('default');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

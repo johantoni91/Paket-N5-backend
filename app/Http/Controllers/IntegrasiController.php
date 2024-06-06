@@ -33,31 +33,41 @@ class IntegrasiController extends Controller
     function store(Request $req)
     {
         try {
-            $link = Integrasi::insert([
+            Integrasi::insert([
                 'url'       => $req->link,
-                'user'      => $req->user,
-                'password'  => $req->password,
-                'token'     => $req->token
+                'username'  => $req->username ?? '',
+                'password'  => $req->password ?? '',
+                'token'     => $req->token ?? '',
+                'type'      => $req->type
             ]);
-            if (!$link) {
-                return Endpoint::warning('Gagal menambahkan link');
-            }
-            return Endpoint::success('Berhasil menambahkan link');
+            return Endpoint::success('Berhasil menambahkan tautan');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal');
+            return Endpoint::failed($th->getMessage());
+        }
+    }
+
+    function updateType(Request $req, $id)
+    {
+        try {
+            Integrasi::where('id', $id)->update(['type' => $req->type]);
+            return Endpoint::success('Berhasil mengubah tipe');
+        } catch (\Throwable $th) {
+            return Endpoint::failed($th->getMessage());
         }
     }
 
     function update(Request $req, $id)
     {
         try {
-            $link = Integrasi::where('id', $id)->update(['url' => $req->link]);
-            if (!$link) {
-                return Endpoint::warning('Gagal mengubah link');
-            }
-            return Endpoint::success('Berhasil mengubah link');
+            Integrasi::where('id', $id)->update([
+                'url'       => $req->link,
+                'username'  => $req->username ?? '',
+                'password'  => $req->password ?? '',
+                'token'     => $req->token ?? '',
+            ]);
+            return Endpoint::success('Berhasil mengubah data tautan integrasi');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal');
+            return Endpoint::failed($th->getMessage());
         }
     }
 
@@ -65,11 +75,8 @@ class IntegrasiController extends Controller
     {
         try {
             $link = Integrasi::find($id);
-            $delete = $link->delete();
-            if (!$delete) {
-                return Endpoint::warning('Link gagal dihapus');
-            }
-            return Endpoint::success('Berhasil menghapus link');
+            $link->delete();
+            return Endpoint::success('Berhasil menghapus tautan');
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
         }
@@ -78,9 +85,25 @@ class IntegrasiController extends Controller
     function integration(Request $req)
     {
         try {
-            $data = Http::timeout(-1)->get($req->link)->json()['data'];
-            if (!isset($data)) {
-                $data = Http::timeout(-1)->withToken('adeyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoia2FtZGFsIiwiSXNzdWVyIjoibXlzaW1rYXJpIiwiVXNlcm5hbWUiOiJtYWxpZmNoYSIsImV4cCI6MTY5Mjc4Mzk5NywiaWF0IjoxNjkyNzgzOTk3fQ.fS7sAGH5yVsAAVTBhPoarA5us_Stut72vTCAggA6oNYyG')->get($req->link)->json()['data'];
+            $integrasi = Integrasi::where('id', $req->id)->first();
+            if ($integrasi->type == 'auth') {
+                $result = Http::timeout(-1)->withBasicAuth($integrasi->username, $integrasi->password)->get($integrasi->url);
+                if ($result->failed()) {
+                    return Endpoint::failed('Gagal', 'Mohon perbaiki data pada tautan integrasi.');
+                }
+                $data = $result->json()['data'];
+            } elseif ($integrasi->type == 'token') {
+                $result = Http::timeout(-1)->withToken($integrasi->token)->get($integrasi->url);
+                if ($result->failed()) {
+                    return Endpoint::failed('Gagal', 'Mohon perbaiki data pada tautan integrasi.');
+                }
+                $data = $result->json()['data'];
+            } else {
+                $result = Http::timeout(-1)->get($integrasi->url);
+                if ($result->failed()) {
+                    return Endpoint::failed('Gagal', 'Mohon perbaiki data pada tautan integrasi.');
+                }
+                $data = $result->json()['data'];
             }
             Pegawai::truncate();
             for ($i = 0; $i < count($data); $i++) {
@@ -106,21 +129,5 @@ class IntegrasiController extends Controller
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal', $th->getMessage());
         }
-    }
-
-    function auth(Request $req)
-    {
-        $res = Http::post($req->link, [
-            'username'  => $req->username,
-            'password'  => $req->password
-        ]);
-    }
-
-    function integrationWithAuth()
-    {
-    }
-
-    function integrationWithFile()
-    {
     }
 }

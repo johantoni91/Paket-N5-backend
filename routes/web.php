@@ -88,6 +88,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/integrasi', 'IntegrasiController@index');
         $router->post('/integrasi/store', 'IntegrasiController@store');
         $router->post('/integrasi/{id}/update', 'IntegrasiController@update');
+        $router->post('/integrasi/{id}/update/type', 'IntegrasiController@updateType');
         $router->get('/integrasi/{id}/destroy', 'IntegrasiController@delete');
         $router->post('/integration', 'IntegrasiController@integration');
 
