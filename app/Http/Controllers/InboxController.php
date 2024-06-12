@@ -13,23 +13,48 @@ class InboxController extends Controller
     {
         try {
             $room = Room::where('from', $user1)->where('to', $user2)->first();
-            if (!$room) {
+            $room1 = Room::where('to', $user1)->where('from', $user2)->first();
+            $id = mt_rand();
+            if (!($room && $room1)) {
                 Room::insert([
                     'id'    => mt_rand(),
                     'from'  => $user1,
                     'to'    => $user2
                 ]);
-                $room = Room::where('from', $user1)->where('to', $user2)->first();
+                $final_room = Room::where('from', $user1)->where('to', $user2)->first();
+                $chat = Message::where('room_id', $final_room->id)->first();
+                if (!$chat) {
+                    Message::insert([
+                        'id'        => $id,
+                        'room_id'   => $final_room->id,
+                        'from'      => $user1
+                    ]);
+                }
             }
-            $chat = Message::where('room_id', $room->id)->first();
-            if (!$chat) {
-                Message::insert([
-                    'id'        => mt_rand(),
-                    'room_id'   => $room->id,
-                    'from'      => $user1
-                ]);
+            if ($room) {
+                $chat = Message::where('room_id', $room->id)->first();
+                if (!$chat) {
+                    Message::insert([
+                        'id'        => $id,
+                        'room_id'   => $room->id,
+                        'from'      => $user1
+                    ]);
+                }
+            } elseif ($room1) {
+                $chat = Message::where('room_id', $room1->id)->first();
+                if (!$chat) {
+                    Message::insert([
+                        'id'        => $id,
+                        'room_id'   => $room1->id,
+                        'from'      => $user1
+                    ]);
+                }
             }
-            return Endpoint::success('Berhasil', Message::with(['room'])->orderBy('created_at')->where('room_id', $room->id)->get());
+            return Endpoint::success('Berhasil', Message::with(['room'])->orderBy('created_at')
+                ->where('room_id', $id)
+                ->orWhere('room_id', $room->id ?? $room1->id)
+                ->orWhere('room_id', $final_room->id)
+                ->get());
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }

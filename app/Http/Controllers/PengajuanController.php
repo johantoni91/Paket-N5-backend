@@ -60,11 +60,16 @@ class PengajuanController extends Controller
     function search(Request $req)
     {
         try {
-            $data = Pengajuan::orderBy('nama', 'asc')
+            $arr = [];
+            $pegawai = Pegawai::where('nama', 'LIKE', '%' . $req->nama . '%')->get();
+            for ($var = 0; $var < count($pegawai); $var++) {
+                $arr[$var] = $pegawai[$var]['nip'];
+            }
+            $data = Pengajuan::orderBy('created_at', 'asc')
                 ->where('nip', 'LIKE', '%' . $req->nip . '%')
-                ->where('nama', 'LIKE', '%' . $req->nama . '%')
+                ->whereIn('nip', $arr)
                 ->where('status', 'LIKE', '%' . $req->status . '%')
-                ->paginate(10)->appends([
+                ->paginate(5)->appends([
                     'nip'    => $req->nip,
                     'nama'    => $req->nama,
                     'status'   => $req->status,
@@ -74,7 +79,7 @@ class PengajuanController extends Controller
             }
             return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mendapatkan data pengajuan!');
+            return Endpoint::failed('Gagal mendapatkan data pengajuan!', $th->getMessage());
         }
     }
 
@@ -110,7 +115,7 @@ class PengajuanController extends Controller
                 'id'          => mt_rand(),
                 'nip'         => $req->nip,
                 'kode_satker' => $satker->satker_code,
-                'photo'       => $req->hasFile('photo') ? env('APP_IMG', '') . '/kartu/' . $req->file('photo')->getClientOriginalName() : '',
+                'photo'       => $req->photo,
                 'kartu'       => $req->kartu,
                 'alasan'      => $req->alasan
             ];
@@ -122,15 +127,12 @@ class PengajuanController extends Controller
                 return Endpoint::warning('Kartu yang anda ajukan belum ditambahkan dengan tanda tangan, mohon agar menambahkan tanda tangan pada profil.');
             }
 
-            $check_pengajuan = Pengajuan::where('status', '1')->first();
+            $check_pengajuan = Pengajuan::where('nip', $req->nip)->where('status', '1')->first();
             if ($check_pengajuan) {
                 return Endpoint::warning('Kartu sedang proses, mohon tunggu hingga setuju / ditolak.');
             }
             Pengajuan::insert($input);
             $kartu->update(['total' => DB::raw('total + 1')]);
-            if ($req->hasFile('photo')) {
-                $req->file('photo')->move('pengajuan', $req->file('photo')->getClientOriginalName());
-            }
 
             Notifikasi::add($pegawai->nama . ' mengajukan sebuah kartu.', $input['nip'], $satker->satker_code);
             Log::insert(
@@ -145,7 +147,7 @@ class PengajuanController extends Controller
             );
             return Endpoint::success('Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Masih dalam perbaikan.');
+            return Endpoint::failed($th->getMessage());
         }
     }
 

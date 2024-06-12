@@ -26,6 +26,11 @@ class RoleController extends Controller
         return response(Menu::where('role', $req->role)->first(), 200);
     }
 
+    function findId(Request $req)
+    {
+        return Endpoint::success('Berhasil', Menu::find($req->id));
+    }
+
     function store(Request $req)
     {
         try {
