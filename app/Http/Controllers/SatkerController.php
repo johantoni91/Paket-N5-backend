@@ -17,9 +17,9 @@ class SatkerController extends Controller
         try {
             $satker_code = SatkerCode::parent($satker);
             if ($satker_code == '0') {
-                $satker = Satker::orderBy('satker_type')->where('satker_code', 'NOT LIKE', null)->paginate(10);
+                $satker = Satker::orderBy('satker_type')->where('satker_code', 'NOT LIKE', null)->paginate(5);
             } else {
-                $satker = Satker::orderBy('satker_type')->where('satker_code', 'NOT LIKE', null)->where('satker_code', 'like', $satker . '%')->paginate(10);
+                $satker = Satker::orderBy('satker_type')->where('satker_code', 'NOT LIKE', null)->where('satker_code', 'like', $satker . '%')->paginate(5);
             }
             return Endpoint::success('mendapatkan data satker', $satker);
         } catch (\Throwable $th) {
@@ -58,7 +58,7 @@ class SatkerController extends Controller
                 ->where('satker_code', 'NOT LIKE', null)
                 ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
                 ->where('satker_type', $req->satker_type)
-                ->paginate(10)->appends([
+                ->paginate(5)->appends([
                     'satker_name'    => $req->satker_name,
                     'satker_type'    => $req->satker_type,
                 ]);
