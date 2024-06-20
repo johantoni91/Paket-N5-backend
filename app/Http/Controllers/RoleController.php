@@ -36,7 +36,10 @@ class RoleController extends Controller
         try {
             $input = [
                 'id'        => mt_rand(1, 4),
-                'role'      => $req->role
+                'role'      => $req->role,
+                'route'     => $req->menus['route'],
+                'icon'      => $req->menus['icon'],
+                'title'     => $req->menus['title']
             ];
             Menu::insert($input);
             return Endpoint::success('Berhasil menambahkan role');

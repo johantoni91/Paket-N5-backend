@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('room_id');
             $table->foreign('room_id')->references('id')->on('rooms')->onUpdate('cascade')->onDelete('cascade');
-            $table->text('message')->nullable()->default('');
+            $table->longText('message')->nullable()->default('');
             $table->text('from')->nullable()->default('');
             $table->enum('read', [0, 1])->default(0);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

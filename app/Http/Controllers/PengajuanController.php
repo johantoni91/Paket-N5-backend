@@ -30,7 +30,12 @@ class PengajuanController extends Controller
     function index($id)
     {
         try {
-            $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', $id)->where('status', '1')->paginate(5);
+            $kode = SatkerCode::parent($id);
+            if ($kode == '2') {
+                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', 'LIKE', $id . '%')->paginate(5);
+            } else {
+                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', $id)->paginate(5);
+            }
             return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal mendapatkan data pengajuan');

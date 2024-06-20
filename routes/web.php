@@ -148,6 +148,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         // Roles
         $router->get('/roles', 'RoleController@index');
         $router->get('/roles/find', 'RoleController@find');
+        $router->post('/roles/store', 'RoleController@store');
         $router->post('/roles/find/id', 'RoleController@findId');
         $router->post('/roles/{id:\d+}/update', 'RoleController@update');
 
