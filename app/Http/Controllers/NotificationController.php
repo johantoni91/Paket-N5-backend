@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Api\Endpoint;
-use App\Helpers\SatkerCode;
+use App\Models\Message;
 use App\Models\Notif;
-use Illuminate\Http\Request;
+use App\Models\Room;
 
 class NotificationController extends Controller
 {
@@ -14,6 +14,17 @@ class NotificationController extends Controller
         try {
             $notif = Notif::where('satker', $id)->get();
             return Endpoint::success('Ada yang mengajukan kartu', $notif);
+        } catch (\Throwable $th) {
+            return Endpoint::failed($th->getMessage());
+        }
+    }
+
+    function message($id)
+    {
+        try {
+            $room = Room::where('users', 'LIKE', '%' . $id . '%')->first();
+            $msg = Message::where('room_id', $room->id)->where('read', '0')->get();
+            return Endpoint::success('Ada pesan masuk!', $msg);
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }

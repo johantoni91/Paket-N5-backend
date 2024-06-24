@@ -54,14 +54,25 @@ class SatkerController extends Controller
     function search(Request $req)
     {
         try {
-            $data = Satker::orderBy('satker_type')
-                ->where('satker_code', 'NOT LIKE', null)
-                ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
-                ->where('satker_type', $req->satker_type)
-                ->paginate(5)->appends([
-                    'satker_name'    => $req->satker_name,
-                    'satker_type'    => $req->satker_type,
-                ]);
+            if ($req->satker_type != null) {
+                $data = Satker::orderBy('satker_type')
+                    ->where('satker_code', 'NOT LIKE', null)
+                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                    ->where('satker_type', $req->satker_type)
+                    ->paginate($req->pagination ?? 5)->appends([
+                        'satker_name'    => $req->satker_name,
+                        'satker_type'    => $req->satker_type,
+                        'pagination'     => $req->pagination
+                    ]);
+            } else {
+                $data = Satker::orderBy('satker_type')
+                    ->where('satker_code', 'NOT LIKE', null)
+                    ->where('satker_name', 'LIKE', '%' . $req->satker_name . '%')
+                    ->paginate($req->pagination ?? 5)->appends([
+                        'satker_name'    => $req->satker_name,
+                        'pagination'     => $req->pagination
+                    ]);
+            }
             if (!$data) {
                 return Endpoint::success('Satker tidak ada');
             }

@@ -23,18 +23,22 @@ class InboxController extends Controller
                 $room = Room::where('users', $check_users)->orWhere('users', $check_users_swap)->first();
             }
 
-            $msg = Message::where('room_id', $room->id)->get();
-            return response()->json([
-                'res'   => $room->id,
-            ], 200);
-            if (!$msg) {
-                Message::insert(['id' => mt_rand(), 'room_id' => $room->id]);
-                return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room->id)->orderBy('created_at')->get());
+            $msg = Message::orderBy('created_at')->where('room_id', $room->id)->get();
+            if ($msg->isEmpty()) {
+                Message::insert(['id' => mt_rand(), 'from' => $user1, 'room_id' => $room->id]);
+                $msg = Message::orderBy('created_at')->where('room_id', $room->id)->get();
             }
+            Message::where('room_id', $room->id)->update(['read' => '1']);
             return Endpoint::success('Berhasil', $msg);
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }
+    }
+
+    function getRead($id)
+    {
+        Message::where('id', $id)->update(['read' => '1']);
+        return Endpoint::success('Berhasil', Message::where('id', $id)->first());
     }
 
     function chat(Request $req, $room)
@@ -45,6 +49,7 @@ class InboxController extends Controller
                 'message'   => $req->message,
                 'from'      => $req->from
             ]);
+            Message::where('room_id', $room)->where('from', $req->from)->update(['read' => '1']);
             return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room)->orderBy('created_at')->get());
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
