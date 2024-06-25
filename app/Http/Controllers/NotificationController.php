@@ -45,4 +45,14 @@ class NotificationController extends Controller
             return Endpoint::failed('Gagal');
         }
     }
+
+    function truncate()
+    {
+        try {
+            Notif::truncate();
+            return Endpoint::success('Berhasil');
+        } catch (\Throwable $th) {
+            return Endpoint::failed('Gagal');
+        }
+    }
 }

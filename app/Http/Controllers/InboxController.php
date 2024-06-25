@@ -23,12 +23,12 @@ class InboxController extends Controller
                 $room = Room::where('users', $check_users)->orWhere('users', $check_users_swap)->first();
             }
 
-            $msg = Message::orderBy('created_at')->where('room_id', $room->id)->get();
+            $msg = Message::with(['room'])->orderBy('created_at')->where('room_id', $room->id)->get();
             if ($msg->isEmpty()) {
                 Message::insert(['id' => mt_rand(), 'from' => $user1, 'room_id' => $room->id]);
                 $msg = Message::orderBy('created_at')->where('room_id', $room->id)->get();
             }
-            Message::where('room_id', $room->id)->update(['read' => '1']);
+            Message::with(['room'])->where('room_id', $room->id)->where('from', $user2)->update(['read' => '1']);
             return Endpoint::success('Berhasil', $msg);
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());

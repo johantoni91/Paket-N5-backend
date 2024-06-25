@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Api\Endpoint;
 use App\Models\Signature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class SignatureController extends Controller
 {
@@ -52,7 +53,9 @@ class SignatureController extends Controller
                 'jabatan'   => $req->jabatan,
             ];
             if ($req->signature != '') {
-                unlink('../public' . parse_url($signature->signature)['path']);
+                if (File::exists('../public' . parse_url($signature->signature)['path'])) {
+                    unlink('../public' . parse_url($signature->signature)['path']);
+                }
                 $input['signature'] = env('APP_IMG', '') . '/signature/' . $req->file('signature')->getClientOriginalName();
                 $signature->update($input);
                 $req->file('signature')->move('signature', $req->file('signature')->getClientOriginalName());
@@ -71,7 +74,9 @@ class SignatureController extends Controller
         if (!$signature) {
             return Endpoint::success('Tanda tangan tidak ada');
         } else {
-            unlink('../public' . parse_url($signature->signature)['path']);
+            if (File::exists('../public' . parse_url($signature->signature)['path'])) {
+                unlink('../public' . parse_url($signature->signature)['path']);
+            }
             $signature->delete();
             return Endpoint::success('Tanda tangan berhasil dihapus');
         }

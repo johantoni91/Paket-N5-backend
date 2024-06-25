@@ -180,6 +180,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('notif/store', 'NotificationController@store');
         $router->get('notif/{nip}/find', 'NotificationController@find');
         $router->get('/notif/{id:\d+}', 'NotificationController@index');
+        $router->get('/notif/truncate', 'NotificationController@truncate');
         $router->get('/notif/{id:\d+}/message', 'NotificationController@message');
         $router->get('notif/{id:\d+}/destroy', 'NotificationController@destroy');
 
@@ -188,5 +189,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('signature/{satker}', 'SignatureController@find');
         $router->post('signature/update', 'SignatureController@update');
         $router->get('signature/{satker}/destroy', 'SignatureController@destroy');
+
+        // NFC
+        $router->post('nfc/store', 'NfcController@retrieveAndUpdate');
     });
 });
