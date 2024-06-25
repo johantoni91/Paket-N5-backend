@@ -191,6 +191,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('signature/{satker}/destroy', 'SignatureController@destroy');
 
         // NFC
-        $router->post('nfc/store', 'NfcController@retrieveAndUpdate');
+        $router->post('nfc/store', 'NFCController@retrieveAndUpdate');
     });
 });
