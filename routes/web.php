@@ -100,6 +100,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pengajuan/search', 'PengajuanController@search');
         $router->get('/pengajuan/jumlah', 'PengajuanController@getCount');
         $router->get('/pengajuan/{id:\d+}/index', 'PengajuanController@index');
+        $router->get('/pengajuan/{token}/find/token', 'PengajuanController@findByToken');
         $router->get('/pengajuan/{id:\d+}/print', 'PengajuanController@print');
         $router->get('/pengajuan/{user}/user', 'PengajuanController@findByUser');
         $router->get('/pengajuan/reject/{id:\d+}', 'PengajuanController@reject');

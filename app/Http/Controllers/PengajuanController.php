@@ -62,6 +62,16 @@ class PengajuanController extends Controller
         }
     }
 
+    function findByToken($token)
+    {
+        try {
+            $pengajuan = Pengajuan::where('token', $token)->first();
+            return Endpoint::success('Berhasil', $pengajuan);
+        } catch (\Throwable $th) {
+            return Endpoint::failed('Gagal');
+        }
+    }
+
     function search(Request $req)
     {
         try {
