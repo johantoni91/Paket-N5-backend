@@ -15,7 +15,7 @@ class NotificationController extends Controller
             $notif = Notif::where('satker', $id)->get();
             return Endpoint::success('Ada yang mengajukan kartu', $notif);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -52,7 +52,7 @@ class NotificationController extends Controller
             $msg = Message::where('room_id', $room->id)->where('from', '!=', $id)->where('read', '0')->get();
             return Endpoint::success('Ada pesan masuk!', $msg);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 }

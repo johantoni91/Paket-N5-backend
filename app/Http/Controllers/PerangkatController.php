@@ -53,7 +53,7 @@ class PerangkatController extends Controller
             }
             return Endpoint::success('Berhasil', $perangkat);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -130,7 +130,7 @@ class PerangkatController extends Controller
 
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 

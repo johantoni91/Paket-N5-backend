@@ -42,7 +42,7 @@ class DashboardController extends Controller
                 ]);
             }
         } catch (\Throwable $th) {
-            return Endpoint::failed('Error', $th->getMessage());
+            return Endpoint::failed('Error');
         }
     }
 }

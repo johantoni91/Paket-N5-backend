@@ -21,7 +21,7 @@ class LogController extends Controller
             }
             return Endpoint::success('Berhasil mendapatkan data log aktivitas', $logs);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mendapatkan data log aktivitas', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan data log aktivitas');
         }
     }
 
@@ -31,7 +31,7 @@ class LogController extends Controller
             $columns = Log::orderBy($req->column, 'desc')->select($req->column)->distinct()->get();
             return Endpoint::success('Berhasil mendapatkan Kolom', $columns);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mendapatkan kolom', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan kolom');
         }
     }
 
@@ -56,7 +56,7 @@ class LogController extends Controller
             }
             return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mendapatkan log aktivitas!', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan log aktivitas!');
         }
     }
 }

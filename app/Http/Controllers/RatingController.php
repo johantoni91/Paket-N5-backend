@@ -49,7 +49,7 @@ class RatingController extends Controller
                     ])
             );
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -86,7 +86,7 @@ class RatingController extends Controller
             Rate::insert($input);
             return Endpoint::success('Berhasil menambahkan komentar');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menambahkan komentar', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan komentar');
         }
     }
 

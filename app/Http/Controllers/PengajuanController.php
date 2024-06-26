@@ -94,7 +94,7 @@ class PengajuanController extends Controller
             }
             return Endpoint::success('Berhasil mendapatkan data pengajuan', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mendapatkan data pengajuan!', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan data pengajuan!');
         }
     }
 
@@ -162,7 +162,7 @@ class PengajuanController extends Controller
             );
             return Endpoint::success('Berhasil menambahkan data pengajuan');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 

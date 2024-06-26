@@ -44,7 +44,7 @@ class KiosController extends Controller
             }
             return Endpoint::success('Berhasil', $pengajuan);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -60,7 +60,7 @@ class KiosController extends Controller
             }
             return Endpoint::success('Berhasil', $pengajuan);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -78,7 +78,7 @@ class KiosController extends Controller
             ];
             return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 }

@@ -28,7 +28,7 @@ class AssessmentController extends Controller
             ]);
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -40,7 +40,7 @@ class AssessmentController extends Controller
             $assessment->delete();
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 }

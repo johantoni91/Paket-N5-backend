@@ -82,7 +82,7 @@ class UserController extends Controller
             User::insert($input);
             return Endpoint::success(' Berhasil');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -151,7 +151,7 @@ class UserController extends Controller
             $data_user->update($user);
             return Endpoint::success('Berhasil mengubah user!', $data_user);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mengubah user', $th->getMessage());
+            return Endpoint::failed('Gagal mengubah user');
         }
     }
 

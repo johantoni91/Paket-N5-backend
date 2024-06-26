@@ -60,7 +60,7 @@ class PegawaiController extends Controller
             }
             return Endpoint::success('Berhasil mendapatkan data pegawai', $pegawai);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -90,7 +90,7 @@ class PegawaiController extends Controller
             Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Tambah Pegawai.');
             return Endpoint::success('Berhasil menambahkan data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menambahkan data pegawai', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan data pegawai');
         }
     }
 
@@ -132,7 +132,7 @@ class PegawaiController extends Controller
             Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Ubah Pegawai.');
             return Endpoint::success('Berhasil ubah data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal ubah data pegawai', $th->getMessage());
+            return Endpoint::failed('Gagal ubah data pegawai');
         }
     }
 

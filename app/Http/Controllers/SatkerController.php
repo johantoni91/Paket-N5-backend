@@ -100,7 +100,7 @@ class SatkerController extends Controller
             ]);
             return Endpoint::success('Berhasil menemukan data satker!', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 

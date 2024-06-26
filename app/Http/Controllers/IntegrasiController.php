@@ -42,7 +42,7 @@ class IntegrasiController extends Controller
             ]);
             return Endpoint::success('Berhasil menambahkan tautan');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -52,7 +52,7 @@ class IntegrasiController extends Controller
             Integrasi::where('id', $id)->update(['type' => $req->type]);
             return Endpoint::success('Berhasil mengubah tipe');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -67,7 +67,7 @@ class IntegrasiController extends Controller
             ]);
             return Endpoint::success('Berhasil mengubah data tautan integrasi');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -127,7 +127,7 @@ class IntegrasiController extends Controller
             }
             return Endpoint::success('Berhasil melakukan integrasi data', Pegawai::count());
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal', $th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 }

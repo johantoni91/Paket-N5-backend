@@ -52,7 +52,7 @@ class AuthController extends Controller
             User::insert($data);
             return Endpoint::success('Berhasil registrasi', User::latest()->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal registrasi', $th->getMessage());
+            return Endpoint::failed('Gagal registrasi');
         }
     }
 
@@ -105,7 +105,7 @@ class AuthController extends Controller
             Log::insert($data_login);
             return Endpoint::success('Berhasil login', $result);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Username / Password Salah!', $th->getMessage());
+            return Endpoint::failed('Username / Password Salah!');
         }
     }
 }

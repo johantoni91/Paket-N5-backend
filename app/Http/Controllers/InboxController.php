@@ -31,7 +31,7 @@ class InboxController extends Controller
             Message::where('room_id', $room->id)->where('from', $user2)->update(['read' => '1']);
             return Endpoint::success('Berhasil', $msg);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -51,7 +51,7 @@ class InboxController extends Controller
             ]);
             return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room)->orderBy('created_at')->get());
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 }

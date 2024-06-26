@@ -28,7 +28,7 @@ class SignatureController extends Controller
                 return Endpoint::success('Sudah ada tanda tangan dalam satker yang sama', $user);
             }
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -64,7 +64,7 @@ class SignatureController extends Controller
             }
             return Endpoint::success('Berhasil', Signature::where('satker', $req->satker)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 

@@ -114,7 +114,7 @@ class KartuController extends Controller
             Kartu::insert($requestData);
             return Endpoint::success('Berhasil menambahkan kartu');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 
@@ -174,7 +174,7 @@ class KartuController extends Controller
             $kartu = Kartu::where('id', $id)->update(['card' => $req->card]);
             return Endpoint::success('Berhasil', $kartu);
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Gagal');
         }
     }
 

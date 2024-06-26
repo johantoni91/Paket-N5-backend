@@ -13,7 +13,7 @@ class FaqController extends Controller
         try {
             return Endpoint::success('Berhasil mendapatkan FAQ', Faq::orderBy('created_at')->paginate(5));
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mendapatkan FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal mendapatkan FAQ');
         }
     }
 
@@ -31,7 +31,7 @@ class FaqController extends Controller
             Faq::insert($input);
             return Endpoint::success('Berhasil menambahkan FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menambahkan FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal menambahkan FAQ');
         }
     }
 
@@ -45,7 +45,7 @@ class FaqController extends Controller
             Faq::where('id', $id)->update($input);
             return Endpoint::success('Berhasil mengubah FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mengubah FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal mengubah FAQ');
         }
     }
 
@@ -55,7 +55,7 @@ class FaqController extends Controller
             Faq::where('id', $id)->delete();
             return Endpoint::success('Berhasil menghapus FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menghapus FAQ', $th->getMessage());
+            return Endpoint::failed('Gagal menghapus FAQ');
         }
     }
 }
