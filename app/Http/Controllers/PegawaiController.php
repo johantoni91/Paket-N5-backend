@@ -18,9 +18,9 @@ class PegawaiController extends Controller
         try {
             $satker = str_replace('-', ' ', $id);
             if ($satker == "kejaksaan agung" || $satker == "kejaksaan agung republik indonesia") {
-                $data = Pegawai::orderBy('nama')->paginate(10);
+                $data = Pegawai::orderBy('nama')->paginate(5);
             } else {
-                $data = Pegawai::orderBy('nama', 'asc')->where('nama_satker', $satker)->paginate(10);
+                $data = Pegawai::orderBy('nama', 'asc')->where('nama_satker', $satker)->paginate(5);
             }
             return Endpoint::success('Berhasil mendapatkan data pegawai', $data);
         } catch (\Throwable $th) {
@@ -38,10 +38,11 @@ class PegawaiController extends Controller
                     ->where('nama', 'LIKE', '%' . $req->nama . '%')
                     ->where('nip', 'LIKE', '%' . $req->nip . '%')
                     ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
-                    ->paginate(10)->appends([
-                        'nama' =>  $req->nama,
-                        'nip'  =>  $req->nip,
-                        'nrp'  =>  $req->nrp
+                    ->paginate($req->pagination ?? 5)->appends([
+                        'nama'       => $req->nama,
+                        'nip'        => $req->nip,
+                        'nrp'        => $req->nrp,
+                        'pagination' => $req->pagination
                     ]);
             } else {
                 $pegawai = Pegawai::orderBy('nama')
@@ -49,10 +50,11 @@ class PegawaiController extends Controller
                     ->where('nama', 'LIKE', '%' . $req->nama . '%')
                     ->where('nip', 'LIKE', '%' . $req->nip . '%')
                     ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
-                    ->paginate(10)->appends([
-                        'nama' =>  $req->nama,
-                        'nip'  =>  $req->nip,
-                        'nrp'  =>  $req->nrp
+                    ->paginate($req->pagination ?? 5)->appends([
+                        'nama'       => $req->nama,
+                        'nip'        => $req->nip,
+                        'nrp'        => $req->nrp,
+                        'pagination' => $req->pagination
                     ]);
             }
             if (!$pegawai) {
