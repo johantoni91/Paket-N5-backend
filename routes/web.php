@@ -161,6 +161,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Rating
         $router->get('/rate', 'RatingController@index');
+        $router->post('/rate/search', 'RatingController@search');
         $router->post('/rate/insert', 'RatingController@insert');
         $router->get('/rate/{id:\d+}/find', 'RatingController@find');
         $router->get('/rate/{id:\d+}/id', 'RatingController@findById');

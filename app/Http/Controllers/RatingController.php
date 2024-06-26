@@ -19,6 +19,40 @@ class RatingController extends Controller
         }
     }
 
+    function search(Request $req)
+    {
+        try {
+            $user = User::where('name', $req->name)->first();
+            if (!$user) {
+                return Endpoint::success(
+                    'Berhasil',
+                    Rate::with(['user'])->orderBy('created_at')
+                        ->where('stars', 'LIKE', '%' . $req->stars . '%')
+                        ->where('comment', 'LIKE', '%' . $req->comment . '%')
+                        ->paginate(5)->appends([
+                            'user_id'   => $req->user_id,
+                            'stars'     => $req->stars,
+                            'comment'   => $req->comment
+                        ])
+                );
+            }
+            return Endpoint::success(
+                'Berhasil',
+                Rate::with(['user'])->orderBy('created_at')
+                    ->where('user_id', 'LIKE', '%' . $user->id . '%')
+                    ->where('stars', 'LIKE', '%' . $req->stars . '%')
+                    ->where('comment', 'LIKE', '%' . $req->comment . '%')
+                    ->paginate(5)->appends([
+                        'user_id'   => $req->user_id,
+                        'stars'     => $req->stars,
+                        'comment'   => $req->comment
+                    ])
+            );
+        } catch (\Throwable $th) {
+            return Endpoint::failed('Gagal', $th->getMessage());
+        }
+    }
+
     function findById($id)
     {
         return Endpoint::success('Berhasil', Rate::where('name', $id)->first());

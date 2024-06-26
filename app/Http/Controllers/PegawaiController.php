@@ -39,9 +39,9 @@ class PegawaiController extends Controller
                     ->where('nip', 'LIKE', '%' . $req->nip . '%')
                     ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
                     ->paginate(10)->appends([
-                        'nama'           =>  $req->nama,
-                        'nip'           =>  $req->nip,
-                        'nrp'           =>  $req->nrp
+                        'nama' =>  $req->nama,
+                        'nip'  =>  $req->nip,
+                        'nrp'  =>  $req->nrp
                     ]);
             } else {
                 $pegawai = Pegawai::orderBy('nama')
@@ -50,9 +50,9 @@ class PegawaiController extends Controller
                     ->where('nip', 'LIKE', '%' . $req->nip . '%')
                     ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
                     ->paginate(10)->appends([
-                        'nama'           =>  $req->nama,
-                        'nip'           =>  $req->nip,
-                        'nrp'           =>  $req->nrp
+                        'nama' =>  $req->nama,
+                        'nip'  =>  $req->nip,
+                        'nrp'  =>  $req->nrp
                     ]);
             }
             if (!$pegawai) {

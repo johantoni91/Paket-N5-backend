@@ -28,7 +28,7 @@ class InboxController extends Controller
                 Message::insert(['id' => mt_rand(), 'from' => $user1, 'room_id' => $room->id]);
                 $msg = Message::orderBy('created_at')->where('room_id', $room->id)->get();
             }
-            Message::with(['room'])->where('room_id', $room->id)->where('from', $user2)->update(['read' => '1']);
+            Message::where('room_id', $room->id)->where('from', $user2)->update(['read' => '1']);
             return Endpoint::success('Berhasil', $msg);
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
@@ -49,7 +49,6 @@ class InboxController extends Controller
                 'message'   => $req->message,
                 'from'      => $req->from
             ]);
-            Message::where('room_id', $room)->where('from', $req->from)->update(['read' => '1']);
             return Endpoint::success('Berhasil', Message::with(['room'])->where('room_id', $room)->orderBy('created_at')->get());
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());

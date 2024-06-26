@@ -9,22 +9,11 @@ use App\Models\Room;
 
 class NotificationController extends Controller
 {
-    function index($id)
+    function index($id) // Notif pengajuan
     {
         try {
             $notif = Notif::where('satker', $id)->get();
             return Endpoint::success('Ada yang mengajukan kartu', $notif);
-        } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
-        }
-    }
-
-    function message($id)
-    {
-        try {
-            $room = Room::where('users', 'LIKE', '%' . $id . '%')->first();
-            $msg = Message::where('room_id', $room->id)->where('read', '0')->get();
-            return Endpoint::success('Ada pesan masuk!', $msg);
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }
@@ -53,6 +42,17 @@ class NotificationController extends Controller
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
+        }
+    }
+
+    function message($id) // Notif chat
+    {
+        try {
+            $room = Room::where('users', 'LIKE', '%' . $id . '%')->first();
+            $msg = Message::where('room_id', $room->id)->where('from', '!=', $id)->where('read', '0')->get();
+            return Endpoint::success('Ada pesan masuk!', $msg);
+        } catch (\Throwable $th) {
+            return Endpoint::failed($th->getMessage());
         }
     }
 }
