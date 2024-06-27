@@ -6,6 +6,7 @@ use App\Api\Endpoint;
 use App\Models\Assessment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class AssessmentController extends Controller
 {
@@ -36,7 +37,9 @@ class AssessmentController extends Controller
     {
         try {
             $assessment = Assessment::find($id);
-            unlink('../public' . parse_url($assessment->dokumen)['path']);
+            if (File::exists(parse_url($assessment->dokumen)['path'])) {
+                unlink('../public' . parse_url($assessment->dokumen)['path']);
+            }
             $assessment->delete();
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {

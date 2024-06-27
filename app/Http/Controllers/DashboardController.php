@@ -6,7 +6,6 @@ use App\Api\Endpoint;
 use App\Helpers\SatkerCode;
 use App\Models\Faq;
 use App\Models\Kartu;
-use App\Models\Kewenangan;
 use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use App\Models\Rate;
