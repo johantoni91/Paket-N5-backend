@@ -9,6 +9,7 @@ use App\Models\Satker;
 use App\Models\TcHardware;
 use App\Models\TmHardware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PerangkatController extends Controller
 {
@@ -231,7 +232,9 @@ class PerangkatController extends Controller
                 return Endpoint::failed('Gagal', 'Perangkat tidak ditemukan');
             }
             if ($req->hasFile('photo')) {
-                unlink('../public' . parse_url($hardware->photo)['path']);
+                if (File::exists(parse_url($hardware->photo)['path'])) {
+                    unlink('../public' . parse_url($hardware->photo)['path']);
+                }
                 $req->file('photo')->move('perangkat', $req->file('photo')->getClientOriginalName());
             }
             $update = $hardware->update([
@@ -256,7 +259,9 @@ class PerangkatController extends Controller
             if (!$hardware) {
                 return Endpoint::failed('Gagal');
             }
-            unlink('../public' . parse_url($hardware->photo)['path']);
+            if (File::exists(parse_url($hardware->photo)['path'])) {
+                unlink('../public' . parse_url($hardware->photo)['path']);
+            }
             $hardware->delete();
             return Endpoint::success('Berhasil');
         } catch (\Throwable $th) {

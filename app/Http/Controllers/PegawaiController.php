@@ -151,7 +151,9 @@ class PegawaiController extends Controller
     {
         try {
             $pegawai = Pegawai::find($id);
-            unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
+            if (File::exists(parse_url($pegawai->foto_pegawai)['path'])) {
+                unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
+            }
             $pegawai->delete();
             return Endpoint::success('Berhasil menghapus data pegawai');
         } catch (\Throwable $th) {
