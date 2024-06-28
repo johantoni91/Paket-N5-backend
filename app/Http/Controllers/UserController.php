@@ -145,7 +145,9 @@ class UserController extends Controller
 
             //Jika ada gambar yang diupload
             if ($req->hasFile('photo')) {
-                File::delete('images/' . $data_user->photo);
+                if (File::exists('images/' . $data_user->photo)) {
+                    File::delete('images/' . $data_user->photo);
+                }
                 $req->file('photo')->move('images', $user['photo']);
             }
             $data_user->update($user);
@@ -174,6 +176,7 @@ class UserController extends Controller
     {
         try {
             $user = User::find($id);
+
             // Log::insert([
             //     'id'                => mt_rand(),
             //     'users_id'          => $id,
@@ -186,7 +189,10 @@ class UserController extends Controller
             //     'log_detail'        => $this->user . ' Hapus data user ' . $req->username,
             //     'created_at'        => Carbon::now()
             // ]);
-            File::delete('images/' . $user->photo);
+
+            if (File::exists('images/' . $user->photo)) {
+                File::delete('images/' . $user->photo);
+            }
             $user->delete();
             return Endpoint::success('Berhasil menghapus user!');
         } catch (\Throwable $th) {
@@ -205,7 +211,7 @@ class UserController extends Controller
                 ->where('name', 'LIKE', '%' . $req->name . '%')
                 ->where('email', 'LIKE', '%' . $req->email . '%')
                 ->where('phone', 'LIKE', '%' . $req->phone . '%')
-                ->paginate(10)->appends([
+                ->paginate($req->page ?? 5)->appends([
                     'nip'      => $req->nip,
                     'nrp'      => $req->nrp,
                     'username' => $req->username,

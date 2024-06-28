@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Api\Endpoint;
 use App\Models\Faq;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class FaqController extends Controller
 {
@@ -26,36 +27,51 @@ class FaqController extends Controller
         try {
             $input = [
                 'question' => $req->question,
-                'answer'   => $req->answer
+                'answer'   => $req->answer,
+                'image'    => env('APP_IMG') . '/faq/' . $req->file('image')->getClientOriginalName()
             ];
+            $req->file('image')->move('faq', $req->file('image')->getClientOriginalName());
             Faq::insert($input);
-            return Endpoint::success('Berhasil menambahkan FAQ');
+            return Endpoint::success('Berhasil menambahkan FAQ', $req->file('image')->getClientOriginalName());
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menambahkan FAQ');
+            return Endpoint::failed('Gagal menambahkan FAQ', $th->getMessage());
         }
     }
 
     function update(Request $req, $id)
     {
         try {
+            $faq = Faq::where('id', $id)->first();
             $input = [
                 'question' => $req->question,
-                'answer'   => $req->answer
+                'answer'   => $req->answer,
+                'image'    => $req->hasFile('image') ? env('APP_IMG') . '/faq/' . $req->file('image')->getClientOriginalName() : $faq->image
             ];
-            Faq::where('id', $id)->update($input);
+            if ($req->hasFile('image')) {
+                if (File::exists(parse_url($faq->image)['path'])) {
+                    File::delete(parse_url($faq->image)['path']);
+                }
+                $req->file('image')->move('faq', $req->file('image')->getClientOriginalName());
+            }
+            $faq->update($input);
+            $faq->save();
             return Endpoint::success('Berhasil mengubah FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mengubah FAQ');
+            return Endpoint::failed('Gagal mengubah FAQ', $th->getMessage());
         }
     }
 
     function destroy($id)
     {
         try {
-            Faq::where('id', $id)->delete();
+            $faq = Faq::where('id', $id)->first();
+            if (File::exists('../public' . parse_url($faq->image)['path'])) {
+                unlink('../public' . parse_url($faq->image)['path']);
+            }
+            $faq->delete();
             return Endpoint::success('Berhasil menghapus FAQ');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menghapus FAQ');
+            return Endpoint::failed('Gagal menghapus FAQ', $th->getMessage());
         }
     }
 }
