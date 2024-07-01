@@ -13,10 +13,26 @@ class IntegrasiController extends Controller
     function index()
     {
         try {
-            $integrasi = Integrasi::orderBy('created_at')->paginate(10);
+            $integrasi = Integrasi::orderBy('created_at')->paginate(5);
             return Endpoint::success('Berhasil', $integrasi);
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
+        }
+    }
+
+    function search(Request $req)
+    {
+        try {
+            $data = Integrasi::orderBy('created_at')
+                ->where('url', 'LIKE', '%' . $req->url . '%')
+                ->where('type', 'LIKE', '%' . $req->type . '%')
+                ->paginate($req->pagination)->appends([
+                    'url'   => $req->url,
+                    'type'  => $req->type
+                ]);
+            return Endpoint::success('Berhasil', $data);
+        } catch (\Throwable $th) {
+            return Endpoint::failed($th->getMessage());
         }
     }
 

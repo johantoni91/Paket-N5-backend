@@ -75,6 +75,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Integrasi Pegawai
         $router->get('/integrasi', 'IntegrasiController@index');
+        $router->post('/integrasi/search', 'IntegrasiController@search');
         $router->post('/integrasi/store', 'IntegrasiController@store');
         $router->post('/integrasi/{id}/update', 'IntegrasiController@update');
         $router->post('/integrasi/{id}/update/type', 'IntegrasiController@updateType');
@@ -98,6 +99,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Monitoring Pengajuan
         $router->get('/monitor/{id:\d+}', 'PengajuanController@monitor');
+
+        // SmartCard
+        $router->get('/smart/{satker:\d+}', 'SmartController@index');
 
         // Kartu
         $router->get('/kartuPagination', 'KartuController@indexPagination');

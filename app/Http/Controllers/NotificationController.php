@@ -21,7 +21,7 @@ class NotificationController extends Controller
 
     function find($nip)
     {
-        $notif = Notif::where('nip', $nip)->first();
+        $notif = Notif::where('nip', $nip)->get();
         return Endpoint::success('Berhasil', $notif);
     }
 

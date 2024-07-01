@@ -7,6 +7,7 @@ use App\Helpers\Log;
 use App\Helpers\Notifikasi;
 use App\Helpers\SatkerCode;
 use App\Models\Kartu;
+use App\Models\Notif;
 use App\Models\Pegawai;
 use App\Models\Pengajuan;
 use App\Models\Satker;
@@ -210,10 +211,15 @@ class PengajuanController extends Controller
                     'barcode'        => $req->barcode,
                     'qrcode'         => $req->qrCode
                 ]);
+                Notif::insert([
+                    'nip'        => $pengajuan->nip,
+                    'notifikasi' => 'Selamat, pengajuan anda disetujui. Token: ' . $req->token,
+                    'satker'     => $pengajuan->kode_satker
+                ]);
             }
             return Endpoint::success('Berhasil menyetujui pengajuan', Pengajuan::where('id', $id)->first());
         } catch (\Throwable $th) {
-            return Endpoint::failed('Masih dalam perbaikan.');
+            return Endpoint::failed($th->getMessage());
         }
     }
 

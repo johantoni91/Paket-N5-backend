@@ -20,9 +20,9 @@ class UserController extends Controller
         try {
             $satker_code = SatkerCode::parent($satker);
             if ($satker_code == '0') {
-                $user = User::orderBy('name')->paginate(10);
+                $user = User::orderBy('name')->paginate(5);
             } else {
-                $user = User::orderBy('name')->where('satker', 'LIKE', $satker . '%')->paginate(10);
+                $user = User::orderBy('name')->where('satker', 'LIKE', $satker . '%')->paginate(5);
             }
             return Endpoint::success('Berhasil mendapatkan semua users!', $user);
         } catch (\Throwable $th) {
@@ -203,30 +203,57 @@ class UserController extends Controller
     function search(Request $req)
     {
         try {
-            $data = User::where('roles', 'LIKE', '%' . $req->role . '%')
-                ->where('status', 'LIKE', '%' . $req->status . '%')
-                ->where('nip', 'LIKE', '%' . $req->nip . '%')
-                ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
-                ->where('username', 'LIKE', '%' . $req->username . '%')
-                ->where('name', 'LIKE', '%' . $req->name . '%')
-                ->where('email', 'LIKE', '%' . $req->email . '%')
-                ->where('phone', 'LIKE', '%' . $req->phone . '%')
-                ->paginate($req->page ?? 5)->appends([
-                    'nip'      => $req->nip,
-                    'nrp'      => $req->nrp,
-                    'username' => $req->username,
-                    'name'     => $req->name,
-                    'email'    => $req->email,
-                    'phone'    => $req->phone,
-                    'roles'    => $req->roles,
-                    'status'   => $req->status
-                ]);
+            $satker_code = SatkerCode::parent($req->satker);
+            if ($satker_code == '0') {
+                $data = User::orderBy('name')->where('roles', 'LIKE', '%' . $req->roles . '%')
+                    ->where('status', 'LIKE', '%' . $req->status . '%')
+                    ->where('nip', 'LIKE', '%' . $req->nip . '%')
+                    ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
+                    ->where('username', 'LIKE', '%' . $req->username . '%')
+                    ->where('name', 'LIKE', '%' . $req->name . '%')
+                    ->where('email', 'LIKE', '%' . $req->email . '%')
+                    ->where('phone', 'LIKE', '%' . $req->phone . '%')
+                    ->paginate($req->pagination)->appends([
+                        'nip'        => $req->nip,
+                        'nrp'        => $req->nrp,
+                        'username'   => $req->username,
+                        'name'       => $req->name,
+                        'email'      => $req->email,
+                        'phone'      => $req->phone,
+                        'roles'      => $req->roles,
+                        'status'     => $req->status,
+                        'satker'     => $req->satker,
+                        'pagination' => $req->pagination
+                    ]);
+            } else {
+                $data = User::orderBy('name')->where('satker', 'LIKE', $req->satker . '%')
+                    ->where('roles', 'LIKE', '%' . $req->roles . '%')
+                    ->where('status', 'LIKE', '%' . $req->status . '%')
+                    ->where('nip', 'LIKE', '%' . $req->nip . '%')
+                    ->where('nrp', 'LIKE', '%' . $req->nrp . '%')
+                    ->where('username', 'LIKE', '%' . $req->username . '%')
+                    ->where('name', 'LIKE', '%' . $req->name . '%')
+                    ->where('email', 'LIKE', '%' . $req->email . '%')
+                    ->where('phone', 'LIKE', '%' . $req->phone . '%')
+                    ->paginate($req->pagination)->appends([
+                        'nip'        => $req->nip,
+                        'nrp'        => $req->nrp,
+                        'username'   => $req->username,
+                        'name'       => $req->name,
+                        'email'      => $req->email,
+                        'phone'      => $req->phone,
+                        'roles'      => $req->roles,
+                        'status'     => $req->status,
+                        'satker'     => $req->satker,
+                        'pagination' => $req->pagination
+                    ]);
+            }
             if (!$data) {
                 return Endpoint::success('Pengguna tidak ada');
             }
             return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal mendapatkan Pengguna!');
+            return Endpoint::failed('Gagal', $th->getMessage());
         }
     }
 }
