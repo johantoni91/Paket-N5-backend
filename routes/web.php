@@ -98,7 +98,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pengajuan/{id:\d+}/approve/{satker:\d+}', 'PengajuanController@approve');
 
         // Monitoring Pengajuan
-        $router->get('/monitor/{id:\d+}', 'PengajuanController@monitor');
+        $router->get('/monitor/{id:\d+}', 'MonitorController@index');
+        $router->post('/monitor/search', 'MonitorController@search');
 
         // SmartCard
         $router->get('/smart/{satker:\d+}', 'SmartController@index');

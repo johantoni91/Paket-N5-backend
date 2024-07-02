@@ -48,21 +48,6 @@ class PengajuanController extends Controller
         return Endpoint::success('Berhasil', Pengajuan::where('nip', $user)->get());
     }
 
-    function monitor($id)
-    {
-        try {
-            $kode = SatkerCode::parent($id);
-            if ($kode == '0') {
-                $data = Pengajuan::orderBy('created_at', 'asc')->paginate(5);
-            } else {
-                $data = Pengajuan::orderBy('created_at', 'asc')->where('kode_satker', 'LIKE', $id . '%')->paginate(5);
-            }
-            return Endpoint::success('Berhasil monitoring data pengajuan', $data);
-        } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal monitoring data pengajuan');
-        }
-    }
-
     function findByToken($token)
     {
         try {

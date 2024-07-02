@@ -11,7 +11,7 @@ class SmartController extends Controller
     function index($satker)
     {
         try {
-            $smart_card = Pengajuan::orderBy('updated_at')->where('kode_satker', $satker)->where('uid_kartu', 'IS NOT NULL')->paginate(5);
+            $smart_card = Pengajuan::orderBy('updated_at')->where('kode_satker', $satker)->where('uid_kartu', 'NOT LIKE', '')->paginate(5);
             return Endpoint::success('Berhasil', $smart_card);
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
