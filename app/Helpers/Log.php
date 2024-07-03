@@ -33,7 +33,7 @@ class Log
                 ->where('os', 'LIKE', '%' . $input['os'] . '%')
                 ->where('mobile', 'LIKE', '%' . $input['mobile'] . '%')
                 ->where('log_detail', 'LIKE', '%' . $input['log_detail'] . '%')
-                ->paginate(10)->appends([
+                ->paginate($input['pagination'])->appends([
                     'users_id' => $input['users_id'],
                     'username'  => $input['username'],
                     'ip_address' => $input['ip_address'],
@@ -41,7 +41,8 @@ class Log
                     'browser_version'  => $input['browser_version'],
                     'os'  => $input['os'],
                     'mobile'  => $input['mobile'],
-                    'log_detail'  => $input['log_detail']
+                    'log_detail'  => $input['log_detail'],
+                    'pagination'  => $input['pagination']
                 ]);
         } else {
             return ModelsLog::where('username', 'LIKE', '%' . $input['username'] . '%')
@@ -52,7 +53,7 @@ class Log
                 ->where('mobile', 'LIKE', '%' . $input['mobile'] . '%')
                 ->where('log_detail', 'LIKE', '%' . $input['log_detail'] . '%')
                 ->whereBetween('created_at', [$input['start'], $input['end']])
-                ->paginate(10)->appends([
+                ->paginate($input['pagination'])->appends([
                     'users_id' => $input['users_id'],
                     'username'  => $input['username'],
                     'ip_address' => $input['ip_address'],
@@ -60,7 +61,8 @@ class Log
                     'browser_version'  => $input['browser_version'],
                     'os'  => $input['os'],
                     'mobile'  => $input['mobile'],
-                    'log_detail'  => $input['log_detail']
+                    'log_detail'  => $input['log_detail'],
+                    'pagination'  => $input['pagination']
                 ]);
         }
     }

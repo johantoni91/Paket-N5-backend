@@ -107,6 +107,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         // Kartu
         $router->get('/kartuPagination', 'KartuController@indexPagination');
         $router->get('/kartu', 'KartuController@index');
+        $router->post('/kartu/search', 'KartuController@search');
         $router->get('/kartu/view', 'KartuController@cardView');
         $router->get('/kartu/title', 'KartuController@getKartuTitle');
         $router->post('/kartu/title', 'KartuController@title');
@@ -142,6 +143,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Roles
         $router->get('/roles', 'RoleController@index');
+        $router->get('/roles/pagination', 'RoleController@indexPagination');
         $router->get('/roles/find', 'RoleController@find');
         $router->post('/roles/store', 'RoleController@store');
         $router->post('/roles/find/id', 'RoleController@findId');

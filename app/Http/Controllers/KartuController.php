@@ -34,6 +34,24 @@ class KartuController extends Controller
         }
     }
 
+    function search(Request $req)
+    {
+        try {
+            $data = Kartu::orderBy('created_at')
+                ->where('title', 'LIKE', '%' . $req->title . '%')
+                ->where('categories', 'LIKE', '%' . $req->categories . '%')
+                ->where('card', 'LIKE', '%' . $req->card . '%')
+                ->paginate($req->pagination)->appends([
+                    'title'      => $req->title,
+                    'kategori'   => $req->kategori,
+                    'status'     => $req->status,
+                    'pagination' => $req->pagination
+                ]);
+        } catch (\Throwable $th) {
+            return Endpoint::failed($th->getMessage());
+        }
+    }
+
     function cardView()
     {
         try {

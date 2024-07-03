@@ -33,13 +33,11 @@ class MonitorController extends Controller
                 $arr[$var] = $pegawai[$var]['nip'];
             }
             $data = Pengajuan::orderBy('created_at')
-                ->whereIn('nip', $arr)
-                ->orWhere('nip', $req->nip)
                 ->where('status', $req->status)
                 ->where('alasan', $req->alasan)
+                ->whereIn('nip', $arr)
                 ->paginate($req->pagination)->appends([
-                    'nip'        => $req->nip,
-                    'nama'       => $req->nama,
+                    'nip'        => $arr,
                     'status'     => $req->status,
                     'alasan'     => $req->alasan,
                     'pagination' => $req->pagination

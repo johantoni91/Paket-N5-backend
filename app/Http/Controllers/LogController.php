@@ -48,7 +48,8 @@ class LogController extends Controller
                 'log_detail'        => $req->log_detail,
                 'start'             => $req->start,
                 'end'               => $req->end,
-                'users_id'          => $req->users_id
+                'users_id'          => $req->users_id,
+                'pagination'        => $req->pagination
             ];
             $data = HelpersLog::query($input);
             if (!$data) {

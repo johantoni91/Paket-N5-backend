@@ -11,6 +11,18 @@ class RoleController extends Controller
     function index()
     {
         try {
+            $roles = Menu::all();
+            if (!$roles) {
+                return Endpoint::warning('Data roles masih kosong');
+            }
+            return Endpoint::success('Berhasil mendapatkan data roles', $roles);
+        } catch (\Throwable $th) {
+            return Endpoint::failed('Gagal mendapatkan data roles');
+        }
+    }
+    function indexPagination()
+    {
+        try {
             $roles = Menu::paginate(5);
             if (!$roles) {
                 return Endpoint::warning('Data roles masih kosong');
