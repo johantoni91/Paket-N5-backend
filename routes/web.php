@@ -99,7 +99,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // Monitoring Pengajuan
         $router->get('/monitor/{id:\d+}', 'MonitorController@index');
-        $router->post('/monitor/search', 'MonitorController@search');
+        $router->get('/monitor/search', 'MonitorController@search');
 
         // SmartCard
         $router->get('/smart/{satker:\d+}', 'SmartController@index');

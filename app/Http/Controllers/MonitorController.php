@@ -33,11 +33,11 @@ class MonitorController extends Controller
                 $arr[$var] = $pegawai[$var]['nip'];
             }
             $data = Pengajuan::orderBy('created_at')
-                ->where('status', $req->status)
-                ->where('alasan', $req->alasan)
                 ->whereIn('nip', $arr)
+                ->where('status', 'LIKE', '%' . $req->status . '%')
+                ->where('alasan', 'LIKE', '%' . $req->alasan . '%')
                 ->paginate($req->pagination)->appends([
-                    'nip'        => $arr,
+                    'nama'       => $req->nama,
                     'status'     => $req->status,
                     'alasan'     => $req->alasan,
                     'pagination' => $req->pagination

@@ -17,9 +17,9 @@ class PerangkatController extends Controller
     {
         $kode = SatkerCode::parent($id);
         if ($kode == '0') {
-            $data = Perangkat::orderBy('satker')->paginate(10);
+            $data = Perangkat::orderBy('satker')->paginate(5);
         } else {
-            $data = Perangkat::orderBy('satker')->where('satker', 'LIKE', $id . '%')->paginate(10);
+            $data = Perangkat::orderBy('satker')->where('satker', 'LIKE', $id . '%')->paginate(5);
         }
         return Endpoint::success('Berhasil', $data);
     }
@@ -46,15 +46,18 @@ class PerangkatController extends Controller
             for ($i = 0; $i < count($satker); $i++) {
                 $arr[$i] = $satker[$i]['satker_code'];
             }
-            $perangkat = Perangkat::orderBy('satker')->whereIn('satker', $arr)->paginate(10)->appends([
-                'satker'    => $arr
+            $perangkat = Perangkat::orderBy('satker')->whereIn('satker', $arr)->paginate($req->pagination)->appends([
+                'profile'   => $req->profile,
+                'satker_name' => $req->satker_name,
+                'satker_type' => $req->satker_type,
+                'pagination' => $req->pagination
             ]);
             if (!$perangkat) {
                 return Endpoint::success('Perangkat tidak ada');
             }
             return Endpoint::success('Berhasil', $perangkat);
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal');
+            return Endpoint::failed($th->getMessage());
         }
     }
 
