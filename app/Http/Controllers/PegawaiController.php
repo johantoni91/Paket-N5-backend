@@ -92,7 +92,7 @@ class PegawaiController extends Controller
             Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Tambah Pegawai.');
             return Endpoint::success('Berhasil menambahkan data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed($th->getMessage());
+            return Endpoint::failed('Berhasil menambahkan data pegawai. Mohon cek kembali data yang diinputkan dan masukkan data yang valid.');
         }
     }
 
@@ -128,7 +128,7 @@ class PegawaiController extends Controller
                 ];
             }
 
-            $pegawai->update($data);
+            Pegawai::where('nip', $id)->orWhere('nrp', $id)->update($data);
             Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Ubah Pegawai.');
             return Endpoint::success('Berhasil ubah data pegawai');
         } catch (\Throwable $th) {

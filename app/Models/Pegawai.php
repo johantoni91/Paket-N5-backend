@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Pegawai extends Model
 {
     protected $table = 'pegawai';
-    protected $guarded = ['nip', 'nrp'];
+    protected $guarded = ['nip'];
     protected $primaryKey = 'nip';
 }
