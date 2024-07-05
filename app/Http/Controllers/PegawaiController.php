@@ -92,34 +92,32 @@ class PegawaiController extends Controller
             Log::insert($req->users_id, $req->username, $req->ip_address, $req->browser, $req->browser_version, $req->os, $req->mobile, $this->pegawai . ' Tambah Pegawai.');
             return Endpoint::success('Berhasil menambahkan data pegawai');
         } catch (\Throwable $th) {
-            return Endpoint::failed('Gagal menambahkan data pegawai');
+            return Endpoint::failed($th->getMessage());
         }
     }
 
     public function update(Request $req, $id)
     {
         try {
-            $data = [];
             $data = [
-                'nama'           =>  $req->nama,
-                'jabatan'        =>  $req->jabatan,
-                'nip'            =>  $req->nip,
-                'nrp'            =>  $req->nrp,
-                'tgl_lahir'      =>  $req->tgl_lahir,
-                'eselon'         =>  $req->eselon,
-                'GOL_KD'         =>  $req->GOL_KD,
-                'golpang'        =>  $req->golpang,
-                'jaksa_tu'       =>  $req->jaksa_tu,
-                'struktural_non' =>  $req->struktural_non,
-                'jenis_kelamin'  =>  $req->jenis_kelamin,
-                'nama_satker'    =>  $req->nama_satker,
-                'agama'          =>  $req->agama,
-                'status_pegawai' =>  $req->status_pegawai,
+                'nama'           =>  $req->nama ?? '',
+                'jabatan'        =>  $req->jabatan ?? '',
+                'nip'            =>  $req->nip ?? '',
+                'nrp'            =>  $req->nrp ?? '',
+                'tgl_lahir'      =>  $req->tgl_lahir ?? '',
+                'eselon'         =>  $req->eselon ?? '',
+                'GOL_KD'         =>  $req->GOL_KD ?? '',
+                'golpang'        =>  $req->golpang ?? '',
+                'jaksa_tu'       =>  $req->jaksa_tu ?? '',
+                'struktural_non' =>  $req->struktural_non ?? '',
+                'jenis_kelamin'  =>  $req->jenis_kelamin ?? '',
+                'nama_satker'    =>  $req->nama_satker ?? '',
+                'agama'          =>  $req->agama ?? '',
+                'status_pegawai' =>  $req->status_pegawai ?? '',
             ];
 
             $pegawai = Pegawai::find($id);
             if ($req->hasFile('photo')) {
-
                 if (File::exists(parse_url($pegawai->foto_pegawai)['path'])) {
                     unlink('../public' . parse_url($pegawai->foto_pegawai)['path']);
                 }
