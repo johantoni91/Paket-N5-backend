@@ -53,8 +53,7 @@ class FaqController extends Controller
                 }
                 $req->file('image')->move('faq', $req->file('image')->getClientOriginalName());
             }
-            $faq->update($input);
-            $faq->save();
+            Faq::where('id', $id)->update($input);
             return Endpoint::success('Berhasil mengubah FAQ');
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal mengubah FAQ', $th->getMessage());

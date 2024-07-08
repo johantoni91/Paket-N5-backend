@@ -37,16 +37,17 @@ class KartuController extends Controller
     function search(Request $req)
     {
         try {
-            $data = Kartu::orderBy('created_at')
+            $data = Kartu::orderBy('updated_at')
                 ->where('title', 'LIKE', '%' . $req->title . '%')
                 ->where('categories', 'LIKE', '%' . $req->categories . '%')
-                ->where('card', 'LIKE', '%' . $req->card . '%')
+                ->where('updated_at', 'LIKE', '%' . $req->updated_at . '%')
                 ->paginate($req->pagination)->appends([
                     'title'      => $req->title,
-                    'kategori'   => $req->kategori,
-                    'status'     => $req->status,
+                    'categories' => $req->categories,
+                    'updated_at' => $req->updated_at,
                     'pagination' => $req->pagination
                 ]);
+            return Endpoint::success('Berhasil', $data);
         } catch (\Throwable $th) {
             return Endpoint::failed($th->getMessage());
         }
@@ -155,7 +156,8 @@ class KartuController extends Controller
                 'nrp'           => $req->nrp,
                 'golongan'      => $req->golongan,
                 'jabatan'       => $req->jabatan,
-                'warna_teks'    => $req->warna_teks
+                'warna_teks'    => $req->warna_teks,
+                'card'          => ''
             ];
             $kartu->update($requestData);
             return Endpoint::success('Berhasil mengubah kartu');
