@@ -24,7 +24,7 @@ class Log
 
     public static function query($input)
     {
-        if ($input['start'] == null) {
+        if ($input['start'] == null || $input['end'] == null) {
             return ModelsLog::orderBy('created_at', 'desc')
                 ->where('username', 'LIKE', '%' . $input['username'] . '%')
                 ->where('ip_address', 'LIKE', '%' . $input['ip_address'] . '%')

@@ -40,11 +40,9 @@ class KartuController extends Controller
             $data = Kartu::orderBy('updated_at')
                 ->where('title', 'LIKE', '%' . $req->title . '%')
                 ->where('categories', 'LIKE', '%' . $req->categories . '%')
-                ->where('updated_at', 'LIKE', '%' . $req->updated_at . '%')
                 ->paginate($req->pagination)->appends([
                     'title'      => $req->title,
                     'categories' => $req->categories,
-                    'updated_at' => $req->updated_at,
                     'pagination' => $req->pagination
                 ]);
             return Endpoint::success('Berhasil', $data);

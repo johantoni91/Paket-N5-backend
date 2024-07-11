@@ -22,7 +22,7 @@ class RatingController extends Controller
     function search(Request $req)
     {
         try {
-            $user = User::where('name', $req->name)->first();
+            $user = User::where('name', 'LIKE', '%' . $req->name . '%')->first();
             if (!$user) {
                 return Endpoint::success(
                     'Berhasil',
