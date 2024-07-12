@@ -15,9 +15,9 @@ class LogController extends Controller
         try {
             $user = User::where('id', $id)->first();
             if ($user->roles == 'superadmin') {
-                $logs = Log::orderBy('created_at', 'desc')->paginate(10);
+                $logs = Log::orderBy('created_at', 'desc')->paginate(5);
             } else {
-                $logs = Log::orderBy('created_at', 'desc')->where('users_id', $user->id)->paginate(10);
+                $logs = Log::orderBy('created_at', 'desc')->where('users_id', $user->id)->paginate(5);
             }
             return Endpoint::success('Berhasil mendapatkan data log aktivitas', $logs);
         } catch (\Throwable $th) {

@@ -46,6 +46,10 @@ class RoleController extends Controller
     function store(Request $req)
     {
         try {
+            $role = Menu::where('role', $req->role)->first();
+            if ($role) {
+                return Endpoint::warning('Role sudah ada');
+            }
             $input = [
                 'id'        => mt_rand(1, 4),
                 'role'      => $req->role,
