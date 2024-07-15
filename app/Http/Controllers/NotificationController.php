@@ -50,7 +50,10 @@ class NotificationController extends Controller
         try {
             $room = Room::where('users', 'LIKE', '%' . $id . '%')->first();
             $msg = Message::where('room_id', $room->id)->where('from', '!=', $id)->where('read', '0')->get();
-            return Endpoint::success('Ada pesan masuk!', $msg);
+            if (!$msg->isEmpty()) {
+                return Endpoint::success('Ada pesan masuk!', $msg);
+            }
+            return Endpoint::success('Tidak ada pesan', $msg);
         } catch (\Throwable $th) {
             return Endpoint::failed('Gagal');
         }
