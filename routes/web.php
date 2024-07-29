@@ -2,10 +2,6 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
-use Laravel\Lumen\Routing\Router;
-
 $router->get('/', function () {
     return "API Ready";
 });
@@ -27,6 +23,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/kios/check-token', 'KiosController@checkToken');
         $router->post('/kios/verifikasi', 'KiosController@verifikasi');
         $router->get('/kios/{token}/kartu', 'KiosController@kartu');
+
+        // NFC
+        $router->post('nfc/store', 'NFCController@retrieveAndUpdate');
+        $router->get('nfc/{uid}', 'NFCController@findUid');
+        $router->get('nfc/{uid}/pegawai', 'NFCController@findPegawaiByUid');
     });
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
@@ -187,8 +188,5 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('signature/{satker}', 'SignatureController@find');
         $router->post('signature/update', 'SignatureController@update');
         $router->get('signature/{satker}/destroy', 'SignatureController@destroy');
-
-        // NFC
-        $router->post('nfc/store', 'NFCController@retrieveAndUpdate');
     });
 });
