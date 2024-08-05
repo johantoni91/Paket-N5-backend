@@ -104,6 +104,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         // SmartCard
         $router->get('/smart/{satker:\d+}', 'SmartController@index');
+        $router->post('/smart/search', 'SmartController@search');
 
         // Kartu
         $router->get('/kartuPagination', 'KartuController@indexPagination');
